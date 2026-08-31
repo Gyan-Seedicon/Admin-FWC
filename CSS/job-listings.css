@@ -1,0 +1,5 @@
+@import url('./global.css');
+
+/* Job Listings has no styles of its own beyond global.css — it's built
+   entirely from the shared shell, card, table, status-filter, and modal
+   components. Kept as its own file so it can grow independently later. */

@@ -1,0 +1,6 @@
+@import url('./global.css');
+
+/* Admin Management has no styles of its own beyond global.css — it's built
+   entirely from the shared shell, card, stat-card, table, table-avatar,
+   inline-filter-bar, toggle, and modal components. Kept as its own file
+   so it can grow independently later. */
