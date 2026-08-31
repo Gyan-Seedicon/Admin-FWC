@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Job Listings — Management, Table View, and Center View JD Modal
+   Job Listings Directory & Management
+   Minimal 3-dots kebab action context menu, smart row-click to open View JD modal.
    ========================================================================== */
 
 const JOBS_KEY = 'fwc-job-listings';
@@ -11,7 +12,7 @@ const jobListingsSeed = [
     department: 'Cybersecurity',
     location: 'Remote',
     type: 'Full-time',
-    experience: '3–5 Years',
+    experience: 'Mid-Level (3–5 Yrs)',
     salary: '$120,000 – $145,000 / yr',
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
@@ -20,7 +21,7 @@ const jobListingsSeed = [
     feedback: null,
     pdfName: 'cybersecurity-analyst-jd.pdf',
     pdfSize: '1.4 MB',
-    overview: 'We are looking for a Cybersecurity Analyst to help safeguard client infrastructure and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.',
+    overview: 'We are looking for a Cybersecurity Analyst to safeguard client infrastructure and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.',
     responsibilities: [
       'Perform continuous threat monitoring, log telemetry analysis, and vulnerability triage across multi-cloud environments.',
       'Collaborate with DevSecOps engineers to integrate automated security scanning into CI/CD pipelines.',
@@ -34,7 +35,7 @@ const jobListingsSeed = [
     department: 'Technology Consulting',
     location: 'Alhambra, CA',
     type: 'Full-time',
-    experience: '5–8 Years',
+    experience: 'Senior (5–8 Yrs)',
     salary: '$135,000 – $165,000 / yr',
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
@@ -80,7 +81,7 @@ const jobListingsSeed = [
     department: 'Cloud Services',
     location: 'Alhambra, CA',
     type: 'Full-time',
-    experience: '3–5 Years',
+    experience: 'Mid-Level (3–5 Yrs)',
     salary: '$115,000 – $140,000 / yr',
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
@@ -132,8 +133,8 @@ const STATUS_BADGE_CLASS = {
 };
 
 const STATUS_LABEL = {
-  published: 'Published / Open',
-  pending: 'Pending Approval',
+  published: 'Published',
+  pending: 'Pending Review',
   draft: 'Draft',
   rejected: 'Rejected'
 };
@@ -150,30 +151,51 @@ function renderStats() {
 }
 
 function renderActionCell(job) {
-  if (job.status === 'pending') {
-    return `
-      <a href="add-job-listing.html?mode=review&id=${job.id}" class="btn btn-sm btn-primary" style="font-weight: 600; white-space: nowrap;">
-        Review & Take Action →
-      </a>
-    `;
-  }
+  const isPending = job.status === 'pending';
+  const isRejected = job.status === 'rejected';
+  const isPublished = job.status === 'published' || job.status === 'draft';
 
-  if (job.status === 'rejected') {
-    return `
-      <div class="flex items-center justify-end gap-1">
-        <button class="btn btn-sm btn-secondary" data-action="view-feedback" data-id="${job.id}" style="color: var(--danger); border-color: #FECACA; background: #FEF2F2; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
-          <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,13.66,5.66L72,195.31V208a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM216,208H88V192a8,8,0,0,0-8-8H40V64H216V208Z"/></svg>
-          Rejection Notes
-        </button>
-        <a href="add-job-listing.html?mode=edit&id=${job.id}" class="btn btn-sm btn-secondary">Edit</a>
-      </div>
-    `;
-  }
+  const reviewUrl = `add-job-listing.html?mode=review&id=${job.id}`;
+  const editUrl = `add-job-listing.html?mode=edit&id=${job.id}`;
 
   return `
-    <a href="add-job-listing.html?mode=edit&id=${job.id}" class="btn btn-sm btn-secondary" style="white-space: nowrap;">
-      View Requisition →
-    </a>
+    <div class="table-kebab-wrap">
+      <button class="table-kebab-btn" type="button" data-action="toggle-kebab" aria-label="More actions" title="More actions">
+        <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,96a24,24,0,1,0,24,24A24,24,0,0,0,128,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,128,128ZM48,96a24,24,0,1,0,24,24A24,24,0,0,0,48,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,48,128ZM208,96a24,24,0,1,0,24,24A24,24,0,0,0,208,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,208,128Z"/></svg>
+      </button>
+
+      <div class="table-context-menu">
+        <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${job.id}">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          View Full JD
+        </button>
+
+        ${isPending ? `
+          <a href="${reviewUrl}" class="table-context-menu-item item-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Review & Moderate
+          </a>
+        ` : ''}
+
+        ${isPublished ? `
+          <a href="${editUrl}" class="table-context-menu-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            Edit Requisition
+          </a>
+        ` : ''}
+
+        ${isRejected ? `
+          <button type="button" class="table-context-menu-item" data-action="view-feedback" data-id="${job.id}">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Rejection Notes
+          </button>
+          <a href="${editUrl}" class="table-context-menu-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            Edit & Resubmit
+          </a>
+        ` : ''}
+      </div>
+    </div>
   `;
 }
 
@@ -193,7 +215,7 @@ function renderTable(items) {
   }
 
   tbody.innerHTML = items.map((job, idx) => `
-    <tr data-status="${job.status}" data-id="${job.id}">
+    <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view job description">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">JOB-${100 + job.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
@@ -222,7 +244,7 @@ function openViewJdModal(id) {
 
   document.getElementById('jd-modal-role-title').textContent = `${job.title} — Job Description`;
   document.getElementById('jd-chip-id').textContent = `JOB-${100 + job.id}`;
-  document.getElementById('jd-chip-dept').textContent = job.department;
+  document.getElementById('jd-chip-dept').textContent = job.department || 'Engineering';
   document.getElementById('jd-chip-loc').textContent = job.location || 'Remote';
   document.getElementById('jd-chip-type').textContent = job.type;
   document.getElementById('jd-chip-exp').textContent = job.experience || '3–5 Years';
@@ -281,6 +303,15 @@ function handleViewFeedback(id) {
   openModal('job-feedback-modal');
 }
 
+function closeAllContextMenus() {
+  document.querySelectorAll('.table-context-menu.is-open').forEach((menu) => {
+    menu.classList.remove('is-open');
+  });
+  document.querySelectorAll('.table-kebab-btn.is-active').forEach((btn) => {
+    btn.classList.remove('is-active');
+  });
+}
+
 function refreshAll() {
   jobListings = loadCollection(JOBS_KEY, jobListingsSeed);
   renderTable(jobListings);
@@ -301,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtered = jobListings.filter((job) => {
       const matchSearch = !q ||
         job.title.toLowerCase().includes(q) ||
-        job.department.toLowerCase().includes(q) ||
+        (job.department && job.department.toLowerCase().includes(q)) ||
         (job.location && job.location.toLowerCase().includes(q)) ||
         (job.experience && job.experience.toLowerCase().includes(q));
       const matchStatus = st === 'all' || job.status === st;
@@ -318,19 +349,59 @@ document.addEventListener('DOMContentLoaded', () => {
     exportTableToCSV('jobs-table', 'fwc-job-listings.csv');
   });
 
-  document.getElementById('job-listings-table-body')?.addEventListener('click', (e) => {
+  // Table row click & kebab context menu
+  document.addEventListener('click', (e) => {
+    // 1. Kebab button toggle
+    const kebabBtn = e.target.closest('[data-action="toggle-kebab"]');
+    if (kebabBtn) {
+      e.stopPropagation();
+      const wrap = kebabBtn.closest('.table-kebab-wrap');
+      const menu = wrap?.querySelector('.table-context-menu');
+      const isOpen = menu?.classList.contains('is-open');
+
+      closeAllContextMenus();
+
+      if (!isOpen && menu) {
+        menu.classList.add('is-open');
+        kebabBtn.classList.add('is-active');
+      }
+      return;
+    }
+
+    // 2. View JD Button
     const jdBtn = e.target.closest('[data-action="view-jd"]');
     if (jdBtn) {
+      closeAllContextMenus();
       const id = Number(jdBtn.dataset.id);
       openViewJdModal(id);
       return;
     }
 
+    // 3. View feedback
     const feedbackBtn = e.target.closest('[data-action="view-feedback"]');
     if (feedbackBtn) {
+      closeAllContextMenus();
       const id = Number(feedbackBtn.dataset.id);
       handleViewFeedback(id);
       return;
+    }
+
+    // 4. Row click navigation -> Open View JD modal
+    const row = e.target.closest('#job-listings-table-body tr[data-id]');
+    if (row && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
+      const id = Number(row.dataset.id);
+      openViewJdModal(id);
+      return;
+    }
+
+    // Outside click closes menus
+    closeAllContextMenus();
+  });
+
+  // Escape key closes menus
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllContextMenus();
     }
   });
 });

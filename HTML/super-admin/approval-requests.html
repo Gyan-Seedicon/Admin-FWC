@@ -301,6 +301,50 @@
   </div>
 </div>
 
+<!-- Quick Approve Modal -->
+<div class="modal-overlay" id="quick-approve-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Approve & Publish Request?</span>
+      <button class="modal-close" data-close-modal="quick-approve-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 24px 28px;">
+      <p style="margin-bottom: var(--space-2); font-size: var(--text-xs);">"<strong id="quick-approve-item-title"></strong>" will be approved and published live to the public site immediately.</p>
+      <p style="font-size: var(--text-xs); color: var(--ink-muted);">This action will be logged with your super admin signature and timestamp.</p>
+    </div>
+    <div class="modal-footer" style="padding: 16px 28px;">
+      <button class="btn btn-secondary" data-close-modal="quick-approve-modal">Cancel</button>
+      <button class="btn btn-success" id="confirm-quick-approve-btn" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">Approve & Publish Live</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Reject Modal -->
+<div class="modal-overlay" id="quick-reject-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Reject Request & Provide Feedback</span>
+      <button class="modal-close" data-close-modal="quick-reject-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 24px 28px;">
+      <p style="margin-bottom: var(--space-3); font-size: var(--text-xs); color: var(--ink-secondary);">"<strong id="quick-reject-item-title"></strong>" will be rejected and returned for revisions.</p>
+      <div class="form-group">
+        <label class="form-label" for="quick-reject-reason">Reason for Rejection & Required Changes <span class="form-required">*</span></label>
+        <textarea class="form-textarea" id="quick-reject-reason" placeholder="Explain what changes or citations are required before approval..." rows="4"></textarea>
+        <span class="form-error-text" id="quick-reject-error" style="display: none; color: var(--danger); font-size: 11px;">Feedback is required to guide the team on revisions.</span>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding: 16px 28px;">
+      <button class="btn btn-secondary" data-close-modal="quick-reject-modal">Cancel</button>
+      <button class="btn btn-danger" id="confirm-quick-reject-btn">Reject Request</button>
+    </div>
+  </div>
+</div>
+
 <script src="../../JS/global.js"></script>
 <script src="../../JS/approval-requests.js"></script>
 </body>

@@ -1,7 +1,7 @@
 /* ==========================================================================
    Approval Requests Hub
    Moderation workflow for Blog Posts and Job Requisitions,
-   View JD center modal, and smart KPI metrics.
+   Minimal 3-dots kebab action context menu, View JD center modal, and smart KPI metrics.
    ========================================================================== */
 
 const BLOG_KEY = 'fwc-blog-posts';
@@ -195,6 +195,7 @@ const jobSeedItems = [
 
 let blogItems = loadCollection(BLOG_KEY, blogSeedItems);
 let jobItems = loadCollection(JOBS_KEY, jobSeedItems);
+let activePendingItem = null; // for quick approve / reject dialogs
 
 const AVATAR_COLORS = ['avatar-color-1', 'avatar-color-2', 'avatar-color-3', 'avatar-color-4', 'avatar-color-5'];
 
@@ -216,6 +217,13 @@ function initials(name) {
   return (name || '').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
 }
 
+function formatNow() {
+  const now = new Date();
+  const datePart = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+  const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  return `${datePart} · ${timePart}`;
+}
+
 function renderStats() {
   const pendingBlogs = blogItems.filter((b) => b.status === 'pending').length;
   const pendingJobs = jobItems.filter((j) => j.status === 'pending').length;
@@ -229,38 +237,78 @@ function renderStats() {
 }
 
 function renderActionCell(type, item) {
-  if (item.status === 'pending') {
-    const editUrl = type === 'blog' 
-      ? `add-blog-post.html?mode=review&id=${item.id}`
-      : `add-job-listing.html?mode=review&id=${item.id}`;
+  const isPending = item.status === 'pending';
+  const isRejected = item.status === 'rejected';
+  const isPublished = item.status === 'published';
 
-    return `
-      <a href="${editUrl}" class="btn btn-sm btn-primary" style="font-weight: 600; white-space: nowrap;">
-        Review & Take Action →
-      </a>
-    `;
-  }
+  const reviewUrl = type === 'blog' 
+    ? `add-blog-post.html?mode=review&id=${item.id}`
+    : `add-job-listing.html?mode=review&id=${item.id}`;
 
-  if (item.status === 'rejected') {
-    return `
-      <div class="flex items-center justify-end gap-1">
-        <button class="btn btn-sm btn-secondary" data-action="view-feedback" data-type="${type}" data-id="${item.id}" style="color: var(--danger); border-color: #FECACA; background: #FEF2F2; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
-          <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,13.66,5.66L72,195.31V208a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM216,208H88V192a8,8,0,0,0-8-8H40V64H216V208Z"/></svg>
-          Rejection Notes
-        </button>
-        <a href="${type === 'blog' ? 'add-blog-post.html?mode=edit&id=' : 'add-job-listing.html?mode=edit&id='}${item.id}" class="btn btn-sm btn-secondary">Edit</a>
-      </div>
-    `;
-  }
-
-  const viewUrl = type === 'blog' 
+  const editUrl = type === 'blog' 
     ? `add-blog-post.html?mode=edit&id=${item.id}`
     : `add-job-listing.html?mode=edit&id=${item.id}`;
 
   return `
-    <a href="${viewUrl}" class="btn btn-sm btn-secondary" style="white-space: nowrap;">
-      View Requisition →
-    </a>
+    <div class="table-kebab-wrap">
+      <button class="table-kebab-btn" type="button" data-action="toggle-kebab" aria-label="More actions" title="More actions">
+        <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,96a24,24,0,1,0,24,24A24,24,0,0,0,128,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,128,128ZM48,96a24,24,0,1,0,24,24A24,24,0,0,0,48,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,48,128ZM208,96a24,24,0,1,0,24,24A24,24,0,0,0,208,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,208,128Z"/></svg>
+      </button>
+
+      <div class="table-context-menu">
+        ${isPending ? `
+          <a href="${reviewUrl}" class="table-context-menu-item item-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Review & Take Action
+          </a>
+          ${type === 'job' ? `
+            <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="10" r="3"/></svg>
+              View Full JD
+            </button>
+          ` : ''}
+          <div class="table-context-menu-divider"></div>
+          <button type="button" class="table-context-menu-item" data-action="quick-approve" data-type="${type}" data-id="${item.id}" style="color: var(--success);">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"/></svg>
+            Quick Approve
+          </button>
+          <button type="button" class="table-context-menu-item item-danger" data-action="quick-reject" data-type="${type}" data-id="${item.id}">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Reject Request
+          </button>
+        ` : ''}
+
+        ${isPublished ? `
+          <a href="${editUrl}" class="table-context-menu-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            Edit Content
+          </a>
+          ${type === 'job' ? `
+            <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              View Full JD
+            </button>
+          ` : ''}
+        ` : ''}
+
+        ${isRejected ? `
+          <button type="button" class="table-context-menu-item" data-action="view-feedback" data-type="${type}" data-id="${item.id}">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Rejection Notes
+          </button>
+          ${type === 'job' ? `
+            <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              View Full JD
+            </button>
+          ` : ''}
+          <a href="${editUrl}" class="table-context-menu-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            Edit & Resubmit
+          </a>
+        ` : ''}
+      </div>
+    </div>
   `;
 }
 
@@ -269,7 +317,7 @@ function renderBlogsTable() {
   if (!tbody) return;
 
   tbody.innerHTML = blogItems.map((blog, idx) => `
-    <tr data-status="${blog.status}">
+    <tr data-status="${blog.status}" data-id="${blog.id}" style="cursor: pointer;" title="Click to review or edit story">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">POST-${100 + blog.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); max-width: 280px;"><span class="cell-truncate-title" title="${blog.title}">${blog.title}</span></td>
@@ -293,7 +341,7 @@ function renderJobsTable() {
   if (!tbody) return;
 
   tbody.innerHTML = jobItems.map((job, idx) => `
-    <tr data-status="${job.status}">
+    <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view job requisition details">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">JOB-${100 + job.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
@@ -322,9 +370,9 @@ function openViewJdModal(id) {
 
   document.getElementById('jd-modal-role-title').textContent = `${job.title} — Job Description`;
   document.getElementById('jd-chip-id').textContent = `JOB-${100 + job.id}`;
-  document.getElementById('jd-chip-dept').textContent = job.department;
+  document.getElementById('jd-chip-dept').textContent = job.department || 'Engineering';
   document.getElementById('jd-chip-loc').textContent = job.location || 'Remote';
-  document.getElementById('jd-chip-type').textContent = job.type;
+  document.getElementById('jd-chip-type').textContent = job.type || 'Full-time';
   document.getElementById('jd-chip-exp').textContent = job.experience || '3–5 Years';
   document.getElementById('jd-chip-salary').textContent = job.salary || 'Competitive';
 
@@ -393,6 +441,35 @@ function handleViewFeedback(type, id) {
   openModal('feedback-viewer-modal');
 }
 
+function handleQuickApprove(type, id) {
+  const item = findItem(type, id);
+  if (!item) return;
+  activePendingItem = { type, id, item };
+
+  document.getElementById('quick-approve-item-title').textContent = item.title;
+  openModal('quick-approve-modal');
+}
+
+function handleQuickReject(type, id) {
+  const item = findItem(type, id);
+  if (!item) return;
+  activePendingItem = { type, id, item };
+
+  document.getElementById('quick-reject-item-title').textContent = item.title;
+  document.getElementById('quick-reject-reason').value = '';
+  document.getElementById('quick-reject-error').style.display = 'none';
+  openModal('quick-reject-modal');
+}
+
+function closeAllContextMenus() {
+  document.querySelectorAll('.table-context-menu.is-open').forEach((menu) => {
+    menu.classList.remove('is-open');
+  });
+  document.querySelectorAll('.table-kebab-btn.is-active').forEach((btn) => {
+    btn.classList.remove('is-active');
+  });
+}
+
 function initTabs() {
   document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -407,6 +484,7 @@ function initTabs() {
       const targetPanel = document.getElementById(btn.dataset.tab);
       if (targetPanel) targetPanel.classList.remove('hidden');
 
+      closeAllContextMenus();
       updateRequestsBadge();
     });
   });
@@ -425,20 +503,138 @@ document.addEventListener('DOMContentLoaded', () => {
   refreshAll();
   initTabs();
 
+  // Document click listener for context menus and actions
   document.addEventListener('click', (e) => {
+    // 1. Toggle 3-dots kebab menu
+    const kebabBtn = e.target.closest('[data-action="toggle-kebab"]');
+    if (kebabBtn) {
+      e.stopPropagation();
+      const wrap = kebabBtn.closest('.table-kebab-wrap');
+      const menu = wrap?.querySelector('.table-context-menu');
+      const isOpen = menu?.classList.contains('is-open');
+
+      closeAllContextMenus();
+
+      if (!isOpen && menu) {
+        menu.classList.add('is-open');
+        kebabBtn.classList.add('is-active');
+      }
+      return;
+    }
+
+    // 2. View JD
     const jdBtn = e.target.closest('[data-action="view-jd"]');
     if (jdBtn) {
+      closeAllContextMenus();
       const id = Number(jdBtn.dataset.id);
       openViewJdModal(id);
       return;
     }
 
+    // 3. View Feedback Notes
     const feedbackBtn = e.target.closest('[data-action="view-feedback"]');
     if (feedbackBtn) {
+      closeAllContextMenus();
       const type = feedbackBtn.dataset.type;
       const id = Number(feedbackBtn.dataset.id);
       handleViewFeedback(type, id);
       return;
     }
+
+    // 4. Quick Approve
+    const approveBtn = e.target.closest('[data-action="quick-approve"]');
+    if (approveBtn) {
+      closeAllContextMenus();
+      const type = approveBtn.dataset.type;
+      const id = Number(approveBtn.dataset.id);
+      handleQuickApprove(type, id);
+      return;
+    }
+
+    // 5. Quick Reject
+    const rejectBtn = e.target.closest('[data-action="quick-reject"]');
+    if (rejectBtn) {
+      closeAllContextMenus();
+      const type = rejectBtn.dataset.type;
+      const id = Number(rejectBtn.dataset.id);
+      handleQuickReject(type, id);
+      return;
+    }
+
+    // 6. Row click navigation (smart navigation on row click)
+    const blogRow = e.target.closest('#blogs-table-body tr[data-id]');
+    if (blogRow && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
+      const id = Number(blogRow.dataset.id);
+      const blog = blogItems.find((b) => b.id === id);
+      if (blog) {
+        if (blog.status === 'pending') {
+          window.location.href = `add-blog-post.html?mode=review&id=${id}`;
+        } else {
+          window.location.href = `add-blog-post.html?mode=edit&id=${id}`;
+        }
+      }
+      return;
+    }
+
+    const jobRow = e.target.closest('#jobs-table-body tr[data-id]');
+    if (jobRow && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
+      const id = Number(jobRow.dataset.id);
+      openViewJdModal(id);
+      return;
+    }
+
+    // Clicking anywhere else closes open context menus
+    closeAllContextMenus();
+  });
+
+  // ESC key closes context menus
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllContextMenus();
+    }
+  });
+
+  // Confirm Quick Approve Modal
+  document.getElementById('confirm-quick-approve-btn')?.addEventListener('click', () => {
+    if (!activePendingItem) return;
+    const { type, id } = activePendingItem;
+    const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
+    let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
+    const item = list.find((it) => it.id === id);
+    if (item) {
+      item.status = 'published';
+      item.actionTakenOn = formatNow();
+      item.feedback = null;
+      saveCollection(key, list);
+    }
+    closeModal('quick-approve-modal');
+    refreshAll();
+    showToast(`Approved & published "${item.title}" live!`, 'success');
+  });
+
+  // Confirm Quick Reject Modal
+  document.getElementById('confirm-quick-reject-btn')?.addEventListener('click', () => {
+    if (!activePendingItem) return;
+    const reasonInput = document.getElementById('quick-reject-reason');
+    const reason = reasonInput.value.trim();
+    if (!reason) {
+      document.getElementById('quick-reject-error').style.display = 'block';
+      reasonInput.focus();
+      return;
+    }
+
+    const { type, id } = activePendingItem;
+    const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
+    let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
+    const item = list.find((it) => it.id === id);
+    if (item) {
+      item.status = 'rejected';
+      item.actionTakenOn = formatNow();
+      item.feedback = reason;
+      saveCollection(key, list);
+    }
+    closeModal('quick-reject-modal');
+    refreshAll();
+    showToast(`Rejected "${item.title}" and saved feedback notes.`, 'error');
   });
 });

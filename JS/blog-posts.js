@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Blog Posts — Management & Actions
+   Blog Posts Directory & Management
+   Minimal 3-dots kebab action context menu & smart row-click navigation.
    ========================================================================== */
 
 const BLOG_KEY = 'fwc-blog-posts';
@@ -16,11 +17,7 @@ const blogPostsSeed = [
     actionTakenOn: null,
     feedback: null,
     coverImage: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80',
-    excerpt: 'As manufacturers increasingly turn to artificial intelligence to streamline operations, understanding how to integrate AI responsibly into supply chain management has never been more critical.',
-    sections: [
-      { heading: 'Why supply chains are the next AI frontier', content: 'As manufacturers increasingly turn to artificial intelligence to streamline operations, understanding how to integrate AI responsibly into supply chain management has never been more critical.' },
-      { heading: 'Where the risk actually lives', content: 'The risk is not the model itself, but the handoff. Most disruptions happen where an automated recommendation is accepted without human validation.' }
-    ]
+    excerpt: 'As manufacturers increasingly turn to artificial intelligence to streamline operations, understanding how to integrate AI responsibly into supply chain management has never been more critical.'
   },
   {
     id: 2,
@@ -33,10 +30,7 @@ const blogPostsSeed = [
     actionTakenOn: null,
     feedback: null,
     coverImage: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&auto=format&fit=crop&q=80',
-    excerpt: 'Unplanned downtime costs manufacturers millions each year. Predictive maintenance strategies powered by IoT sensors and machine learning are changing the equation.',
-    sections: [
-      { heading: 'The true cost of unplanned downtime', content: 'Unplanned downtime costs manufacturers millions each year. Predictive maintenance strategies powered by IoT sensors and machine learning are changing the equation.' }
-    ]
+    excerpt: 'Unplanned downtime costs manufacturers millions each year. Predictive maintenance strategies powered by IoT sensors and machine learning are changing the equation.'
   },
   {
     id: 3,
@@ -49,10 +43,7 @@ const blogPostsSeed = [
     actionTakenOn: null,
     feedback: null,
     coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80',
-    excerpt: 'Digital twin technology allows manufacturers to simulate, predict, and optimize physical processes before committing real-world resources.',
-    sections: [
-      { heading: 'Simulating before spending', content: 'Digital twin technology allows manufacturers to simulate, predict, and optimize physical processes before committing real-world resources.' }
-    ]
+    excerpt: 'Digital twin technology allows manufacturers to simulate, predict, and optimize physical processes before committing real-world resources.'
   },
   {
     id: 4,
@@ -65,10 +56,7 @@ const blogPostsSeed = [
     actionTakenOn: 'Aug 19, 2026 · 10:05 AM',
     feedback: null,
     coverImage: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&auto=format&fit=crop&q=80',
-    excerpt: 'AI-augmented staffing models are moving from pilot programs to core hiring strategy. Here are the signals that suggest your organization is ready.',
-    sections: [
-      { heading: 'From pilot to core strategy', content: 'AI-augmented staffing models are moving from pilot programs to core hiring strategy.' }
-    ]
+    excerpt: 'AI-augmented staffing models are moving from pilot programs to core hiring strategy.'
   },
   {
     id: 5,
@@ -81,10 +69,7 @@ const blogPostsSeed = [
     actionTakenOn: 'Aug 13, 2026 · 03:25 PM',
     feedback: 'Please include verified benchmark figures and engineering team citations before submitting for final review.',
     coverImage: null,
-    excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.',
-    sections: [
-      { heading: 'Zero trust is a staffing problem too', content: 'A practical framework for extending zero-trust principles beyond infrastructure.' }
-    ]
+    excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.'
   }
 ];
 
@@ -122,30 +107,46 @@ function renderStats() {
 }
 
 function renderActionCell(post) {
-  if (post.status === 'pending') {
-    return `
-      <a href="add-blog-post.html?mode=review&id=${post.id}" class="btn btn-sm btn-primary" style="font-weight: 600; white-space: nowrap;">
-        Review & Take Action →
-      </a>
-    `;
-  }
+  const isPending = post.status === 'pending';
+  const isRejected = post.status === 'rejected';
+  const isPublished = post.status === 'published' || post.status === 'draft';
 
-  if (post.status === 'rejected') {
-    return `
-      <div class="flex items-center justify-end gap-1">
-        <button class="btn btn-sm btn-secondary" data-action="view-feedback" data-id="${post.id}" style="color: var(--danger); border-color: #FECACA; background: #FEF2F2; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
-          <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,13.66,5.66L72,195.31V208a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM216,208H88V192a8,8,0,0,0-8-8H40V64H216V208Z"/></svg>
-          Rejection Notes
-        </button>
-        <a href="add-blog-post.html?mode=edit&id=${post.id}" class="btn btn-sm btn-secondary">Edit</a>
-      </div>
-    `;
-  }
+  const reviewUrl = `add-blog-post.html?mode=review&id=${post.id}`;
+  const editUrl = `add-blog-post.html?mode=edit&id=${post.id}`;
 
   return `
-    <a href="add-blog-post.html?mode=edit&id=${post.id}" class="btn btn-sm btn-secondary" style="white-space: nowrap;">
-      Edit Story →
-    </a>
+    <div class="table-kebab-wrap">
+      <button class="table-kebab-btn" type="button" data-action="toggle-kebab" aria-label="More actions" title="More actions">
+        <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,96a24,24,0,1,0,24,24A24,24,0,0,0,128,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,128,128ZM48,96a24,24,0,1,0,24,24A24,24,0,0,0,48,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,48,128ZM208,96a24,24,0,1,0,24,24A24,24,0,0,0,208,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,208,128Z"/></svg>
+      </button>
+
+      <div class="table-context-menu">
+        ${isPending ? `
+          <a href="${reviewUrl}" class="table-context-menu-item item-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Review & Moderate
+          </a>
+        ` : ''}
+
+        ${isPublished ? `
+          <a href="${editUrl}" class="table-context-menu-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            Edit Story
+          </a>
+        ` : ''}
+
+        ${isRejected ? `
+          <button type="button" class="table-context-menu-item" data-action="view-feedback" data-id="${post.id}">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Rejection Notes
+          </button>
+          <a href="${editUrl}" class="table-context-menu-item">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+            Edit & Resubmit
+          </a>
+        ` : ''}
+      </div>
+    </div>
   `;
 }
 
@@ -165,7 +166,7 @@ function renderTable(items) {
   }
 
   tbody.innerHTML = items.map((post, idx) => `
-    <tr data-status="${post.status}" data-id="${post.id}">
+    <tr data-status="${post.status}" data-id="${post.id}" style="cursor: pointer;" title="Click to open post">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">POST-${100 + post.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); max-width: 280px;"><span class="cell-truncate-title" title="${post.title}">${post.title}</span></td>
@@ -193,6 +194,15 @@ function handleViewFeedback(id) {
   document.getElementById('blog-feedback-date').textContent = post.actionTakenOn ? `Action recorded on ${post.actionTakenOn}` : '';
 
   openModal('blog-feedback-modal');
+}
+
+function closeAllContextMenus() {
+  document.querySelectorAll('.table-context-menu.is-open').forEach((menu) => {
+    menu.classList.remove('is-open');
+  });
+  document.querySelectorAll('.table-kebab-btn.is-active').forEach((btn) => {
+    btn.classList.remove('is-active');
+  });
 }
 
 function refreshAll() {
@@ -228,10 +238,57 @@ document.addEventListener('DOMContentLoaded', () => {
     exportTableToCSV('blogs-table', 'fwc-blog-posts.csv');
   });
 
-  document.getElementById('blog-posts-table-body')?.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action="view-feedback"]');
-    if (!btn) return;
-    const id = Number(btn.dataset.id);
-    handleViewFeedback(id);
+  // Table row click & kebab context menu
+  document.addEventListener('click', (e) => {
+    // 1. Kebab button toggle
+    const kebabBtn = e.target.closest('[data-action="toggle-kebab"]');
+    if (kebabBtn) {
+      e.stopPropagation();
+      const wrap = kebabBtn.closest('.table-kebab-wrap');
+      const menu = wrap?.querySelector('.table-context-menu');
+      const isOpen = menu?.classList.contains('is-open');
+
+      closeAllContextMenus();
+
+      if (!isOpen && menu) {
+        menu.classList.add('is-open');
+        kebabBtn.classList.add('is-active');
+      }
+      return;
+    }
+
+    // 2. View feedback
+    const feedbackBtn = e.target.closest('[data-action="view-feedback"]');
+    if (feedbackBtn) {
+      closeAllContextMenus();
+      const id = Number(feedbackBtn.dataset.id);
+      handleViewFeedback(id);
+      return;
+    }
+
+    // 3. Row click navigation (smart navigation to view/edit/review)
+    const row = e.target.closest('#blog-posts-table-body tr[data-id]');
+    if (row && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
+      const id = Number(row.dataset.id);
+      const post = blogPosts.find((p) => p.id === id);
+      if (post) {
+        if (post.status === 'pending') {
+          window.location.href = `add-blog-post.html?mode=review&id=${id}`;
+        } else {
+          window.location.href = `add-blog-post.html?mode=edit&id=${id}`;
+        }
+      }
+      return;
+    }
+
+    // Outside click closes menus
+    closeAllContextMenus();
+  });
+
+  // Escape key closes menus
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllContextMenus();
+    }
   });
 });
