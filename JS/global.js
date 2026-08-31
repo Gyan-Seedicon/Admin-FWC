@@ -1,9 +1,8 @@
 /* ==========================================================================
-   FWC Dashboard — Global Utilities
-   Shared across every dashboard page: modal handling, toast notifications,
-   form validation, and the sidebar/header shell behavior. Loaded before
-   any page-specific script via a classic <script> tag (no bundler/modules,
-   matching Redesigned-FWC/js/main.js conventions).
+   FWC Super Admin Dashboard — Global Utilities
+   Shared across all dashboard pages: modal handling, drawer handling,
+   toast notifications, form validation, filter engine, CSV export,
+   and the sidebar/header shell behavior.
    ========================================================================== */
 
 // --------------------------------------------------------------------------
@@ -18,7 +17,6 @@ function openModal(modalId) {
   }
 
   overlay._fwcPrevFocus = document.activeElement;
-
   overlay.classList.add('is-open');
   overlay.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -64,8 +62,6 @@ function closeModal(modalId) {
   }
 }
 
-// Wires up any element with data-close-modal="<modalId>" (e.g. a Cancel button)
-// and any element with data-open-modal="<modalId>" (e.g. a [View] button).
 function initModalTriggers(root = document) {
   root.querySelectorAll('[data-open-modal]').forEach((trigger) => {
     trigger.addEventListener('click', () => openModal(trigger.dataset.openModal));
@@ -76,9 +72,7 @@ function initModalTriggers(root = document) {
 }
 
 // --------------------------------------------------------------------------
-// 01a. Drawer (right-side sheet) — same open/close contract as the modal
-// above (focus handling, Escape, overlay-click), but slides in from the
-// right instead of appearing centered. Used for "View full details".
+// 01a. Drawer (Right-side slide sheet)
 // --------------------------------------------------------------------------
 
 function openDrawer(drawerId) {
@@ -89,7 +83,6 @@ function openDrawer(drawerId) {
   }
 
   overlay._fwcPrevFocus = document.activeElement;
-
   overlay.classList.add('is-open');
   overlay.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -142,18 +135,14 @@ function initDrawerTriggers(root = document) {
 }
 
 // --------------------------------------------------------------------------
-// 01b. Kebab row menu — a per-row three-dot action menu, using event
-// delegation since rows are re-rendered from mock data (unlike the header's
-// initPopover, which binds to a single fixed trigger/panel pair).
-// Row markup: <div class="kebab-wrap"><button class="icon-btn" data-kebab-trigger>⋮</button>
-// <div class="kebab-menu hidden"> ...items... </div></div>
+// 01b. Kebab Row Action Menu
 // --------------------------------------------------------------------------
 
-function closeAllKebabMenus(container) {
+function closeAllKebabMenus(container = document) {
   container.querySelectorAll('.kebab-menu').forEach((menu) => menu.classList.add('hidden'));
 }
 
-function initKebabMenus(container) {
+function initKebabMenus(container = document) {
   container.addEventListener('click', (e) => {
     const trigger = e.target.closest('[data-kebab-trigger]');
     if (trigger) {
@@ -172,22 +161,22 @@ function initKebabMenus(container) {
 }
 
 // --------------------------------------------------------------------------
-// 01c. Mock persistence — this dashboard has no backend, so Add/Edit/Delete
-// need somewhere to live across page navigations (the Add page is a real
-// page, not a modal). Each list page seeds its hardcoded mock array into
-// localStorage once, then reads/writes through here for every mutation.
+// 01c. Mock Persistence Layer (localStorage)
 // --------------------------------------------------------------------------
 
 function loadCollection(key, seedData) {
   const raw = localStorage.getItem(key);
   if (raw) {
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
     } catch (e) {
       console.warn(`loadCollection: could not parse stored "${key}", reseeding.`);
     }
   }
-  const seeded = seedData.map((item) => ({ ...item }));
+  const seeded = (seedData || []).map((item) => ({ ...item }));
   localStorage.setItem(key, JSON.stringify(seeded));
   return seeded;
 }
@@ -218,7 +207,7 @@ function getToastContainer() {
   return container;
 }
 
-function showToast(message, type = 'info', duration = 4000) {
+function showToast(message, type = 'info', duration = 3500) {
   const container = getToastContainer();
 
   const toast = document.createElement('div');
@@ -227,7 +216,7 @@ function showToast(message, type = 'info', duration = 4000) {
   toast.innerHTML = `
     <span class="toast-icon">${TOAST_ICONS[type] || TOAST_ICONS.info}</span>
     <span class="toast-message"></span>
-    <button type="button" class="toast-close" aria-label="Dismiss notification"><svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+    <button type="button" class="toast-close" aria-label="Dismiss notification"><svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
   `;
   toast.querySelector('.toast-message').textContent = message;
 
@@ -263,8 +252,6 @@ function clearFieldError(field) {
   group.classList.remove('has-error');
 }
 
-// Validates every [required] field in formEl, marking invalid ones via the
-// .form-group/.has-error/.form-error-text convention. Returns true if valid.
 function validateForm(formEl) {
   const fields = formEl.querySelectorAll('[required]');
   let isValid = true;
@@ -272,13 +259,13 @@ function validateForm(formEl) {
   fields.forEach((field) => {
     clearFieldError(field);
 
-    const value = field.value.trim();
+    const value = field.value ? field.value.trim() : (field.innerText ? field.innerText.trim() : '');
     if (!value) {
       setFieldError(field, field.dataset.errorMessage || 'This field is required.');
       isValid = false;
       return;
     }
-    if (!field.checkValidity()) {
+    if (field.checkValidity && !field.checkValidity()) {
       setFieldError(field, field.dataset.errorMessage || field.validationMessage);
       isValid = false;
     }
@@ -287,7 +274,6 @@ function validateForm(formEl) {
   return isValid;
 }
 
-// Clears a field's error state as soon as the user edits it.
 function initLiveFieldValidation(formEl) {
   formEl.querySelectorAll('.form-input, .form-select, .form-textarea').forEach((field) => {
     field.addEventListener('input', () => clearFieldError(field));
@@ -296,11 +282,9 @@ function initLiveFieldValidation(formEl) {
 }
 
 // --------------------------------------------------------------------------
-// 04. Tabs (segmented pill)
+// 04. Tabs (Segmented Pill)
 // --------------------------------------------------------------------------
 
-// Wires up a .tabs-nav / .tabs-panel pair sharing a common `container`.
-// Tab buttons need data-tab="<panelId>"; panels need a matching id.
 function initTabs(container) {
   const tabButtons = container.querySelectorAll('.tab-btn');
   const panels = container.querySelectorAll('.tabs-panel');
@@ -321,14 +305,15 @@ function initTabs(container) {
 }
 
 // --------------------------------------------------------------------------
-// 05. Dashboard Shell — Sidebar & Header
+// 05. Dashboard Shell — Sidebar & Header Popovers
 // --------------------------------------------------------------------------
 
 function initSidebarActiveLink() {
-  const currentPage = window.location.pathname.split('/').pop();
+  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.sidebar-nav-link').forEach((link) => {
     const linkPage = (link.getAttribute('href') || '').split('/').pop();
-    link.classList.toggle('active', Boolean(linkPage) && linkPage === currentPage);
+    const isActive = linkPage === currentPage || (currentPage === '' && linkPage === 'index.html');
+    link.classList.toggle('active', isActive);
   });
 }
 
@@ -344,9 +329,6 @@ function initSidebarCollapse() {
   });
 }
 
-// Wires up a header dropdown (notifications bell, profile menu, etc.) —
-// clicking `triggerId` toggles `panelId` open/closed, with click-outside and
-// Escape both closing it. Both bell and profile popovers use this.
 function initPopover(triggerId, panelId) {
   const trigger = document.getElementById(triggerId);
   const panel = document.getElementById(panelId);
@@ -377,25 +359,21 @@ function initPopover(triggerId, panelId) {
   });
 }
 
-// Fires a "fwc:toggle-change" custom event on change so page-specific JS
-// can intercept (e.g. open a confirmation modal, revert on cancel).
 function initToggleSwitches(root = document) {
   root.querySelectorAll('.toggle-switch input[type="checkbox"]').forEach((input) => {
     input.addEventListener('change', () => {
       input.dispatchEvent(new CustomEvent('fwc:toggle-change', {
         bubbles: true,
-        detail: { checked: input.checked, id: input.id }
+        detail: { checked: input.checked, id: input.dataset.adminId }
       }));
     });
   });
 }
 
 // --------------------------------------------------------------------------
-// 05a. Rich text editor toolbar — a small floating formatting bar shared by
-// any `.rich-text-editable` (contenteditable) field on the page. Wires
-// document.execCommand on mousedown rather than click so the field's text
-// selection isn't lost before the browser applies focus to the button.
+// 05a. Rich Text Editor Floating Formatting Bar
 // --------------------------------------------------------------------------
+
 function initRichTextToolbar(toolbarEl) {
   if (!toolbarEl) return;
   let activeEditable = null;
@@ -417,7 +395,7 @@ function initRichTextToolbar(toolbarEl) {
       const cmd = btn.dataset.cmd;
       let value;
       if (cmd === 'createLink') {
-        value = window.prompt('Link URL');
+        value = window.prompt('Enter link URL:');
         if (!value) return;
       }
       document.execCommand(cmd, false, value);
@@ -427,13 +405,13 @@ function initRichTextToolbar(toolbarEl) {
 }
 
 // --------------------------------------------------------------------------
-// 05b. Notifications (header popover — identical on every page)
+// 05b. Notifications Data & Render
 // --------------------------------------------------------------------------
 
 const NOTIFICATIONS = [
-  { text: 'New enquiry from Amara Chen (BFSI)', time: '2 hours ago' },
-  { text: 'Sam Patel submitted a blog post for approval', time: '5 hours ago' },
-  { text: 'Jordan Lee submitted a job posting for approval', time: '1 day ago' },
+  { text: 'New enquiry received from Amara Chen (BFSI)', time: '2 hours ago' },
+  { text: 'Sam Patel submitted blog post for approval', time: '5 hours ago' },
+  { text: 'Jordan Lee submitted job posting for approval', time: '1 day ago' },
   { text: 'Rajesh Nair’s enquiry marked In Progress', time: '1 day ago' }
 ];
 
@@ -457,32 +435,19 @@ function renderNotifications() {
   if (dot) dot.classList.remove('hidden');
 }
 
-// The app's mock "today" — used for relative date filtering so it stays
-// consistent with the mock data's Aug 2026 dates regardless of the
-// viewer's real system clock.
+// --------------------------------------------------------------------------
+// 06. Table Filtering Engine
+// --------------------------------------------------------------------------
+
 const APP_TODAY = new Date('2026-08-30');
 
-// Wires a .filter-bar's Status <select> and Date <select> (plus an optional
-// search input) to show/hide [data-status][data-date] items (table <tr>s or
-// .request-card divs) within `container`. Status select needs
-// data-role="status-filter" with option values matching each item's
-// data-status ("all" shows everything); Date select needs
-// data-role="date-filter" with option values "all" or a number of days
-// (items within the last N days of APP_TODAY match); an input with
-// data-role="search-input" narrows further by matching an item's text
-// content. Items are re-queried on every run (not cached at init) since
-// list pages replace their rows wholesale on every mutation (approve,
-// reject, delete, status change) — a cached NodeList would silently stop
-// matching anything after the first re-render.
-// Returns the applyFilters function so callers can re-run it after
-// re-rendering their list, keeping the current filter selection honored.
 function initTableFilters(container) {
   const statusSelect = container.querySelector('[data-role="status-filter"]');
   const dateSelect = container.querySelector('[data-role="date-filter"]');
   const searchInput = container.querySelector('[data-role="search-input"]');
 
   function applyFilters() {
-    const items = container.querySelectorAll('[data-status]');
+    const items = container.querySelectorAll('tbody tr[data-status]');
     const statusValue = statusSelect ? statusSelect.value : 'all';
     const dateValue = dateSelect ? dateSelect.value : 'all';
     const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
@@ -500,6 +465,9 @@ function initTableFilters(container) {
 
       item.classList.toggle('hidden', !(matchesStatus && matchesDate && matchesSearch));
     });
+
+    const selectAll = container.querySelector('.table thead .table-checkbox');
+    if (selectAll) selectAll.checked = false;
   }
 
   if (statusSelect) statusSelect.addEventListener('change', applyFilters);
@@ -511,7 +479,86 @@ function initTableFilters(container) {
 }
 
 // --------------------------------------------------------------------------
-// 06. Auto-init
+// 07. Table Checkboxes (Select All + Row Highlight Sync)
+// --------------------------------------------------------------------------
+
+function initSelectAllCheckboxes(container = document) {
+  const tables = container.querySelectorAll('.table');
+  tables.forEach((table) => {
+    const selectAll = table.querySelector('thead .table-checkbox');
+    if (!selectAll) return;
+
+    selectAll.addEventListener('change', () => {
+      const rowCheckboxes = table.querySelectorAll('tbody tr:not(.hidden) .table-checkbox');
+      rowCheckboxes.forEach((cb) => {
+        cb.checked = selectAll.checked;
+        const row = cb.closest('tr');
+        if (row) row.classList.toggle('is-selected', selectAll.checked);
+      });
+    });
+
+    table.querySelector('tbody')?.addEventListener('change', (e) => {
+      if (!e.target.classList.contains('table-checkbox')) return;
+      const row = e.target.closest('tr');
+      if (row) row.classList.toggle('is-selected', e.target.checked);
+
+      const visibleCheckboxes = Array.from(table.querySelectorAll('tbody tr:not(.hidden) .table-checkbox'));
+      const allChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.every((cb) => cb.checked);
+      const someChecked = visibleCheckboxes.some((cb) => cb.checked);
+      selectAll.checked = allChecked;
+      selectAll.indeterminate = !allChecked && someChecked;
+    });
+  });
+}
+
+// --------------------------------------------------------------------------
+// 08. CSV Export Engine (Real CSV Download Generation)
+// --------------------------------------------------------------------------
+
+function exportTableToCSV(tableOrSelector, filename = 'export.csv') {
+  const table = typeof tableOrSelector === 'string' ? document.querySelector(tableOrSelector) : tableOrSelector;
+  if (!table) {
+    showToast('No table found to export', 'error');
+    return;
+  }
+
+  const rows = [];
+  const headerCells = table.querySelectorAll('thead th');
+  const headers = [];
+  headerCells.forEach((th) => {
+    if (th.querySelector('.table-checkbox') || th.textContent.trim().toLowerCase() === 'actions') return;
+    headers.push(`"${th.textContent.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').replace(/"/g, '""').trim()}"`);
+  });
+  rows.push(headers.join(','));
+
+  const bodyRows = table.querySelectorAll('tbody tr:not(.hidden)');
+  bodyRows.forEach((tr) => {
+    if (tr.classList.contains('request-list-empty-row')) return;
+    const cells = tr.querySelectorAll('td');
+    const row = [];
+    cells.forEach((td, idx) => {
+      const header = headerCells[idx];
+      if (header && (header.querySelector('.table-checkbox') || header.textContent.trim().toLowerCase() === 'actions')) return;
+      let text = td.innerText || td.textContent || '';
+      text = text.replace(/Read More →/g, '').replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim();
+      row.push(`"${text.replace(/"/g, '""')}"`);
+    });
+    if (row.length) rows.push(row.join(','));
+  });
+
+  const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent(rows.join('\n'));
+  const link = document.createElement('a');
+  link.setAttribute('href', csvContent);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  showToast(`Exported ${bodyRows.length} records to ${filename}`, 'success');
+}
+
+// --------------------------------------------------------------------------
+// 09. Auto Initialization
 // --------------------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -522,6 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalTriggers();
   initDrawerTriggers();
   initToggleSwitches();
+  initSelectAllCheckboxes();
   renderNotifications();
 
   const logoutBtn = document.getElementById('logout-btn');

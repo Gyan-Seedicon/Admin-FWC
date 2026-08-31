@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Management — FWC Dashboard</title>
+<title>Admin Management — FWC Super Admin</title>
 <link rel="stylesheet" href="../../CSS/global.css">
 <link rel="stylesheet" href="../../CSS/admin-management.css">
 </head>
@@ -12,11 +12,14 @@
 
 <div class="dashboard-shell">
   <header class="dashboard-header">
-    <div class="header-title">Dashboard</div>
+    <div class="header-title-wrap">
+      <h1 class="header-title" id="page-heading">Admin Management</h1>
+      <span class="header-subtitle">Configure who can post directly to the site, and who requires super admin approval</span>
+    </div>
     <div class="header-actions">
       <div class="popover-anchor">
         <button class="header-icon-btn" id="notifications-trigger" type="button" aria-expanded="false" aria-controls="notifications-panel" aria-label="Notifications">
-          <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="20" height="20"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
+          <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="16" height="16"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
           <span class="notification-dot" id="notification-dot"></span>
         </button>
         <div class="header-popover notifications-panel" id="notifications-panel" aria-hidden="true">
@@ -31,7 +34,7 @@
             <span class="user-name">Taylor Brooks</span>
             <span class="user-role">Super Admin</span>
           </div>
-          <svg class="user-menu-caret" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="10" height="10"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+          <svg class="user-menu-caret" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
         </button>
         <div class="header-popover user-menu-panel" id="user-menu-panel" aria-hidden="true">
           <button class="user-menu-item" id="logout-btn" type="button">Log out</button>
@@ -42,9 +45,14 @@
 
   <aside class="dashboard-sidebar">
     <div class="sidebar-header">
-      <img class="sidebar-brand-logo" src="../../assets/logos/FWC Logo white 1.png" alt="FWC">
+      <div class="brand-wrapper">
+        <a href="index.html" class="sidebar-brand-mark">
+          <img src="../../assets/logos/navy-logo.png" alt="FWC" class="brand-logo-img">
+        </a>
+        <span class="brand-badge">ADMIN</span>
+      </div>
       <button class="sidebar-collapse-btn" aria-pressed="false" aria-label="Collapse sidebar">
-        <svg class="sidebar-collapse-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="16" height="16"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg>
+        <svg class="sidebar-collapse-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg>
       </button>
     </div>
     <div class="sidebar-nav-scroll">
@@ -76,92 +84,91 @@
           <span class="sidebar-nav-label">Admin Management</span>
         </a>
       </nav>
+      <div class="sidebar-footer">
+        <div>© 2026 FWC</div>
+        <div>Admin Console v1.0</div>
+      </div>
     </div>
   </aside>
 
   <main class="dashboard-main" id="main-content">
-    <div class="page-header">
-      <div>
-        <h1 class="page-heading" id="page-heading">Admin Management</h1>
-        <p class="page-subheading">Configure who can post to the site, and who needs approval first.</p>
-      </div>
-      <div class="inline-filter-bar-actions">
-        <button class="btn btn-secondary" id="export-csv-btn">
-          <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M224,152v56a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H208V152a8,8,0,0,1,16,0Zm-101.66,3.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,132.69V40a8,8,0,0,0-16,0v92.69L91.66,104.34a8,8,0,0,0-11.32,11.32Z"/></svg>
-          Export CSV
-        </button>
-        <button class="btn btn-primary" data-open-modal="add-admin-modal">+ Add Admin</button>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-4 gap-6" id="admin-stats-row">
-      <div class="card stat-card">
+    <div class="stat-cards-grid" id="admin-stats-row">
+      <div class="stat-card">
         <div class="stat-card-header">
           <span class="stat-card-label">Total Admins</span>
           <span class="stat-card-icon icon-blue">
-            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,44,44,0,1,0-16.34-84.87,8,8,0,1,1-5.94-14.85,60,60,0,0,1,55.53,105.64,95.83,95.83,0,0,1,47.22,37.71A8,8,0,0,1,250.14,206.7Z"/></svg>
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-total-admins">–</span>
+        <span class="stat-card-value" id="stat-total-admins">5</span>
+        <span class="stat-card-subtext">Active accounts</span>
       </div>
-      <div class="card stat-card">
+      <div class="stat-card">
         <div class="stat-card-header">
           <span class="stat-card-label">Granted Access</span>
           <span class="stat-card-icon icon-success">
-            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-granted-admins">–</span>
+        <span class="stat-card-value" id="stat-granted-admins">3</span>
+        <span class="stat-card-subtext">Direct publish access</span>
       </div>
-      <div class="card stat-card">
+      <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Denied Access</span>
-          <span class="stat-card-icon icon-danger">
-            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M165.66,101.66,139.31,128l26.35,26.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+          <span class="stat-card-label">Approval Required</span>
+          <span class="stat-card-icon icon-warning">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-denied-admins">–</span>
+        <span class="stat-card-value" id="stat-denied-admins">2</span>
+        <span class="stat-card-subtext">Content is reviewed</span>
       </div>
-      <div class="card stat-card">
+      <div class="stat-card">
         <div class="stat-card-header">
           <span class="stat-card-label">Departments</span>
-          <span class="stat-card-icon icon-info">
-            <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M240,208H224V96a16,16,0,0,0-16-16H164a4,4,0,0,0-4,4V208H144V40a16,16,0,0,0-16-16H56A16,16,0,0,0,40,40V208H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM64,64H88V80H64Zm0,32H88v16H64Zm32,80H64V160H96Zm0-32H64V112H96Zm32,32H104V160h24Zm0-32H104V112h24Zm0-32H104V80h24ZM208,208H180V96h28Z"/></svg>
+          <span class="stat-card-icon icon-blue">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M240,208H224V96a16,16,0,0,0-16-16H164a4,4,0,0,0-4,4V208H144V40a16,16,0,0,0-16-16H56A16,16,0,0,0,40,40V208H16a8,8,0,0,0,0,16H240a8,8,0,0,0,0-16ZM64,64H88V80H64Zm0,32H88v16H64Zm32,80H64V160H96Zm0-32H64V112H96Zm32,32H104V160h24Zm0-32H104V112h24Zm0-32H104V80h24ZM208,208H180V96h28Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-departments">–</span>
+        <span class="stat-card-value" id="stat-departments">4</span>
+        <span class="stat-card-subtext">Active functional areas</span>
       </div>
     </div>
 
-    <div class="inline-filter-bar" style="margin-top: var(--space-6);">
+    <div class="inline-filter-bar">
       <div class="search-bar">
-        <svg class="search-bar-icon" viewBox="0 0 256 256" fill="currentColor" width="18" height="18" aria-hidden="true"><path d="M229.66,218.34,187.32,176a92.14,92.14,0,1,0-11.31,11.31l42.34,42.35a8,8,0,0,0,11.31-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
+        <svg class="search-bar-icon" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,218.34,187.32,176a92.14,92.14,0,1,0-11.31,11.31l42.34,42.35a8,8,0,0,0,11.31-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
         <input class="form-input" type="search" id="admin-search" placeholder="Search by name, email, department..." data-role="search-input">
       </div>
       <select class="form-select" id="admin-status-filter" data-role="status-filter">
         <option value="all">All Statuses</option>
-        <option value="granted">Granted</option>
-        <option value="denied">Denied</option>
+        <option value="granted">Direct Access Granted</option>
+        <option value="denied">Approval Required</option>
       </select>
+      <div class="inline-filter-bar-actions">
+        <button class="btn btn-secondary" id="export-csv-btn" type="button">
+          <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M224,152v56a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H208V152a8,8,0,0,1,16,0Zm-101.66,3.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,132.69V40a8,8,0,0,0-16,0v92.69L91.66,104.34a8,8,0,0,0-11.32,11.32Z"/></svg>
+          Export CSV
+        </button>
+        <button class="btn btn-primary" data-open-modal="add-admin-modal" type="button">+ Add Admin</button>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="table-wrapper">
-        <table class="table">
-          <thead>
-            <tr>
-              <th><input class="table-checkbox" type="checkbox" aria-label="Select all"></th>
-              <th>S.No.</th>
-              <th>Admin Name <span class="sort-icon"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,181.66l-56,56a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L144,212.69V40a8,8,0,0,1,16,0V212.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM101.66,74.34,68,40.69V212a8,8,0,0,1-16,0V40.69L18.34,74.34A8,8,0,0,1,7,63,8,8,0,0,1,7,52.34l40-40a8,8,0,0,1,11.32,0l40,40A8,8,0,0,1,101.66,74.34Z"/></svg></span></th>
-              <th>Email <span class="sort-icon"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,181.66l-56,56a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L144,212.69V40a8,8,0,0,1,16,0V212.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM101.66,74.34,68,40.69V212a8,8,0,0,1-16,0V40.69L18.34,74.34A8,8,0,0,1,7,63,8,8,0,0,1,7,52.34l40-40a8,8,0,0,1,11.32,0l40,40A8,8,0,0,1,101.66,74.34Z"/></svg></span></th>
-              <th>Department</th>
-              <th>Date Added</th>
-              <th>Access</th>
-            </tr>
-          </thead>
-          <tbody id="admins-table-body"></tbody>
-        </table>
-      </div>
+    <div class="table-wrapper">
+      <table class="table" id="admins-table">
+        <thead>
+          <tr>
+            <th style="width: 50px;">S.No.</th>
+            <th>Admin ID</th>
+            <th>Admin Name <span class="sort-icon"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,181.66l-56,56a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L144,212.69V40a8,8,0,0,1,16,0V212.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM101.66,74.34,68,40.69V212a8,8,0,0,1-16,0V40.69L18.34,74.34A8,8,0,0,1,7,63,8,8,0,0,1,7,52.34l40-40a8,8,0,0,1,11.32,0l40,40A8,8,0,0,1,101.66,74.34Z"/></svg></span></th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Date Added</th>
+            <th style="text-align: right;">Publish Access</th>
+          </tr>
+        </thead>
+        <tbody id="admins-table-body"></tbody>
+      </table>
     </div>
   </main>
 </div>
@@ -170,31 +177,34 @@
 <div class="modal-overlay" id="add-admin-modal" aria-hidden="true">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Add Admin</span>
-      <button class="modal-close" data-close-modal="add-admin-modal" aria-label="Close"><svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+      <span class="modal-title">Add New Admin</span>
+      <button class="modal-close" data-close-modal="add-admin-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
     </div>
     <div class="modal-body">
       <form id="add-admin-form" novalidate>
         <div class="form-group">
-          <label class="form-label" for="admin-name">Name <span class="form-required">*</span></label>
-          <input class="form-input" id="admin-name" name="name" type="text" placeholder="Full name" required>
-          <span class="form-error-text">Name is required.</span>
+          <label class="form-label" for="admin-name">Full Name <span class="form-required">*</span></label>
+          <input class="form-input" id="admin-name" name="name" type="text" placeholder="e.g. Elena Rostova" required data-error-message="Full name is required.">
+          <span class="form-error-text"></span>
         </div>
         <div class="form-group">
-          <label class="form-label" for="admin-email">Email <span class="form-required">*</span></label>
-          <input class="form-input" id="admin-email" name="email" type="email" placeholder="name@fwc.com" required>
-          <span class="form-error-text">Enter a valid email address.</span>
+          <label class="form-label" for="admin-email">Email Address <span class="form-required">*</span></label>
+          <input class="form-input" id="admin-email" name="email" type="email" placeholder="name@fwc.com" required data-error-message="Enter a valid email address.">
+          <span class="form-error-text"></span>
         </div>
         <div class="form-group">
           <label class="form-label" for="admin-department">Department <span class="form-required">*</span></label>
-          <select class="form-select" id="admin-department" name="department" required>
-            <option value="">Select a department</option>
+          <select class="form-select" id="admin-department" name="department" required data-error-message="Please select a department.">
+            <option value="">Select department</option>
             <option value="Content & Marketing">Content & Marketing</option>
             <option value="Engineering">Engineering</option>
             <option value="People Ops">People Ops</option>
             <option value="Technology Consulting">Technology Consulting</option>
+            <option value="Cybersecurity">Cybersecurity</option>
           </select>
-          <span class="form-error-text">Select a department.</span>
+          <span class="form-error-text"></span>
         </div>
       </form>
     </div>
@@ -209,15 +219,17 @@
 <div class="modal-overlay" id="toggle-confirm-modal" aria-hidden="true">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Change admin access?</span>
-      <button class="modal-close" data-close-modal="toggle-confirm-modal" aria-label="Close"><svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+      <span class="modal-title">Change Direct Access?</span>
+      <button class="modal-close" data-close-modal="toggle-confirm-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
     </div>
     <div class="modal-body">
       <p id="toggle-confirm-text"></p>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" id="toggle-cancel-btn">Cancel</button>
-      <button class="btn btn-primary" id="toggle-confirm-btn">Confirm</button>
+      <button class="btn btn-primary" id="toggle-confirm-btn">Confirm Change</button>
     </div>
   </div>
 </div>

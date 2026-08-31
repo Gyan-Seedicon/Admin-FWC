@@ -3,20 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="page-title">Add Job Listing — FWC Dashboard</title>
+<title id="page-title">Add Job Posting — FWC Super Admin</title>
 <link rel="stylesheet" href="../../CSS/global.css">
-<link rel="stylesheet" href="../../CSS/job-listings.css">
+<link rel="stylesheet" href="../../CSS/add-job-listing.css">
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
 
 <div class="dashboard-shell">
+  <!-- Top Dashboard Header with Breadcrumbs -->
   <header class="dashboard-header">
-    <div class="header-title">Dashboard</div>
+    <div class="header-title-wrap">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="index.html">Dashboard</a>
+        <span class="breadcrumbs-separator">/</span>
+        <a href="job-listings.html" id="breadcrumb-parent">Job Listings</a>
+        <span class="breadcrumbs-separator">/</span>
+        <span class="breadcrumbs-current" id="breadcrumb-current">Add Job Posting</span>
+      </nav>
+      <h1 class="header-title" id="page-heading">Add Job Posting</h1>
+    </div>
     <div class="header-actions">
       <div class="popover-anchor">
         <button class="header-icon-btn" id="notifications-trigger" type="button" aria-expanded="false" aria-controls="notifications-panel" aria-label="Notifications">
-          <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="20" height="20"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
+          <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="16" height="16"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
           <span class="notification-dot" id="notification-dot"></span>
         </button>
         <div class="header-popover notifications-panel" id="notifications-panel" aria-hidden="true">
@@ -31,7 +41,7 @@
             <span class="user-name">Taylor Brooks</span>
             <span class="user-role">Super Admin</span>
           </div>
-          <svg class="user-menu-caret" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="10" height="10"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+          <svg class="user-menu-caret" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
         </button>
         <div class="header-popover user-menu-panel" id="user-menu-panel" aria-hidden="true">
           <button class="user-menu-item" id="logout-btn" type="button">Log out</button>
@@ -40,11 +50,17 @@
     </div>
   </header>
 
+  <!-- Dashboard Sidebar -->
   <aside class="dashboard-sidebar">
     <div class="sidebar-header">
-      <img class="sidebar-brand-logo" src="../../assets/logos/FWC Logo white 1.png" alt="FWC">
+      <div class="brand-wrapper">
+        <a href="index.html" class="sidebar-brand-mark">
+          <img src="../../assets/logos/navy-logo.png" alt="FWC" class="brand-logo-img">
+        </a>
+        <span class="brand-badge">ADMIN</span>
+      </div>
       <button class="sidebar-collapse-btn" aria-pressed="false" aria-label="Collapse sidebar">
-        <svg class="sidebar-collapse-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="16" height="16"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg>
+        <svg class="sidebar-collapse-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M165.66,202.34a8,8,0,0,1-11.32,11.32l-80-80a8,8,0,0,1,0-11.32l80-80a8,8,0,0,1,11.32,11.32L91.31,128Z"/></svg>
       </button>
     </div>
     <div class="sidebar-nav-scroll">
@@ -53,7 +69,7 @@
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z"/></svg>
           <span class="sidebar-nav-label">Dashboard</span>
         </a>
-        <a href="approval-requests.html" class="sidebar-nav-link">
+        <a href="approval-requests.html" class="sidebar-nav-link" id="nav-link-approvals">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
           <span class="sidebar-nav-label">Approval Requests</span>
         </a>
@@ -61,7 +77,7 @@
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
           <span class="sidebar-nav-label">Blog Posts</span>
         </a>
-        <a href="job-listings.html" class="sidebar-nav-link active">
+        <a href="job-listings.html" class="sidebar-nav-link active" id="nav-link-jobs">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v41.61A184,184,0,0,1,128,136a184.07,184.07,0,0,1-88-22.38V72Zm0,128H40V131.64A200.19,200.19,0,0,0,128,152a200.25,200.25,0,0,0,88-20.37V200ZM104,112a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H112A8,8,0,0,1,104,112Z"/></svg>
           <span class="sidebar-nav-label">Job Listings</span>
         </a>
@@ -76,91 +92,403 @@
           <span class="sidebar-nav-label">Admin Management</span>
         </a>
       </nav>
+      <div class="sidebar-footer">
+        <div>© 2026 FWC</div>
+        <div>Admin Console v1.0</div>
+      </div>
     </div>
   </aside>
 
+  <!-- Main Content Area -->
   <main class="dashboard-main" id="main-content">
-    <div class="page-header">
-      <div>
-        <h1 class="page-heading" id="page-heading">Add Job Listing</h1>
-        <p class="page-subheading">Mock content — saved as a Pending listing for approval.</p>
+    <div class="centered-canvas-wrap">
+      
+      <!-- Top Header Title Area -->
+      <div class="job-header-toolbar">
+        <div class="job-header-titles">
+          <!-- Back button (shown in Review mode) -->
+          <a href="approval-requests.html" class="header-back-btn hidden" id="review-back-icon-btn" title="Back to Approval Requests" aria-label="Back">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </a>
+          <div>
+            <h2 class="job-header-heading" id="job-header-heading">Create New Job Posting</h2>
+            <span class="job-header-subtext" id="job-header-subtext">Enter requisition details and requirements for approval.</span>
+          </div>
+        </div>
       </div>
-      <a href="job-listings.html" class="btn btn-secondary">Cancel</a>
+
+      <!-- VIEW 1: CREATION / EDITING MODE (Single Unified Canvas, No Segmented Cards) -->
+      <form id="job-creation-canvas" class="job-document-canvas" novalidate>
+        <!-- Section 1: Role Title -->
+        <div class="job-canvas-section">
+          <div class="job-section-label">Role Title <span class="form-required">*</span></div>
+          <input class="job-title-headline-input" type="text" id="job-title-input" placeholder="e.g. Senior Cybersecurity Analyst" required autofocus>
+        </div>
+
+        <!-- Section 2: Metadata Grid -->
+        <div class="job-canvas-section">
+          <div class="job-section-label">Position Metadata</div>
+          <div class="job-meta-row-grid">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="field-location">Location <span class="form-required">*</span></label>
+              <input class="form-input" type="text" id="field-location" placeholder="e.g. Remote or Alhambra, CA" value="Remote" required>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="field-type">Employment Type <span class="form-required">*</span></label>
+              <select class="form-select" id="field-type" required>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Contract">Contract</option>
+                <option value="Internship">Internship</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="field-experience">Experience Level <span class="form-required">*</span></label>
+              <select class="form-select" id="field-experience" required>
+                <option value="Entry Level (1–2 Yrs)">Entry Level (1–2 Yrs)</option>
+                <option value="Mid-Level (3–5 Yrs)" selected>Mid-Level (3–5 Yrs)</option>
+                <option value="Senior (5–8 Yrs)">Senior (5–8 Yrs)</option>
+                <option value="Staff / Lead (8+ Yrs)">Staff / Lead (8+ Yrs)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Role Overview -->
+        <div class="job-canvas-section">
+          <div class="job-section-label">Role Overview & Mission <span class="form-required">*</span></div>
+          <textarea class="form-textarea" id="field-overview" placeholder="Describe the purpose, team mandate, and high-level scope of the position..." rows="4"></textarea>
+        </div>
+
+        <!-- Section 4: Key Responsibilities -->
+        <div class="job-canvas-section">
+          <div class="job-section-label">Key Responsibilities <span class="form-required">*</span></div>
+          <textarea class="form-textarea" id="field-responsibilities" placeholder="• Lead continuous monitoring and proactive threat detection&#10;• Collaborate with platform engineering teams on security protocols&#10;• Maintain SOC2 compliance reports and audits" rows="5"></textarea>
+        </div>
+
+        <!-- Section 5: Required Skills -->
+        <div class="job-canvas-section">
+          <div class="job-section-label">Required Skills & Competencies <span class="form-required">*</span></div>
+          <input class="form-input" type="text" id="field-skills-input" placeholder="Type skill and press Enter (e.g. SIEM & Splunk, AWS Security, Zero-Trust)...">
+          <div class="job-skills-tag-wrap" id="job-skills-tags"></div>
+        </div>
+
+        <!-- Section 6: PDF Specification Document -->
+        <div class="job-canvas-section">
+          <div class="job-section-label">Job Specification Document (PDF Attachment)</div>
+          <div class="job-pdf-dropzone" id="pdf-dropzone-trigger">
+            <div class="flex items-center gap-3">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-blue);"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+              <div>
+                <span style="font-size: var(--text-xs); font-weight: 600; color: var(--ink-primary); display: block;" id="attached-pdf-name">Attach Official Requisition PDF</span>
+                <span style="font-size: var(--text-2xs); color: var(--ink-muted);" id="attached-pdf-size">Click to browse or replace PDF specification</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" type="button" id="pdf-browse-btn">Browse PDF</button>
+            <input type="file" id="pdf-file-input" accept="application/pdf" style="display: none;">
+          </div>
+        </div>
+      </form>
+
+      <!-- VIEW 2: REVIEW MODE (Pure Read-Only Written Document View — NO Inputs, NO Editing, NO Cards, NO Emojis) -->
+      <article id="job-review-canvas" class="job-review-document hidden">
+        <!-- Document Hero -->
+        <div class="job-review-hero">
+          <h1 class="job-review-title" id="review-display-title">Cybersecurity Analyst</h1>
+          <div class="job-review-meta-pills">
+            <span class="job-review-pill" id="review-pill-loc">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span id="review-val-loc">Remote</span>
+            </span>
+            <span class="job-review-pill" id="review-pill-type">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              <span id="review-val-type">Full-time</span>
+            </span>
+            <span class="job-review-pill" id="review-pill-exp">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 15 2 2 4-4"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
+              <span id="review-val-exp">3–5 Years</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Section 1: Role Overview -->
+        <div class="job-review-section">
+          <div class="job-review-section-title">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Role Overview & Purpose
+          </div>
+          <p class="job-review-text" id="review-display-overview"></p>
+        </div>
+
+        <!-- Section 2: Key Responsibilities -->
+        <div class="job-review-section">
+          <div class="job-review-section-title">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Key Responsibilities
+          </div>
+          <ul class="job-review-bullets" id="review-display-responsibilities"></ul>
+        </div>
+
+        <!-- Section 3: Skills & Competencies -->
+        <div class="job-review-section">
+          <div class="job-review-section-title">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Required Skills & Tech Stack
+          </div>
+          <div class="job-skills-tag-wrap" id="review-display-skills"></div>
+        </div>
+
+        <!-- Section 4: Attached PDF Specification -->
+        <div class="job-review-section" style="margin-bottom: 0;">
+          <div class="job-review-section-title">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+            Job Specification Document
+          </div>
+          <a href="#" class="job-review-pdf-card" id="review-display-pdf-link" download>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+            <span id="review-display-pdf-name">cybersecurity-analyst-jd.pdf (1.4 MB)</span>
+            <span style="margin-left: auto; font-size: 11px; text-decoration: underline;">Download PDF ↓</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- Bottom Sticky Action Bar -->
+      <div class="job-bottom-sticky-bar" id="job-bottom-sticky-bar">
+        <div class="sticky-bar-container">
+          <!-- Create / Edit Sticky Actions -->
+          <div class="sticky-bar-left" id="normal-sticky-left">
+            <button class="btn btn-magic-autofill" id="auto-fill-btn" type="button" title="Auto-fill with realistic enterprise role data">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+              Auto-Fill Details
+            </button>
+            <button class="btn btn-cursource" id="import-cursource-btn" type="button" title="Import Requisition from CurSource ATS">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              Import from CurSource
+            </button>
+          </div>
+
+          <div class="sticky-bar-right" id="normal-sticky-right">
+            <a href="job-listings.html" class="btn btn-secondary" id="cancel-btn">Cancel</a>
+            <button class="btn btn-secondary" id="save-draft-btn" type="button">Save Draft</button>
+            <button class="btn btn-primary" id="submit-approval-btn" type="button">Submit for Approval</button>
+          </div>
+
+          <!-- Review Mode Sticky Actions -->
+          <div class="sticky-bar-right hidden" id="review-sticky-actions" style="margin-left: auto;">
+            <button class="btn btn-danger" id="review-reject-btn" type="button" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
+              ✕ Reject Requisition
+            </button>
+            <button class="btn btn-success" id="review-approve-btn" type="button" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
+              ✓ Approve & Publish Live
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
-
-    <form class="card" id="job-listing-form" novalidate>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="field-role">Role <span class="form-required">*</span></label>
-          <input class="form-input" type="text" id="field-role" required data-error-message="Role is required.">
-          <span class="form-error-text"></span>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="field-department">Department <span class="form-required">*</span></label>
-          <input class="form-input" type="text" id="field-department" required data-error-message="Department is required.">
-          <span class="form-error-text"></span>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label" for="field-location">Location <span class="form-required">*</span></label>
-          <input class="form-input" type="text" id="field-location" required data-error-message="Location is required.">
-          <span class="form-error-text"></span>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="field-type">Type <span class="form-required">*</span></label>
-          <select class="form-select" id="field-type" required>
-            <option value="Full-time">Full-time</option>
-            <option value="Part-time">Part-time</option>
-            <option value="Contract">Contract</option>
-            <option value="Internship">Internship</option>
-          </select>
-          <span class="form-error-text"></span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="field-description">Job Description <span class="form-required">*</span></label>
-        <div class="rich-text-editable" id="field-description" contenteditable="true" data-placeholder="Describe the role, responsibilities, and requirements…"></div>
-        <span class="form-error-text"></span>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="field-pdf">Job Description PDF</label>
-        <input class="form-input" type="file" id="field-pdf" accept="application/pdf">
-        <span class="form-help-text" id="pdf-help-text">Mock upload — the filename is stored and shown in the listing's detail drawer.</span>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Custom Fields</label>
-        <div id="custom-fields-list"></div>
-        <button class="btn btn-secondary btn-sm add-row-btn" id="add-custom-field-btn" type="button">+ Add field</button>
-      </div>
-
-      <div class="card-footer">
-        <a href="job-listings.html" class="btn btn-secondary">Cancel</a>
-        <button class="btn btn-primary" type="submit">Submit for Approval</button>
-      </div>
-    </form>
   </main>
 </div>
 
-<div class="rich-text-toolbar" id="rich-text-toolbar" role="toolbar" aria-label="Text formatting">
-  <button class="rich-text-toolbar-btn" type="button" data-cmd="bold" aria-label="Bold"><strong>B</strong></button>
-  <button class="rich-text-toolbar-btn" type="button" data-cmd="italic" aria-label="Italic"><em>I</em></button>
-  <button class="rich-text-toolbar-btn" type="button" data-cmd="underline" aria-label="Underline"><span style="text-decoration: underline;">U</span></button>
-  <span class="rich-text-toolbar-divider"></span>
-  <button class="rich-text-toolbar-btn" type="button" data-cmd="insertUnorderedList" aria-label="Bullet list">
-    <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><circle cx="40" cy="64" r="12"/><rect x="76" y="56" width="140" height="16" rx="4"/><circle cx="40" cy="128" r="12"/><rect x="76" y="120" width="140" height="16" rx="4"/><circle cx="40" cy="192" r="12"/><rect x="76" y="184" width="140" height="16" rx="4"/></svg>
-  </button>
-  <button class="rich-text-toolbar-btn" type="button" data-cmd="insertOrderedList" aria-label="Numbered list">
-    <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><rect x="76" y="56" width="140" height="16" rx="4"/><rect x="76" y="120" width="140" height="16" rx="4"/><rect x="76" y="184" width="140" height="16" rx="4"/><rect x="28" y="52" width="16" height="16" rx="2"/><rect x="28" y="116" width="16" height="16" rx="2"/><rect x="28" y="180" width="16" height="16" rx="2"/></svg>
-  </button>
-  <span class="rich-text-toolbar-divider"></span>
-  <button class="rich-text-toolbar-btn" type="button" data-cmd="createLink" aria-label="Insert link">
-    <svg viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" aria-hidden="true"><rect x="24" y="88" width="96" height="80" rx="40"/><rect x="136" y="88" width="96" height="80" rx="40"/></svg>
-  </button>
+<!-- CurSource Import Modal -->
+<div class="modal-overlay" id="cursource-modal" aria-hidden="true">
+  <div class="modal" style="max-width: 580px;">
+    <div class="modal-header">
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #EA580C;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        <span class="modal-title">Import Requisition from CurSource ATS</span>
+      </div>
+      <button class="modal-close" data-close-modal="cursource-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 24px 28px;">
+      <p style="font-size: var(--text-xs); color: var(--ink-secondary); margin-bottom: var(--space-4);">Select a synced requisition from your CurSource ATS account to auto-populate title, department, skills, and specification:</p>
+      
+      <div id="cursource-req-list">
+        <div class="cursource-item" data-import-id="cs-1">
+          <div>
+            <div class="cursource-item-title">Principal Cloud Solutions Architect</div>
+            <div class="cursource-item-meta">REQ-89021 · Cloud & Infra · Remote · $150k–$180k</div>
+          </div>
+          <button class="btn btn-sm btn-secondary" type="button">Select & Import</button>
+        </div>
+
+        <div class="cursource-item" data-import-id="cs-2">
+          <div>
+            <div class="cursource-item-title">Lead Full-Stack React / Node Engineer</div>
+            <div class="cursource-item-meta">REQ-89025 · Engineering · Alhambra, CA · $130k–$160k</div>
+          </div>
+          <button class="btn btn-sm btn-secondary" type="button">Select & Import</button>
+        </div>
+
+        <div class="cursource-item" data-import-id="cs-3">
+          <div>
+            <div class="cursource-item-title">Senior Data Governance & Compliance Lead</div>
+            <div class="cursource-item-meta">REQ-89032 · Cybersecurity · Remote · $140k–$170k</div>
+          </div>
+          <button class="btn btn-sm btn-secondary" type="button">Select & Import</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding: 16px 28px;">
+      <button class="btn btn-secondary" data-close-modal="cursource-modal">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Approve Confirmation Modal -->
+<div class="modal-overlay" id="approve-job-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Approve & Publish Job Requisition?</span>
+      <button class="modal-close" data-close-modal="approve-job-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 24px 28px;">
+      <p style="margin-bottom: var(--space-2);">"<strong id="approve-job-title"></strong>" in <span id="approve-job-dept" style="font-weight: 600;"></span> will be approved and published live to the careers portal immediately.</p>
+      <p style="font-size: var(--text-xs); color: var(--ink-muted);">This action will be logged with your super admin signature and timestamp.</p>
+    </div>
+    <div class="modal-footer" style="padding: 16px 28px;">
+      <button class="btn btn-secondary" data-close-modal="approve-job-modal">Cancel</button>
+      <button class="btn btn-success" id="confirm-approve-job-btn">Approve & Publish Live</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reject Feedback Modal -->
+<div class="modal-overlay" id="reject-job-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Reject Requisition & Send Feedback</span>
+      <button class="modal-close" data-close-modal="reject-job-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 24px 28px;">
+      <p style="margin-bottom: var(--space-3); font-size: var(--text-xs); color: var(--ink-secondary);">"<strong id="reject-job-title"></strong>" will be rejected and returned with required modifications.</p>
+      <div class="form-group">
+        <label class="form-label" for="rejection-job-reason">Reason for Rejection & Required Changes <span class="form-required">*</span></label>
+        <textarea class="form-textarea" id="rejection-job-reason" placeholder="Explain what changes are needed before this job can be published..." rows="4"></textarea>
+        <span class="form-error-text" id="rejection-job-error" style="display: none; color: var(--danger); font-size: 11px;">Feedback is required so the team knows what to revise.</span>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding: 16px 28px;">
+      <button class="btn btn-secondary" data-close-modal="reject-job-modal">Cancel</button>
+      <button class="btn btn-danger" id="confirm-reject-job-btn">Reject Requisition</button>
+    </div>
+  </div>
+</div>
+
+<!-- Social Share Channel Selector Modal -->
+<div class="modal-overlay" id="social-share-channel-modal" aria-hidden="true">
+  <div class="modal" style="max-width: 520px;">
+    <div class="modal-header">
+      <div class="flex items-center gap-2">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--brand-blue);"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span class="modal-title">Publish & Broadcast Job</span>
+      </div>
+      <button class="modal-close" data-close-modal="social-share-channel-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding: 24px;">
+      <p style="font-size: var(--text-xs); color: var(--ink-secondary); margin-bottom: var(--space-3);">Your job has been published live to the website! Select a social channel to generate an announcement post and broadcast:</p>
+      
+      <div class="social-channel-grid">
+        <!-- LinkedIn Channel (Active) -->
+        <div class="social-channel-card" id="select-linkedin-channel">
+          <div class="social-channel-icon-wrap linkedin-bg">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+          </div>
+          <div>
+            <div class="social-channel-title">LinkedIn</div>
+            <div class="social-channel-desc">Generate branded banner card and custom markdown copy.</div>
+          </div>
+          <span style="font-size: 11px; font-weight: 700; color: #0A66C2; margin-top: 4px;">Compose Post →</span>
+        </div>
+
+        <!-- X Channel (Coming Soon) -->
+        <div class="social-channel-card is-disabled" title="X (Twitter) integration is coming in the next release">
+          <div class="social-channel-icon-wrap x-bg">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <div>
+            <div class="social-channel-title">X (Twitter)</div>
+            <div class="social-channel-desc">Fast micro-updates for tech followers.</div>
+          </div>
+          <span style="font-size: 10px; font-weight: 600; color: var(--ink-muted); margin-top: 4px;">Coming Soon</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding: 16px 24px;">
+      <button class="btn btn-secondary" data-close-modal="social-share-channel-modal">Skip for Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- LinkedIn Post Composer Modal -->
+<div class="modal-overlay" id="linkedin-composer-modal" aria-hidden="true">
+  <div class="modal linkedin-composer-dialog">
+    <div class="modal-header">
+      <div class="flex items-center gap-2">
+        <div style="background: #0A66C2; color: #fff; width: 24px; height: 24px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        </div>
+        <span class="modal-title">LinkedIn Post Composer</span>
+      </div>
+      <button class="modal-close" data-close-modal="linkedin-composer-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    
+    <div class="modal-body" style="padding: 24px;">
+      <!-- LinkedIn Author Header Mockup -->
+      <div class="linkedin-user-mock">
+        <div class="linkedin-mock-avatar">TB</div>
+        <div class="linkedin-mock-meta">
+          <span class="linkedin-mock-name">Taylor Brooks</span>
+          <span class="linkedin-mock-role">
+            Super Admin · Future Workforce Corp (FWC)
+            <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Public
+          </span>
+        </div>
+      </div>
+
+      <!-- Real Image Banner Preview -->
+      <div class="linkedin-image-banner-wrap">
+        <img id="linkedin-banner-img" src="../../assets/banners/linkedin-hiring-banner.jpg" alt="FWC Hiring Announcement Banner">
+      </div>
+
+      <!-- Written Announcement Text (No formatting toolbar, clean direct text) -->
+      <textarea class="linkedin-post-editor" id="linkedin-post-editor" rows="8" placeholder="Announcement text will appear here..."></textarea>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="modal-footer" style="padding: 16px 24px; justify-content: space-between;">
+      <div class="flex items-center gap-2">
+        <button class="btn btn-secondary btn-sm" type="button" id="copy-linkedin-text-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          Copy Post Copy
+        </button>
+        <button class="btn btn-secondary btn-sm" type="button" id="download-banner-btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Download Card
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button class="btn btn-secondary" data-close-modal="linkedin-composer-modal">Close</button>
+        <button class="btn btn-linkedin" id="share-linkedin-direct-btn" type="button">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+          Share on LinkedIn
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="../../JS/global.js"></script>

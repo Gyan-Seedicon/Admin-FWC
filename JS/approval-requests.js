@@ -1,65 +1,373 @@
 /* ==========================================================================
-   Approval Requests
-   Reads from the same localStorage-backed collections as blog-posts.js
-   (fwc-blog-posts) and job-listings.js (fwc-job-listings), so approving or
-   rejecting an item here is reflected on the Blog Posts / Job Listings
-   pages too, and vice versa — this page is a second entry point onto the
-   same underlying data, not a separate queue.
+   Approval Requests Hub
+   Moderation workflow for Blog Posts and Job Requisitions,
+   View JD center modal, and smart KPI metrics.
    ========================================================================== */
 
-let blogItems = loadCollection('fwc-blog-posts', []);
-let jobItems = loadCollection('fwc-job-listings', []);
-let pendingAction = null; // { type: 'blog' | 'job', id }
+const BLOG_KEY = 'fwc-blog-posts';
+const JOBS_KEY = 'fwc-job-listings';
+
+const blogSeedItems = [
+  {
+    id: 1,
+    title: 'The Future of AI in Manufacturing Supply Chains',
+    author: 'Alex Kim',
+    category: 'AI',
+    submitted: 'Aug 25, 2026 · 02:30 PM',
+    submittedISO: '2026-08-25T14:30:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'As manufacturers increasingly turn to artificial intelligence to streamline operations, understanding how to integrate AI responsibly into supply chain management has never been more critical.'
+  },
+  {
+    id: 2,
+    title: '5 Ways Predictive Maintenance Cuts Downtime',
+    author: 'Sam Patel',
+    category: 'Manufacturing',
+    submitted: 'Aug 24, 2026 · 11:15 AM',
+    submittedISO: '2026-08-24T11:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Unplanned downtime costs manufacturers millions each year. Predictive maintenance strategies powered by IoT sensors and machine learning are changing the equation.'
+  },
+  {
+    id: 3,
+    title: 'Why Digital Twins Are the Next Big Thing',
+    author: 'Jordan Lee',
+    category: 'AI',
+    submitted: 'Aug 22, 2026 · 04:45 PM',
+    submittedISO: '2026-08-22T16:45:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Digital twin technology allows manufacturers to simulate, predict, and optimize physical processes before committing real-world resources.'
+  },
+  {
+    id: 4,
+    title: '5 Signs Your Enterprise Is Ready for AI Staffing',
+    author: 'Priya Nair',
+    category: 'AI & Tech Staffing',
+    submitted: 'Aug 18, 2026 · 09:20 AM',
+    submittedISO: '2026-08-18T09:20:00',
+    status: 'published',
+    actionTakenOn: 'Aug 19, 2026 · 10:05 AM',
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'AI-augmented staffing models are moving from pilot programs to core hiring strategy.'
+  },
+  {
+    id: 5,
+    title: 'Building Zero-Trust Teams for Engineering',
+    author: 'Marcus Vance',
+    category: 'Governance & Compliance',
+    submitted: 'Aug 12, 2026 · 01:10 PM',
+    submittedISO: '2026-08-12T13:10:00',
+    status: 'rejected',
+    actionTakenOn: 'Aug 13, 2026 · 03:25 PM',
+    feedback: 'Please include verified benchmark figures and engineering team citations before submitting for final review.',
+    coverImage: null,
+    excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.'
+  }
+];
+
+const jobSeedItems = [
+  {
+    id: 1,
+    title: 'Cybersecurity Analyst',
+    department: 'Cybersecurity',
+    location: 'Remote',
+    type: 'Full-time',
+    experience: '3–5 Years',
+    salary: '$120,000 – $145,000 / yr',
+    submitted: 'Aug 26, 2026 · 10:30 AM',
+    submittedISO: '2026-08-26T10:30:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'cybersecurity-analyst-jd.pdf',
+    pdfSize: '1.4 MB',
+    overview: 'We are looking for a Cybersecurity Analyst to help safeguard client infrastructure and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.',
+    responsibilities: [
+      'Perform continuous threat monitoring, log telemetry analysis, and vulnerability triage across multi-cloud environments.',
+      'Collaborate with DevSecOps engineers to integrate automated security scanning into CI/CD pipelines.',
+      'Lead incident response simulations and prepare audit-ready compliance documentation for enterprise clients.'
+    ],
+    skills: ['SIEM & Splunk', 'AWS Security Hub', 'SOC2 / HIPAA Compliance', 'Threat Hunting', 'Zero-Trust Architecture']
+  },
+  {
+    id: 2,
+    title: 'Technology Consultant',
+    department: 'Technology Consulting',
+    location: 'Alhambra, CA',
+    type: 'Full-time',
+    experience: '5–8 Years',
+    salary: '$135,000 – $165,000 / yr',
+    submitted: 'Aug 23, 2026 · 03:15 PM',
+    submittedISO: '2026-08-23T15:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'technology-consultant-jd.pdf',
+    pdfSize: '1.1 MB',
+    overview: 'Join our consulting practice to advise enterprise manufacturing and fintech clients on legacy technology modernization, architecture roadmaps, and digital transformation.',
+    responsibilities: [
+      'Conduct comprehensive technical discovery workshops with client CTO and engineering leadership.',
+      'Formulate multi-year digital transformation roadmaps and cost-benefit trade-off analyses.',
+      'Oversee agile pod delivery handoffs and ensure strategic architecture alignment.'
+    ],
+    skills: ['Enterprise Architecture', 'Cloud Migration Strategy', 'Client Advisory', 'Agile Pod Leadership', 'Financial Modeling']
+  },
+  {
+    id: 3,
+    title: 'Senior AI Architect',
+    department: 'AI & Advanced Tech',
+    location: 'Bangalore, India',
+    type: 'Full-time',
+    experience: 'Staff / Lead (8+ Yrs)',
+    salary: '$160,000 – $195,000 / yr',
+    submitted: 'Aug 10, 2026 · 09:00 AM',
+    submittedISO: '2026-08-10T09:00:00',
+    status: 'published',
+    actionTakenOn: 'Aug 11, 2026 · 11:40 AM',
+    feedback: null,
+    pdfName: 'senior-ai-architect-jd.pdf',
+    pdfSize: '2.1 MB',
+    overview: 'Lead the design of AI-augmented delivery pods for enterprise manufacturing and fintech clients, setting technical direction across a growing generative AI architecture team.',
+    responsibilities: [
+      'Design scalable LLM pipelines, Retrieval-Augmented Generation (RAG) frameworks, and vector index architectures.',
+      'Establish enterprise model governance, evaluation metrics, and responsible AI safety guardrails.',
+      'Mentor senior machine learning engineers and present architecture strategies to Fortune 500 stakeholders.'
+    ],
+    skills: ['LLM Orchestration', 'RAG Architectures', 'PyTorch / LangChain', 'Vector Databases', 'MLOps on Kubernetes']
+  },
+  {
+    id: 4,
+    title: 'Cloud Infrastructure Engineer',
+    department: 'Cloud Services',
+    location: 'Alhambra, CA',
+    type: 'Full-time',
+    experience: '3–5 Years',
+    salary: '$115,000 – $140,000 / yr',
+    submitted: 'Aug 08, 2026 · 02:20 PM',
+    submittedISO: '2026-08-08T14:20:00',
+    status: 'published',
+    actionTakenOn: 'Aug 09, 2026 · 04:15 PM',
+    feedback: null,
+    pdfName: 'cloud-infrastructure-engineer-jd.pdf',
+    pdfSize: '1.3 MB',
+    overview: 'Design and operate scalable cloud infrastructure for enterprise clients, with a focus on reliability, cost efficiency, infrastructure-as-code, and secure-by-default deployments.',
+    responsibilities: [
+      'Author and maintain reusable Terraform / Terragrunt modules for multi-account AWS and Azure setups.',
+      'Implement automated observability dashboards and alerting systems via Prometheus, Grafana, and Datadog.',
+      'Lead infrastructure cost optimization sprints reducing cloud spend by up to 25%.'
+    ],
+    skills: ['Terraform', 'Kubernetes / EKS', 'AWS & Azure', 'CI/CD Pipelines', 'Prometheus & Grafana']
+  },
+  {
+    id: 5,
+    title: 'Blockchain Developer',
+    department: 'Blockchain',
+    location: 'Remote',
+    type: 'Contract',
+    experience: 'Entry Level (1–2 Yrs)',
+    salary: '$90,000 – $110,000 / yr',
+    submitted: 'Aug 02, 2026 · 11:00 AM',
+    submittedISO: '2026-08-02T11:00:00',
+    status: 'rejected',
+    actionTakenOn: 'Aug 03, 2026 · 01:30 PM',
+    feedback: 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.',
+    pdfName: 'blockchain-developer-jd.pdf',
+    pdfSize: '950 KB',
+    overview: 'Build and audit smart-contract based solutions for enterprise clients exploring blockchain-backed supply chain traceability and verifiable digital credentials.',
+    responsibilities: [
+      'Write, test, and formally verify Solidity smart contracts on EVM-compatible layer 1 and layer 2 networks.',
+      'Collaborate with security auditors to remediate gas optimization and reentrancy vulnerabilities.',
+      'Integrate Web3 RPC endpoints into client React frontends.'
+    ],
+    skills: ['Solidity', 'EVM Chains', 'Hardhat & Foundry', 'Smart Contract Auditing', 'Web3.js']
+  }
+];
+
+let blogItems = loadCollection(BLOG_KEY, blogSeedItems);
+let jobItems = loadCollection(JOBS_KEY, jobSeedItems);
+
+const AVATAR_COLORS = ['avatar-color-1', 'avatar-color-2', 'avatar-color-3', 'avatar-color-4', 'avatar-color-5'];
 
 const STATUS_BADGE_CLASS = {
+  published: 'status-approved',
   pending: 'status-pending',
-  published: 'status-published',
   draft: 'status-draft',
   rejected: 'status-rejected'
 };
 
 const STATUS_LABEL = {
-  pending: 'Pending',
-  published: 'Published',
+  published: 'Approved & Published',
+  pending: 'Pending Review',
   draft: 'Draft',
   rejected: 'Rejected'
 };
 
-function actionButtons(type, item) {
-  const viewBtn = `<button class="btn btn-sm btn-secondary" data-action="view" data-type="${type}" data-id="${item.id}">View</button>`;
-  if (item.status !== 'pending') return viewBtn;
+function initials(name) {
+  return (name || '').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function renderStats() {
+  const pendingBlogs = blogItems.filter((b) => b.status === 'pending').length;
+  const pendingJobs = jobItems.filter((j) => j.status === 'pending').length;
+  const totalPending = pendingBlogs + pendingJobs;
+  const totalPublished = blogItems.filter((b) => b.status === 'published').length + jobItems.filter((j) => j.status === 'published').length;
+
+  document.getElementById('stat-pending-blogs').textContent = pendingBlogs;
+  document.getElementById('stat-pending-jobs').textContent = pendingJobs;
+  document.getElementById('stat-total-pending').textContent = totalPending;
+  document.getElementById('stat-total-published').textContent = totalPublished;
+}
+
+function renderActionCell(type, item) {
+  if (item.status === 'pending') {
+    const editUrl = type === 'blog' 
+      ? `add-blog-post.html?mode=review&id=${item.id}`
+      : `add-job-listing.html?mode=review&id=${item.id}`;
+
+    return `
+      <a href="${editUrl}" class="btn btn-sm btn-primary" style="font-weight: 600; white-space: nowrap;">
+        Review & Take Action →
+      </a>
+    `;
+  }
+
+  if (item.status === 'rejected') {
+    return `
+      <div class="flex items-center justify-end gap-1">
+        <button class="btn btn-sm btn-secondary" data-action="view-feedback" data-type="${type}" data-id="${item.id}" style="color: var(--danger); border-color: #FECACA; background: #FEF2F2; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+          <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,13.66,5.66L72,195.31V208a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM216,208H88V192a8,8,0,0,0-8-8H40V64H216V208Z"/></svg>
+          Rejection Notes
+        </button>
+        <a href="${type === 'blog' ? 'add-blog-post.html?mode=edit&id=' : 'add-job-listing.html?mode=edit&id='}${item.id}" class="btn btn-sm btn-secondary">Edit</a>
+      </div>
+    `;
+  }
+
+  const viewUrl = type === 'blog' 
+    ? `add-blog-post.html?mode=edit&id=${item.id}`
+    : `add-job-listing.html?mode=edit&id=${item.id}`;
 
   return `
-    ${viewBtn}
-    <button class="btn btn-sm btn-success" data-action="approve" data-type="${type}" data-id="${item.id}">Approve</button>
-    <button class="btn btn-sm btn-danger" data-action="reject" data-type="${type}" data-id="${item.id}">Reject</button>
+    <a href="${viewUrl}" class="btn btn-sm btn-secondary" style="white-space: nowrap;">
+      View Requisition →
+    </a>
   `;
 }
 
 function renderBlogsTable() {
   const tbody = document.getElementById('blogs-table-body');
-  tbody.innerHTML = blogItems.map((blog) => `
-    <tr>
-      <td>${blog.title}</td>
-      <td>${blog.author}</td>
-      <td>${blog.submitted}</td>
-      <td><span class="status-badge ${STATUS_BADGE_CLASS[blog.status]}">${STATUS_LABEL[blog.status]}</span></td>
-      <td class="table-actions">${actionButtons('blog', blog)}</td>
+  if (!tbody) return;
+
+  tbody.innerHTML = blogItems.map((blog, idx) => `
+    <tr data-status="${blog.status}">
+      <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+      <td class="table-id">POST-${100 + blog.id}</td>
+      <td style="font-weight: 600; color: var(--ink-primary); max-width: 280px;"><span class="cell-truncate-title" title="${blog.title}">${blog.title}</span></td>
+      <td>
+        <div class="table-avatar-cell" style="white-space: nowrap;">
+          <span class="table-avatar ${AVATAR_COLORS[idx % AVATAR_COLORS.length]}">${initials(blog.author)}</span>
+          <span>${blog.author}</span>
+        </div>
+      </td>
+      <td><span class="status-badge status-draft" style="white-space: nowrap;">${blog.category}</span></td>
+      <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${blog.submitted}</td>
+      <td><span class="status-badge ${STATUS_BADGE_CLASS[blog.status]}" style="white-space: nowrap;">${STATUS_LABEL[blog.status]}</span></td>
+      <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${blog.actionTakenOn || '—'}</td>
+      <td class="table-actions" style="text-align: right;">${renderActionCell('blog', blog)}</td>
     </tr>
   `).join('');
 }
 
 function renderJobsTable() {
   const tbody = document.getElementById('jobs-table-body');
-  tbody.innerHTML = jobItems.map((job) => `
-    <tr>
-      <td>${job.title}</td>
-      <td>${job.department}</td>
-      <td>${job.submitted}</td>
-      <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}">${STATUS_LABEL[job.status]}</span></td>
-      <td class="table-actions">${actionButtons('job', job)}</td>
+  if (!tbody) return;
+
+  tbody.innerHTML = jobItems.map((job, idx) => `
+    <tr data-status="${job.status}">
+      <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+      <td class="table-id">JOB-${100 + job.id}</td>
+      <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
+        <span class="cell-truncate-title" title="${job.title}">${job.title}</span>
+      </td>
+      <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
+      <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
+      <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
+      <td style="text-align: center; white-space: nowrap;">
+        <button class="btn btn-sm btn-secondary" data-action="view-jd" data-id="${job.id}" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
+          <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+          View JD
+        </button>
+      </td>
+      <td style="white-space: nowrap;">${job.location || 'Remote'}</td>
+      <td><span style="font-size: var(--text-2xs); color: var(--ink-secondary); font-weight: 500; white-space: nowrap;">${job.type}</span></td>
+      <td><span class="status-badge status-draft" style="white-space: nowrap;">${job.experience || '3–5 Years'}</span></td>
+      <td class="table-actions" style="text-align: right;">${renderActionCell('job', job)}</td>
     </tr>
   `).join('');
+}
+
+function openViewJdModal(id) {
+  const job = jobItems.find((j) => j.id === id);
+  if (!job) return;
+
+  document.getElementById('jd-modal-role-title').textContent = `${job.title} — Job Description`;
+  document.getElementById('jd-chip-id').textContent = `JOB-${100 + job.id}`;
+  document.getElementById('jd-chip-dept').textContent = job.department;
+  document.getElementById('jd-chip-loc').textContent = job.location || 'Remote';
+  document.getElementById('jd-chip-type').textContent = job.type;
+  document.getElementById('jd-chip-exp').textContent = job.experience || '3–5 Years';
+  document.getElementById('jd-chip-salary').textContent = job.salary || 'Competitive';
+
+  const badgeEl = document.getElementById('jd-modal-status-badge');
+  badgeEl.className = `status-badge ${STATUS_BADGE_CLASS[job.status]}`;
+  badgeEl.textContent = STATUS_LABEL[job.status];
+
+  // Overview
+  document.getElementById('jd-modal-overview').textContent = job.overview || job.excerpt || 'No specific overview provided.';
+
+  // Responsibilities
+  const respContainer = document.getElementById('jd-modal-responsibilities');
+  if (Array.isArray(job.responsibilities) && job.responsibilities.length) {
+    respContainer.innerHTML = job.responsibilities.map((r) => `<li>${r}</li>`).join('');
+  } else {
+    respContainer.innerHTML = `<li>${job.excerpt || 'Standard role responsibilities apply.'}</li>`;
+  }
+
+  // Skills
+  const skillsContainer = document.getElementById('jd-modal-skills');
+  const skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['Problem Solving', 'Team Leadership', 'Domain Expertise'];
+  skillsContainer.innerHTML = skills.map((s) => `<span class="job-skill-tag">${s}</span>`).join('');
+
+  // PDF
+  const pdfName = job.pdfName || 'job-specification.pdf';
+  const pdfSize = job.pdfSize || '1.4 MB';
+  document.getElementById('jd-modal-pdf-text').textContent = `${pdfName} (${pdfSize})`;
+
+  // Action Button
+  const actionBtn = document.getElementById('jd-modal-action-btn');
+  if (job.status === 'pending') {
+    actionBtn.textContent = 'Review & Take Action →';
+    actionBtn.href = `add-job-listing.html?mode=review&id=${job.id}`;
+    actionBtn.className = 'btn btn-primary';
+    actionBtn.style.display = 'inline-flex';
+  } else {
+    actionBtn.textContent = 'Edit Requisition →';
+    actionBtn.href = `add-job-listing.html?mode=edit&id=${job.id}`;
+    actionBtn.className = 'btn btn-secondary';
+    actionBtn.style.display = 'inline-flex';
+  }
+
+  openModal('view-jd-modal');
 }
 
 function updateRequestsBadge() {
@@ -74,116 +382,63 @@ function findItem(type, id) {
   return list.find((item) => item.id === id);
 }
 
-function persist(type) {
-  if (type === 'blog') saveCollection('fwc-blog-posts', blogItems);
-  else saveCollection('fwc-job-listings', jobItems);
-}
-
-function handleView(type, id) {
+function handleViewFeedback(type, id) {
   const item = findItem(type, id);
   if (!item) return;
 
-  document.getElementById('view-modal-title').textContent = item.title;
-  document.getElementById('view-modal-type-badge').textContent = type === 'blog' ? 'Blog Post' : 'Job Posting';
-  document.getElementById('view-modal-type-badge').className = `status-badge ${type === 'blog' ? 'status-draft' : 'status-pending'}`;
+  document.getElementById('feedback-target-title').textContent = `${type === 'blog' ? 'Story' : 'Job'}: "${item.title}"`;
+  document.getElementById('feedback-viewer-text').textContent = item.feedback || 'No specific feedback provided.';
+  document.getElementById('feedback-viewer-date').textContent = item.actionTakenOn ? `Action recorded on ${item.actionTakenOn}` : '';
 
-  const meta = type === 'blog'
-    ? `${item.author} · ${item.category} · Submitted ${item.submitted}`
-    : `${item.department} · ${item.location} · Submitted ${item.submitted}`;
-  document.getElementById('view-modal-meta').textContent = meta;
-
-  document.getElementById('view-modal-image').classList.toggle('hidden', type !== 'blog');
-  document.getElementById('view-modal-excerpt').textContent = (item.excerpt || '').slice(0, 300);
-
-  const feedbackBlock = document.getElementById('view-modal-feedback');
-  if (item.status === 'rejected' && item.feedback) {
-    feedbackBlock.style.display = 'block';
-    document.getElementById('view-modal-feedback-text').textContent = item.feedback;
-  } else {
-    feedbackBlock.style.display = 'none';
-  }
-
-  openModal('view-modal');
+  openModal('feedback-viewer-modal');
 }
 
-function handleApproveRequest(type, id) {
-  const item = findItem(type, id);
-  if (!item) return;
-  pendingAction = { type, id };
-  document.getElementById('approve-modal-title').textContent = item.title;
-  openModal('approve-modal');
+function initTabs() {
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.tabs-panel').forEach((p) => p.classList.add('hidden'));
+
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      const targetPanel = document.getElementById(btn.dataset.tab);
+      if (targetPanel) targetPanel.classList.remove('hidden');
+
+      updateRequestsBadge();
+    });
+  });
 }
 
-function handleRejectRequest(type, id) {
-  const item = findItem(type, id);
-  if (!item) return;
-  pendingAction = { type, id };
-  document.getElementById('reject-modal-title').textContent = item.title;
-  document.getElementById('reject-feedback').value = '';
-  document.getElementById('reject-feedback-group').classList.remove('has-error');
-  openModal('reject-modal');
+function refreshAll() {
+  blogItems = loadCollection(BLOG_KEY, blogSeedItems);
+  jobItems = loadCollection(JOBS_KEY, jobSeedItems);
+  renderBlogsTable();
+  renderJobsTable();
+  renderStats();
+  updateRequestsBadge();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderBlogsTable();
-  renderJobsTable();
-  updateRequestsBadge();
+  refreshAll();
+  initTabs();
 
-  const approvalCard = document.getElementById('approval-requests-card');
-  initTabs(approvalCard);
-  approvalCard.querySelectorAll('.tab-btn').forEach((btn) => {
-    btn.addEventListener('click', updateRequestsBadge);
-  });
-
-  document.querySelector('.dashboard-main').addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action]');
-    if (!btn) return;
-    const { action, type, id } = btn.dataset;
-    const numericId = Number(id);
-
-    if (action === 'view') handleView(type, numericId);
-    if (action === 'approve') handleApproveRequest(type, numericId);
-    if (action === 'reject') handleRejectRequest(type, numericId);
-  });
-
-  document.getElementById('approve-confirm-btn').addEventListener('click', () => {
-    if (!pendingAction) return;
-    const { type, id } = pendingAction;
-    const item = findItem(type, id);
-    item.status = 'published';
-    persist(type);
-
-    type === 'blog' ? renderBlogsTable() : renderJobsTable();
-    updateRequestsBadge();
-    closeModal('approve-modal');
-    showToast(`${type === 'blog' ? 'Blog post' : 'Job posting'} approved and published!`, 'success');
-    pendingAction = null;
-  });
-
-  document.getElementById('reject-confirm-btn').addEventListener('click', () => {
-    if (!pendingAction) return;
-    const feedback = document.getElementById('reject-feedback').value.trim();
-    const feedbackGroup = document.getElementById('reject-feedback-group');
-
-    if (!feedback) {
-      feedbackGroup.classList.add('has-error');
+  document.addEventListener('click', (e) => {
+    const jdBtn = e.target.closest('[data-action="view-jd"]');
+    if (jdBtn) {
+      const id = Number(jdBtn.dataset.id);
+      openViewJdModal(id);
       return;
     }
 
-    const { type, id } = pendingAction;
-    const item = findItem(type, id);
-    item.status = 'rejected';
-    item.feedback = feedback;
-    persist(type);
-
-    type === 'blog' ? renderBlogsTable() : renderJobsTable();
-    updateRequestsBadge();
-    closeModal('reject-modal');
-    showToast('Feedback sent to admin', 'info');
-    pendingAction = null;
-  });
-
-  document.getElementById('reject-feedback').addEventListener('input', () => {
-    document.getElementById('reject-feedback-group').classList.remove('has-error');
+    const feedbackBtn = e.target.closest('[data-action="view-feedback"]');
+    if (feedbackBtn) {
+      const type = feedbackBtn.dataset.type;
+      const id = Number(feedbackBtn.dataset.id);
+      handleViewFeedback(type, id);
+      return;
+    }
   });
 });

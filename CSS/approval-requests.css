@@ -7,11 +7,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 160px;
-  margin-bottom: var(--space-5);
+  height: 120px;
+  margin-bottom: var(--space-3);
   border-radius: var(--radius-md);
-  background: var(--surface-hover);
-  border: 1px dashed var(--border-card-hover);
+  background: var(--bg-hover);
+  border: 1px dashed var(--border-card);
   color: var(--ink-muted);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
 }

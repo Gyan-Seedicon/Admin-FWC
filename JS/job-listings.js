@@ -1,23 +1,8 @@
 /* ==========================================================================
-   Job Listings
-   Full posting list across every status. Pending rows get Approve/Reject
-   directly here (also available from the Approval Requests page — same
-   underlying data, either place can act on it). Once approved a posting is
-   published immediately, so there's no separate manual Publish step.
-
-   The detail drawer's header shows the job role, and a mock
-   "job-description.pdf" attachment swaps the drawer body to a PDF preview
-   pane (with a back arrow) when clicked.
-
-   Persisted to localStorage (key: fwc-job-listings) so Add/Edit/Delete and
-   status changes survive navigating to/from the Add Job Listing page.
-
-   Mock titles/departments/locations are synthesized from FWC's real,
-   confirmed service lines and office locations (no actual postings exist
-   on the live site to draw from).
+   Job Listings — Management, Table View, and Center View JD Modal
    ========================================================================== */
 
-const JOB_LISTINGS_KEY = 'fwc-job-listings';
+const JOBS_KEY = 'fwc-job-listings';
 
 const jobListingsSeed = [
   {
@@ -26,12 +11,22 @@ const jobListingsSeed = [
     department: 'Cybersecurity',
     location: 'Remote',
     type: 'Full-time',
-    submitted: 'Aug 26, 2026',
-    submittedISO: '2026-08-26',
+    experience: '3–5 Years',
+    salary: '$120,000 – $145,000 / yr',
+    submitted: 'Aug 26, 2026 · 10:30 AM',
+    submittedISO: '2026-08-26T10:30:00',
     status: 'pending',
+    actionTakenOn: null,
     feedback: null,
     pdfName: 'cybersecurity-analyst-jd.pdf',
-    excerpt: 'We are looking for a Cybersecurity Analyst to help safeguard client infrastructure and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.'
+    pdfSize: '1.4 MB',
+    overview: 'We are looking for a Cybersecurity Analyst to help safeguard client infrastructure and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.',
+    responsibilities: [
+      'Perform continuous threat monitoring, log telemetry analysis, and vulnerability triage across multi-cloud environments.',
+      'Collaborate with DevSecOps engineers to integrate automated security scanning into CI/CD pipelines.',
+      'Lead incident response simulations and prepare audit-ready compliance documentation for enterprise clients.'
+    ],
+    skills: ['SIEM & Splunk', 'AWS Security Hub', 'SOC2 / HIPAA Compliance', 'Threat Hunting', 'Zero-Trust Architecture']
   },
   {
     id: 2,
@@ -39,247 +34,303 @@ const jobListingsSeed = [
     department: 'Technology Consulting',
     location: 'Alhambra, CA',
     type: 'Full-time',
-    submitted: 'Aug 23, 2026',
-    submittedISO: '2026-08-23',
+    experience: '5–8 Years',
+    salary: '$135,000 – $165,000 / yr',
+    submitted: 'Aug 23, 2026 · 03:15 PM',
+    submittedISO: '2026-08-23T15:15:00',
     status: 'pending',
+    actionTakenOn: null,
     feedback: null,
     pdfName: 'technology-consultant-jd.pdf',
-    excerpt: 'Join our consulting practice to advise enterprise clients on technology modernization strategy, from initial assessment through implementation roadmap.'
+    pdfSize: '1.1 MB',
+    overview: 'Join our consulting practice to advise enterprise manufacturing and fintech clients on legacy technology modernization, architecture roadmaps, and digital transformation.',
+    responsibilities: [
+      'Conduct comprehensive technical discovery workshops with client CTO and engineering leadership.',
+      'Formulate multi-year digital transformation roadmaps and cost-benefit trade-off analyses.',
+      'Oversee agile pod delivery handoffs and ensure strategic architecture alignment.'
+    ],
+    skills: ['Enterprise Architecture', 'Cloud Migration Strategy', 'Client Advisory', 'Agile Pod Leadership', 'Financial Modeling']
   },
   {
     id: 3,
     title: 'Senior AI Architect',
-    department: 'AI and Advanced Technologies',
+    department: 'AI & Advanced Tech',
     location: 'Bangalore, India',
     type: 'Full-time',
-    submitted: 'Aug 10, 2026',
-    submittedISO: '2026-08-10',
+    experience: 'Staff / Lead (8+ Yrs)',
+    salary: '$160,000 – $195,000 / yr',
+    submitted: 'Aug 10, 2026 · 09:00 AM',
+    submittedISO: '2026-08-10T09:00:00',
     status: 'published',
+    actionTakenOn: 'Aug 11, 2026 · 11:40 AM',
     feedback: null,
     pdfName: 'senior-ai-architect-jd.pdf',
-    excerpt: 'Lead the design of AI-augmented delivery pods for enterprise manufacturing and fintech clients, setting technical direction across a growing architecture team.'
+    pdfSize: '2.1 MB',
+    overview: 'Lead the design of AI-augmented delivery pods for enterprise manufacturing and fintech clients, setting technical direction across a growing generative AI architecture team.',
+    responsibilities: [
+      'Design scalable LLM pipelines, Retrieval-Augmented Generation (RAG) frameworks, and vector index architectures.',
+      'Establish enterprise model governance, evaluation metrics, and responsible AI safety guardrails.',
+      'Mentor senior machine learning engineers and present architecture strategies to Fortune 500 stakeholders.'
+    ],
+    skills: ['LLM Orchestration', 'RAG Architectures', 'PyTorch / LangChain', 'Vector Databases', 'MLOps on Kubernetes']
   },
   {
     id: 4,
     title: 'Cloud Infrastructure Engineer',
-    department: 'Cloud & Infrastructure Services',
+    department: 'Cloud Services',
     location: 'Alhambra, CA',
     type: 'Full-time',
-    submitted: 'Aug 8, 2026',
-    submittedISO: '2026-08-08',
+    experience: '3–5 Years',
+    salary: '$115,000 – $140,000 / yr',
+    submitted: 'Aug 08, 2026 · 02:20 PM',
+    submittedISO: '2026-08-08T14:20:00',
     status: 'published',
+    actionTakenOn: 'Aug 09, 2026 · 04:15 PM',
     feedback: null,
     pdfName: 'cloud-infrastructure-engineer-jd.pdf',
-    excerpt: 'Design and operate scalable cloud infrastructure for enterprise clients, with a focus on reliability, cost efficiency, and secure-by-default deployments.'
+    pdfSize: '1.3 MB',
+    overview: 'Design and operate scalable cloud infrastructure for enterprise clients, with a focus on reliability, cost efficiency, infrastructure-as-code, and secure-by-default deployments.',
+    responsibilities: [
+      'Author and maintain reusable Terraform / Terragrunt modules for multi-account AWS and Azure setups.',
+      'Implement automated observability dashboards and alerting systems via Prometheus, Grafana, and Datadog.',
+      'Lead infrastructure cost optimization sprints reducing cloud spend by up to 25%.'
+    ],
+    skills: ['Terraform', 'Kubernetes / EKS', 'AWS & Azure', 'CI/CD Pipelines', 'Prometheus & Grafana']
   },
   {
     id: 5,
     title: 'Blockchain Developer',
     department: 'Blockchain',
-    location: 'Bangalore, India',
-    type: 'Contract',
-    submitted: 'Aug 2, 2026',
-    submittedISO: '2026-08-02',
-    status: 'draft',
-    feedback: null,
-    pdfName: 'blockchain-developer-jd.pdf',
-    excerpt: 'Build and audit smart-contract based solutions for enterprise clients exploring blockchain-backed supply chain traceability.'
-  },
-  {
-    id: 6,
-    title: 'IT Support Specialist',
-    department: 'IT Managed Services',
     location: 'Remote',
-    type: 'Full-time',
-    submitted: 'Jul 28, 2026',
-    submittedISO: '2026-07-28',
+    type: 'Contract',
+    experience: 'Entry Level (1–2 Yrs)',
+    salary: '$90,000 – $110,000 / yr',
+    submitted: 'Aug 02, 2026 · 11:00 AM',
+    submittedISO: '2026-08-02T11:00:00',
     status: 'rejected',
-    feedback: 'Salary range missing — please add before resubmitting.',
-    pdfName: 'it-support-specialist-jd.pdf',
-    excerpt: 'Provide tier-1/tier-2 support for enterprise managed-services clients, escalating infrastructure issues to the appropriate specialist team.'
+    actionTakenOn: 'Aug 03, 2026 · 01:30 PM',
+    feedback: 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.',
+    pdfName: 'blockchain-developer-jd.pdf',
+    pdfSize: '950 KB',
+    overview: 'Build and audit smart-contract based solutions for enterprise clients exploring blockchain-backed supply chain traceability and verifiable digital credentials.',
+    responsibilities: [
+      'Write, test, and formally verify Solidity smart contracts on EVM-compatible layer 1 and layer 2 networks.',
+      'Collaborate with security auditors to remediate gas optimization and reentrancy vulnerabilities.',
+      'Integrate Web3 RPC endpoints into client React frontends.'
+    ],
+    skills: ['Solidity', 'EVM Chains', 'Hardhat & Foundry', 'Smart Contract Auditing', 'Web3.js']
   }
 ];
 
-let jobListings = loadCollection(JOB_LISTINGS_KEY, jobListingsSeed);
-let pendingRejectId = null;
-let reapplyFilters = () => {};
+let jobListings = loadCollection(JOBS_KEY, jobListingsSeed);
 
 const STATUS_BADGE_CLASS = {
+  published: 'status-approved',
   pending: 'status-pending',
-  published: 'status-published',
   draft: 'status-draft',
   rejected: 'status-rejected'
 };
 
 const STATUS_LABEL = {
-  pending: 'Pending',
-  published: 'Published',
+  published: 'Published / Open',
+  pending: 'Pending Approval',
   draft: 'Draft',
   rejected: 'Rejected'
 };
 
-const VIEW_ICON = '<svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path></svg>';
-const KEBAB_ICON = '<svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M128,80a16,16,0,1,1,16-16A16,16,0,0,1,128,80Zm0,32a16,16,0,1,0,16,16A16,16,0,0,0,128,112Zm0,64a16,16,0,1,0,16,16A16,16,0,0,0,128,176Z"></path></svg>';
+function renderStats() {
+  const publishedCount = jobListings.filter((j) => j.status === 'published').length;
+  const pendingCount = jobListings.filter((j) => j.status === 'pending').length;
+  const draftCount = jobListings.filter((j) => j.status === 'draft').length;
 
-function kebabMenu(id) {
-  return `
-    <div class="kebab-wrap">
-      <button class="icon-btn" data-kebab-trigger aria-label="More actions" type="button">${KEBAB_ICON}</button>
-      <div class="kebab-menu hidden">
-        <button class="kebab-menu-item" data-action="edit" data-id="${id}">Edit</button>
-        <button class="kebab-menu-item is-danger" data-action="delete" data-id="${id}">Delete</button>
-      </div>
-    </div>
-  `;
+  document.getElementById('stat-total-jobs').textContent = jobListings.length;
+  document.getElementById('stat-published-jobs').textContent = publishedCount;
+  document.getElementById('stat-pending-jobs').textContent = pendingCount;
+  document.getElementById('stat-draft-jobs').textContent = draftCount;
 }
 
-function actionButtons(job) {
-  const viewBtn = `<button class="icon-btn" data-action="view" data-id="${job.id}" aria-label="View" type="button">${VIEW_ICON}</button>`;
-  const statusActions = job.status === 'pending'
-    ? `
-      <button class="btn btn-sm btn-success" data-action="approve" data-id="${job.id}">Approve</button>
-      <button class="btn btn-sm btn-danger" data-action="reject" data-id="${job.id}">Reject</button>
-    `
-    : '';
-
-  return `
-    <div class="table-actions-group">${statusActions}</div>
-    <div class="table-actions-group">${viewBtn}${kebabMenu(job.id)}</div>
-  `;
-}
-
-function renderTable() {
-  const tbody = document.getElementById('job-listings-table-body');
-  tbody.innerHTML = jobListings.map((job) => `
-    <tr data-status="${job.status}" data-date="${job.submittedISO}">
-      <td>${job.title}</td>
-      <td>${job.department}</td>
-      <td>${job.location}</td>
-      <td>${job.submitted}</td>
-      <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}">${STATUS_LABEL[job.status]}</span></td>
-      <td class="table-actions">${actionButtons(job)}</td>
-    </tr>
-  `).join('');
-  reapplyFilters();
-}
-
-function findJob(id) {
-  return jobListings.find((job) => job.id === id);
-}
-
-function persist() {
-  saveCollection(JOB_LISTINGS_KEY, jobListings);
-}
-
-function showDetailsPane() {
-  document.getElementById('drawer-body-details').classList.remove('hidden');
-  document.getElementById('drawer-body-pdf').classList.add('hidden');
-  document.getElementById('drawer-back-btn').classList.add('hidden');
-}
-
-function showPdfPane() {
-  document.getElementById('drawer-body-details').classList.add('hidden');
-  document.getElementById('drawer-body-pdf').classList.remove('hidden');
-  document.getElementById('drawer-back-btn').classList.remove('hidden');
-}
-
-function handleView(id) {
-  const job = findJob(id);
-  if (!job) return;
-
-  document.getElementById('drawer-title').textContent = job.title;
-  document.getElementById('drawer-status-badge').textContent = STATUS_LABEL[job.status];
-  document.getElementById('drawer-status-badge').className = `status-badge ${STATUS_BADGE_CLASS[job.status]}`;
-  document.getElementById('drawer-meta').textContent = `${job.department} · ${job.location} · ${job.type} · Submitted ${job.submitted}`;
-  document.getElementById('drawer-excerpt').textContent = job.excerpt;
-
-  const pdfName = job.pdfName || 'job-description.pdf';
-  document.getElementById('drawer-pdf-name').textContent = pdfName;
-  document.getElementById('pdf-preview-name').textContent = pdfName;
-
-  const feedbackBlock = document.getElementById('drawer-feedback');
-  if (job.status === 'rejected' && job.feedback) {
-    feedbackBlock.style.display = 'block';
-    document.getElementById('drawer-feedback-text').textContent = job.feedback;
-  } else {
-    feedbackBlock.style.display = 'none';
+function renderActionCell(job) {
+  if (job.status === 'pending') {
+    return `
+      <a href="add-job-listing.html?mode=review&id=${job.id}" class="btn btn-sm btn-primary" style="font-weight: 600; white-space: nowrap;">
+        Review & Take Action →
+      </a>
+    `;
   }
 
-  document.getElementById('drawer-preview-title').textContent = job.title;
-  document.getElementById('drawer-preview-meta').textContent = `${job.department} · ${job.location} · ${job.type}`;
-  document.getElementById('drawer-preview-body').textContent = job.excerpt;
+  if (job.status === 'rejected') {
+    return `
+      <div class="flex items-center justify-end gap-1">
+        <button class="btn btn-sm btn-secondary" data-action="view-feedback" data-id="${job.id}" style="color: var(--danger); border-color: #FECACA; background: #FEF2F2; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+          <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,13.66,5.66L72,195.31V208a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48ZM216,208H88V192a8,8,0,0,0-8-8H40V64H216V208Z"/></svg>
+          Rejection Notes
+        </button>
+        <a href="add-job-listing.html?mode=edit&id=${job.id}" class="btn btn-sm btn-secondary">Edit</a>
+      </div>
+    `;
+  }
 
-  showDetailsPane();
-  openDrawer('view-drawer');
+  return `
+    <a href="add-job-listing.html?mode=edit&id=${job.id}" class="btn btn-sm btn-secondary" style="white-space: nowrap;">
+      View Requisition →
+    </a>
+  `;
 }
 
-function handleDelete(id) {
-  const job = findJob(id);
-  if (!job) return;
-  if (!confirm(`Delete "${job.title}"? This cannot be undone.`)) return;
+function renderTable(items) {
+  const tbody = document.getElementById('job-listings-table-body');
+  if (!tbody) return;
 
-  jobListings = jobListings.filter((j) => j.id !== id);
-  persist();
-  renderTable();
-  showToast('Job listing deleted.', 'info');
+  if (!items.length) {
+    tbody.innerHTML = `
+      <tr class="request-list-empty-row">
+        <td colspan="11" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
+          No job listings found matching your search.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = items.map((job, idx) => `
+    <tr data-status="${job.status}" data-id="${job.id}">
+      <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+      <td class="table-id">JOB-${100 + job.id}</td>
+      <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
+        <span class="cell-truncate-title" title="${job.title}">${job.title}</span>
+      </td>
+      <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
+      <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
+      <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
+      <td style="text-align: center; white-space: nowrap;">
+        <button class="btn btn-sm btn-secondary" data-action="view-jd" data-id="${job.id}" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
+          <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+          View JD
+        </button>
+      </td>
+      <td style="white-space: nowrap;">${job.location || 'Remote'}</td>
+      <td><span style="font-size: var(--text-2xs); color: var(--ink-secondary); font-weight: 500; white-space: nowrap;">${job.type}</span></td>
+      <td><span class="status-badge status-draft" style="white-space: nowrap;">${job.experience || '3–5 Years'}</span></td>
+      <td class="table-actions" style="text-align: right;">${renderActionCell(job)}</td>
+    </tr>
+  `).join('');
+}
+
+function openViewJdModal(id) {
+  const job = jobListings.find((j) => j.id === id);
+  if (!job) return;
+
+  document.getElementById('jd-modal-role-title').textContent = `${job.title} — Job Description`;
+  document.getElementById('jd-chip-id').textContent = `JOB-${100 + job.id}`;
+  document.getElementById('jd-chip-dept').textContent = job.department;
+  document.getElementById('jd-chip-loc').textContent = job.location || 'Remote';
+  document.getElementById('jd-chip-type').textContent = job.type;
+  document.getElementById('jd-chip-exp').textContent = job.experience || '3–5 Years';
+  document.getElementById('jd-chip-salary').textContent = job.salary || 'Competitive';
+
+  const badgeEl = document.getElementById('jd-modal-status-badge');
+  badgeEl.className = `status-badge ${STATUS_BADGE_CLASS[job.status]}`;
+  badgeEl.textContent = STATUS_LABEL[job.status];
+
+  // Overview
+  document.getElementById('jd-modal-overview').textContent = job.overview || job.excerpt || 'No specific overview provided.';
+
+  // Responsibilities
+  const respContainer = document.getElementById('jd-modal-responsibilities');
+  if (Array.isArray(job.responsibilities) && job.responsibilities.length) {
+    respContainer.innerHTML = job.responsibilities.map((r) => `<li>${r}</li>`).join('');
+  } else {
+    respContainer.innerHTML = `<li>${job.excerpt || 'Standard role responsibilities apply.'}</li>`;
+  }
+
+  // Skills
+  const skillsContainer = document.getElementById('jd-modal-skills');
+  const skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['Problem Solving', 'Team Leadership', 'Domain Expertise'];
+  skillsContainer.innerHTML = skills.map((s) => `<span class="job-skill-tag">${s}</span>`).join('');
+
+  // PDF
+  const pdfName = job.pdfName || 'job-specification.pdf';
+  const pdfSize = job.pdfSize || '1.4 MB';
+  document.getElementById('jd-modal-pdf-text').textContent = `${pdfName} (${pdfSize})`;
+
+  // Action Button
+  const actionBtn = document.getElementById('jd-modal-action-btn');
+  if (job.status === 'pending') {
+    actionBtn.textContent = 'Review & Take Action →';
+    actionBtn.href = `add-job-listing.html?mode=review&id=${job.id}`;
+    actionBtn.className = 'btn btn-primary';
+    actionBtn.style.display = 'inline-flex';
+  } else {
+    actionBtn.textContent = 'Edit Requisition →';
+    actionBtn.href = `add-job-listing.html?mode=edit&id=${job.id}`;
+    actionBtn.className = 'btn btn-secondary';
+    actionBtn.style.display = 'inline-flex';
+  }
+
+  openModal('view-jd-modal');
+}
+
+function handleViewFeedback(id) {
+  const job = jobListings.find((j) => j.id === id);
+  if (!job) return;
+
+  document.getElementById('job-feedback-title').textContent = `Requisition: "${job.title}"`;
+  document.getElementById('job-feedback-text').textContent = job.feedback || 'No specific feedback provided.';
+  document.getElementById('job-feedback-date').textContent = job.actionTakenOn ? `Action recorded on ${job.actionTakenOn}` : '';
+
+  openModal('job-feedback-modal');
+}
+
+function refreshAll() {
+  jobListings = loadCollection(JOBS_KEY, jobListingsSeed);
+  renderTable(jobListings);
+  renderStats();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderTable();
-  reapplyFilters = initTableFilters(document.querySelector('.list-page-layout'));
-  initKebabMenus(document.querySelector('.dashboard-main'));
+  refreshAll();
 
-  document.getElementById('drawer-pdf-trigger').addEventListener('click', showPdfPane);
-  document.getElementById('drawer-back-btn').addEventListener('click', showDetailsPane);
+  // Search & Filter
+  const searchInput = document.getElementById('job-search');
+  const statusFilter = document.getElementById('job-status-filter');
 
-  document.querySelector('.dashboard-main').addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-action]');
-    if (!btn) return;
-    const id = Number(btn.dataset.id);
-    const job = findJob(id);
-    if (!job) return;
+  function applyFilters() {
+    const q = (searchInput?.value || '').toLowerCase().trim();
+    const st = statusFilter?.value || 'all';
 
-    if (btn.dataset.action === 'view') {
-      handleView(id);
-    } else if (btn.dataset.action === 'approve') {
-      job.status = 'published';
-      persist();
-      renderTable();
-      showToast('Job listing approved and published!', 'success');
-    } else if (btn.dataset.action === 'reject') {
-      pendingRejectId = id;
-      document.getElementById('reject-modal-title').textContent = job.title;
-      document.getElementById('reject-feedback').value = '';
-      document.getElementById('reject-feedback-group').classList.remove('has-error');
-      openModal('reject-modal');
-    } else if (btn.dataset.action === 'edit') {
-      window.location.href = `add-job-listing.html?mode=edit&id=${id}`;
-    } else if (btn.dataset.action === 'delete') {
-      handleDelete(id);
-    }
+    const filtered = jobListings.filter((job) => {
+      const matchSearch = !q ||
+        job.title.toLowerCase().includes(q) ||
+        job.department.toLowerCase().includes(q) ||
+        (job.location && job.location.toLowerCase().includes(q)) ||
+        (job.experience && job.experience.toLowerCase().includes(q));
+      const matchStatus = st === 'all' || job.status === st;
+      return matchSearch && matchStatus;
+    });
+
+    renderTable(filtered);
+  }
+
+  searchInput?.addEventListener('input', applyFilters);
+  statusFilter?.addEventListener('change', applyFilters);
+
+  document.getElementById('export-csv-btn')?.addEventListener('click', () => {
+    exportTableToCSV('jobs-table', 'fwc-job-listings.csv');
   });
 
-  document.getElementById('reject-confirm-btn').addEventListener('click', () => {
-    if (pendingRejectId == null) return;
-    const feedback = document.getElementById('reject-feedback').value.trim();
-    const feedbackGroup = document.getElementById('reject-feedback-group');
-
-    if (!feedback) {
-      feedbackGroup.classList.add('has-error');
+  document.getElementById('job-listings-table-body')?.addEventListener('click', (e) => {
+    const jdBtn = e.target.closest('[data-action="view-jd"]');
+    if (jdBtn) {
+      const id = Number(jdBtn.dataset.id);
+      openViewJdModal(id);
       return;
     }
 
-    const job = findJob(pendingRejectId);
-    job.status = 'rejected';
-    job.feedback = feedback;
-    persist();
-    renderTable();
-    closeModal('reject-modal');
-    showToast('Feedback sent to admin', 'info');
-    pendingRejectId = null;
-  });
-
-  document.getElementById('reject-feedback').addEventListener('input', () => {
-    document.getElementById('reject-feedback-group').classList.remove('has-error');
+    const feedbackBtn = e.target.closest('[data-action="view-feedback"]');
+    if (feedbackBtn) {
+      const id = Number(feedbackBtn.dataset.id);
+      handleViewFeedback(id);
+      return;
+    }
   });
 });
