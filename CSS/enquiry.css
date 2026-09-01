@@ -1,30 +1,163 @@
 @import url('./global.css');
 
 /* --------------------------------------------------------------------------
-   01. Request Detail (used inside the view drawer)
+   01. Minimal Surface-Level Enquiry Details (Direct on Surface, Smart Dividers)
    -------------------------------------------------------------------------- */
-.request-card-meta-row {
+.enquiry-surface-section {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  margin-bottom: var(--space-3);
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+}
+
+.enquiry-surface-section:first-child {
+  padding-top: var(--space-1);
+}
+
+.enquiry-surface-section:last-child {
+  padding-bottom: var(--space-2);
+}
+
+.enquiry-surface-divider {
+  height: 1px;
+  background: var(--border-card);
+  margin: 0;
+  border: none;
+}
+
+/* Contact Header */
+.enquiry-contact-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.enquiry-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--brand-blue-light);
+  color: var(--brand-blue);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--brand-blue-border);
+}
+
+.enquiry-avatar-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border-card);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.enquiry-contact-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.enquiry-name {
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--ink-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.enquiry-email-link {
+  font-size: var(--text-xs);
+  color: var(--brand-blue);
+  text-decoration: none;
+  font-weight: var(--weight-medium);
+  transition: color var(--duration-fast) var(--ease-smooth);
+}
+
+.enquiry-email-link:hover {
+  text-decoration: underline;
+  color: var(--brand-blue-hover);
+}
+
+.enquiry-submitted-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: var(--text-2xs);
+  color: var(--ink-muted);
+  background: var(--bg-hover);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  width: fit-content;
+  margin-top: 2px;
+}
+
+.enquiry-submitted-meta svg {
+  color: var(--ink-muted);
+  flex-shrink: 0;
+}
+
+/* Key-Value Surface Grid */
+.enquiry-surface-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4) var(--space-4);
+}
+
+.enquiry-surface-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.enquiry-surface-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.enquiry-field-label {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--ink-muted);
 }
 
-.request-card-meta-row span:not(:last-child)::after {
-  content: '•';
-  margin-left: 12px;
-  color: var(--border-card);
+.enquiry-field-value {
+  font-size: var(--text-xs);
+  color: var(--ink-primary);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
 }
 
-.request-card-message {
-  padding: var(--space-3);
-  background: var(--bg-page);
-  border: 1px solid var(--border-card);
-  border-radius: var(--radius-md);
+.enquiry-field-value.org-value {
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-sm);
+  color: var(--ink-primary);
+}
+
+/* Enquiry Scope & Message */
+.enquiry-scope-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+}
+
+.enquiry-message-content {
   font-size: var(--text-xs);
-  color: var(--ink-secondary);
-  line-height: var(--leading-normal);
-  margin-bottom: var(--space-3);
+  line-height: 1.65;
+  color: var(--ink-primary);
+  margin: 0;
+  white-space: pre-wrap;
 }

@@ -337,30 +337,6 @@ function initTitleAutogrow() {
 }
 
 // --------------------------------------------------------------------------
-// Settings Drawer
-// --------------------------------------------------------------------------
-function initSettingsDrawer() {
-  const drawer = document.getElementById('editor-meta-drawer');
-  const openBtn = document.getElementById('open-settings-btn');
-  const reviewSettingsBtn = document.getElementById('review-settings-btn');
-  const closeBtn = document.getElementById('close-settings-btn');
-  const doneBtn = document.getElementById('meta-done-btn');
-
-  function openDrawer() {
-    drawer.classList.add('is-open');
-    drawer.setAttribute('aria-hidden', 'false');
-  }
-  function closeDrawer() {
-    drawer.classList.remove('is-open');
-    drawer.setAttribute('aria-hidden', 'true');
-  }
-
-  if (openBtn) openBtn.addEventListener('click', openDrawer);
-  if (reviewSettingsBtn) reviewSettingsBtn.addEventListener('click', openDrawer);
-  closeBtn.addEventListener('click', closeDrawer);
-  doneBtn.addEventListener('click', closeDrawer);
-}
-
 // --------------------------------------------------------------------------
 // Save and Submit Handlers (Draft / Creator Flow)
 // --------------------------------------------------------------------------
@@ -408,10 +384,9 @@ function saveStory(status = 'pending') {
     return false;
   }
 
-  const category = document.getElementById('meta-category').value;
-  const author = document.getElementById('meta-author').value.trim() || 'Taylor Brooks';
-  const customExcerpt = document.getElementById('meta-excerpt').value.trim();
-  const excerpt = customExcerpt || textContent.slice(0, 240);
+  const category = currentPost?.category || 'AI & Tech Staffing';
+  const author = currentPost?.author || 'Taylor Brooks';
+  const excerpt = textContent.slice(0, 240);
   const sections = extractSectionsFromHtml(htmlContent);
 
   let blogPosts = loadCollection(BLOG_KEY, []);
@@ -570,7 +545,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initSelectionBubble();
   initSlashCommands();
   initTitleAutogrow();
-  initSettingsDrawer();
 
   const editor = document.getElementById('story-editor-body');
   editor.addEventListener('input', updateWordStats);
@@ -594,9 +568,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageHeading) pageHeading.textContent = 'Edit Blog Post';
 
         document.getElementById('story-title-input').value = currentPost.title || '';
-        document.getElementById('meta-category').value = currentPost.category || 'AI';
-        document.getElementById('meta-author').value = currentPost.author || 'Taylor Brooks';
-        document.getElementById('meta-excerpt').value = currentPost.excerpt || '';
 
         if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
         if (currentPost.content) editor.innerHTML = currentPost.content;

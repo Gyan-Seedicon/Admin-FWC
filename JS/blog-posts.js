@@ -91,8 +91,24 @@ const STATUS_LABEL = {
   rejected: 'Rejected'
 };
 
-function initials(name) {
-  return (name || '').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+const AUTHOR_AVATARS = {
+  'Alex Kim': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'Sam Patel': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'Jordan Lee': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+  'Priya Nair': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+  'Marcus Vance': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80'
+};
+
+function getAvatarUrl(name, idx = 0) {
+  if (AUTHOR_AVATARS[name]) return AUTHOR_AVATARS[name];
+  const fallback = [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80'
+  ];
+  return fallback[idx % fallback.length];
 }
 
 function renderStats() {
@@ -172,8 +188,8 @@ function renderTable(items) {
       <td style="font-weight: 600; color: var(--ink-primary); max-width: 280px;"><span class="cell-truncate-title" title="${post.title}">${post.title}</span></td>
       <td>
         <div class="table-avatar-cell" style="white-space: nowrap;">
-          <span class="table-avatar ${AVATAR_COLORS[idx % AVATAR_COLORS.length]}">${initials(post.author)}</span>
-          <span>${post.author}</span>
+          <img class="table-avatar-img" src="${getAvatarUrl(post.author, idx)}" alt="${post.author}" width="26" height="26">
+          <span style="font-weight: 500; color: var(--ink-primary);">${post.author}</span>
         </div>
       </td>
       <td><span class="status-badge status-draft" style="white-space: nowrap;">${post.category}</span></td>

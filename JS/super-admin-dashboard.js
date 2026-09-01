@@ -58,13 +58,13 @@ function renderApprovalPreview() {
       : `add-job-listing.html?mode=review&id=${item.id}`;
 
     return `
-      <tr>
+      <tr style="cursor: pointer;" data-href="${reviewUrl}" title="Click to review request">
         <td style="font-weight: 600; color: var(--ink-primary); max-width: 280px;"><span class="cell-truncate-title" title="${item.title}">${item.title}</span></td>
         <td><span class="status-badge ${item.type === 'blog' ? 'status-draft' : 'status-info'}" style="white-space: nowrap;">${item.type === 'blog' ? 'Blog Post' : 'Job Posting'}</span></td>
         <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${item.submitted}</td>
         <td><span class="status-badge status-pending" style="white-space: nowrap;">Pending Review</span></td>
         <td style="text-align: right; white-space: nowrap;">
-          <a href="${reviewUrl}" class="btn btn-sm btn-primary" style="font-weight: 600;">
+          <a href="${reviewUrl}" class="btn btn-sm btn-secondary" style="font-weight: 500;">
             Review & Take Action →
           </a>
         </td>
@@ -109,4 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderApprovalPreview();
   renderActivityLog();
   renderHomeNotifications();
+
+  // Smart row click navigation for pending moderation queue
+  document.getElementById('approval-preview-body')?.addEventListener('click', (e) => {
+    const row = e.target.closest('tr[data-href]');
+    if (row && !e.target.closest('a, button')) {
+      window.location.href = row.dataset.href;
+    }
+  });
 });

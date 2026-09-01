@@ -32,6 +32,21 @@
   color: var(--ink-primary);
 }
 
+.card-table-wrap {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-table-wrap .card-header {
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-card);
+}
+
+.card-table-wrap .table thead {
+  background: var(--bg-hover);
+}
+
 @media (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr;

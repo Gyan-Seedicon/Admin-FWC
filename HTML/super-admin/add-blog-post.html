@@ -117,24 +117,18 @@
         </div>
 
         <div class="flex items-center gap-2" id="normal-nav-actions">
-          <button class="btn btn-secondary btn-sm" id="save-draft-btn" type="button">Save draft</button>
-          <button class="btn btn-secondary btn-sm" id="open-settings-btn" type="button" aria-label="Story Settings" title="Story Settings">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M128,80a16,16,0,1,1,16-16A16,16,0,0,1,128,80Zm0,32a16,16,0,1,0,16,16A16,16,0,0,0,128,112Zm0,64a16,16,0,1,0,16,16A16,16,0,0,0,128,176Z"/></svg>
-            Settings
-          </button>
-          <button class="btn btn-primary btn-sm" id="submit-approval-btn" type="button">Submit for Approval</button>
+          <button class="btn btn-secondary" id="save-draft-btn" type="button">Save draft</button>
+          <button class="btn btn-primary" id="submit-approval-btn" type="button">Submit for Approval</button>
         </div>
 
         <div class="flex items-center gap-2 hidden" id="review-nav-actions">
-          <button class="btn btn-secondary btn-sm" id="review-settings-btn" type="button" aria-label="Story Settings" title="Story Settings">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M128,80a16,16,0,1,1,16-16A16,16,0,0,1,128,80Zm0,32a16,16,0,1,0,16,16A16,16,0,0,0,128,112Zm0,64a16,16,0,1,0,16,16A16,16,0,0,0,128,176Z"/></svg>
-            Settings
+          <button class="btn btn-danger" id="review-reject-btn" type="button" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+            Reject Submission
           </button>
-          <button class="btn btn-danger btn-sm" id="review-reject-btn" type="button" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
-            ✕ Reject Submission
-          </button>
-          <button class="btn btn-success btn-sm" id="review-approve-btn" type="button" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
-            ✓ Approve & Publish Live
+          <button class="btn btn-success" id="review-approve-btn" type="button" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+            Approve & Publish Live
           </button>
         </div>
       </div>
@@ -257,48 +251,6 @@
     </div>
   </button>
 </div>
-
-<!-- Slide-Over Settings Drawer -->
-<aside class="editor-meta-drawer" id="editor-meta-drawer" aria-hidden="true">
-  <div class="meta-drawer-header">
-    <span class="meta-drawer-title">Story Settings & Metadata</span>
-    <button class="btn btn-ghost btn-sm" id="close-settings-btn" type="button">✕</button>
-  </div>
-  <div class="meta-drawer-body">
-    <div class="form-group">
-      <label class="form-label" for="meta-category">Category <span class="form-required">*</span></label>
-      <select class="form-select" id="meta-category">
-        <option value="AI">AI</option>
-        <option value="Manufacturing">Manufacturing</option>
-        <option value="AI & Tech Staffing">AI & Tech Staffing</option>
-        <option value="Governance & Compliance">Governance & Compliance</option>
-        <option value="Engineering ROI">Engineering ROI</option>
-        <option value="Talent Strategy">Talent Strategy</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label" for="meta-author">Author</label>
-      <input class="form-input" type="text" id="meta-author" value="Taylor Brooks">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label" for="meta-excerpt">Story Preview Excerpt</label>
-      <textarea class="form-textarea" id="meta-excerpt" placeholder="Short description for preview cards..." rows="3"></textarea>
-      <span class="form-help-text">Auto-generated from your article opening if left empty.</span>
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Article Stats</label>
-      <div class="site-preview-card" style="padding: 10px 12px;">
-        <span id="meta-stats-text" style="font-size: var(--text-2xs); color: var(--ink-secondary);">0 words · 0 min read</span>
-      </div>
-    </div>
-  </div>
-  <div class="meta-drawer-footer">
-    <button class="btn btn-secondary btn-sm" id="meta-done-btn" type="button">Done</button>
-  </div>
-</aside>
 
 <!-- Approve Confirmation Modal -->
 <div class="modal-overlay" id="approve-confirm-modal" aria-hidden="true">

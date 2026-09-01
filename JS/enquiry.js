@@ -1,6 +1,7 @@
 /* ==========================================================================
    Enquiry / Services Management
-   Columns: Name, Email, Organisation, Region, Industry, Enquiry, Submitted on, Status
+   Columns: Name, Email, Organisation, Region, Industry, Enquiry, Submitted on
+   Structured minimal Enquiry Details Drawer (no status controls).
    ========================================================================== */
 
 const ENQUIRY_KEY = 'fwc-enquiries';
@@ -15,8 +16,7 @@ const enquirySeedData = [
     industry: 'Financial Services & Banking',
     enquiry: 'Seeking a dedicated pod of 4 Senior Cloud Data Engineers for our real-time credit scoring pipeline migration to AWS.',
     submitted: 'Aug 26, 2026 · 02:40 PM',
-    submittedISO: '2026-08-26T14:40:00',
-    status: 'new'
+    submittedISO: '2026-08-26T14:40:00'
   },
   {
     id: 2,
@@ -27,8 +27,7 @@ const enquirySeedData = [
     industry: 'Industrial Manufacturing',
     enquiry: 'We require IoT telemetry pipeline development and automated predictive maintenance models for 12 assembly lines.',
     submitted: 'Aug 24, 2026 · 11:20 AM',
-    submittedISO: '2026-08-24T11:20:00',
-    status: 'in-progress'
+    submittedISO: '2026-08-24T11:20:00'
   },
   {
     id: 3,
@@ -39,8 +38,7 @@ const enquirySeedData = [
     industry: 'Fintech & Payments',
     enquiry: 'Looking for a specialized audit and implementation team for EU PSD2 / DORA compliance and high-throughput transaction clearing.',
     submitted: 'Aug 21, 2026 · 04:15 PM',
-    submittedISO: '2026-08-21T16:15:00',
-    status: 'new'
+    submittedISO: '2026-08-21T16:15:00'
   },
   {
     id: 4,
@@ -51,8 +49,7 @@ const enquirySeedData = [
     industry: 'Healthcare & Life Sciences',
     enquiry: 'Need HIPAA-compliant microservices architecture for telemedicine platform serving 250k active regional patients.',
     submitted: 'Aug 17, 2026 · 09:30 AM',
-    submittedISO: '2026-08-17T09:30:00',
-    status: 'in-progress'
+    submittedISO: '2026-08-17T09:30:00'
   },
   {
     id: 5,
@@ -63,8 +60,7 @@ const enquirySeedData = [
     industry: 'EdTech & Training',
     enquiry: 'Contract concluded for AI adaptive assessment engine. All deliverables deployed and accepted.',
     submitted: 'Aug 10, 2026 · 01:15 PM',
-    submittedISO: '2026-08-10T13:15:00',
-    status: 'resolved'
+    submittedISO: '2026-08-10T13:15:00'
   }
 ];
 
@@ -78,27 +74,27 @@ if (enquiries.length && !enquiries[0].organisation) {
 
 let activeEnquiry = null;
 
-const STATUS_BADGE_CLASS = {
-  new: 'status-pending',
-  'in-progress': 'status-draft',
-  resolved: 'status-approved'
-};
-
-const STATUS_LABEL = {
-  new: 'New',
-  'in-progress': 'In Progress',
-  resolved: 'Resolved'
-};
+function initials(name) {
+  return (name || '').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+}
 
 function renderStats() {
-  const newCount = enquiries.filter((e) => e.status === 'new').length;
-  const inProgressCount = enquiries.filter((e) => e.status === 'in-progress').length;
-  const resolvedCount = enquiries.filter((e) => e.status === 'resolved').length;
+  const total = enquiries.length;
+  const usCount = enquiries.filter((e) => (e.region || '').includes('North America')).length;
+  const apacCount = enquiries.filter((e) => (e.region || '').includes('APAC')).length;
+  const emeaCount = enquiries.filter((e) => (e.region || '').includes('EMEA')).length;
 
-  document.getElementById('stat-total-enquiries').textContent = enquiries.length;
-  document.getElementById('stat-new-enquiries').textContent = newCount;
-  document.getElementById('stat-progress-enquiries').textContent = inProgressCount;
-  document.getElementById('stat-resolved-enquiries').textContent = resolvedCount;
+  const totalEl = document.getElementById('stat-total-enquiries');
+  if (totalEl) totalEl.textContent = total;
+
+  const newEl = document.getElementById('stat-new-enquiries');
+  if (newEl) newEl.textContent = usCount;
+
+  const progressEl = document.getElementById('stat-progress-enquiries');
+  if (progressEl) progressEl.textContent = apacCount;
+
+  const resolvedEl = document.getElementById('stat-resolved-enquiries');
+  if (resolvedEl) resolvedEl.textContent = emeaCount;
 }
 
 function renderTable(items) {
@@ -124,7 +120,7 @@ function renderTable(items) {
     const ind = item.industry || item.companyType || 'Technology';
 
     return `
-      <tr data-status="${item.status}" data-id="${item.id}" style="cursor: pointer;" title="Click to view full enquiry details">
+      <tr data-id="${item.id}" style="cursor: pointer;" title="Click to view full enquiry details">
         <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
         <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${item.name}</td>
         <td style="white-space: nowrap;"><a href="mailto:${item.email}" class="table-link" onclick="event.stopPropagation()">${item.email}</a></td>
@@ -138,6 +134,26 @@ function renderTable(items) {
   }).join('');
 }
 
+const ENQUIRY_AVATARS = {
+  'Amara Chen': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'Rajesh Nair': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'Sofia Bergström': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+  'David Okafor': 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=150&auto=format&fit=crop&q=80',
+  'Mei Lin Tan': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'
+};
+
+function getAvatarUrl(name, idx = 0) {
+  if (ENQUIRY_AVATARS[name]) return ENQUIRY_AVATARS[name];
+  const fallback = [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'
+  ];
+  return fallback[idx % fallback.length];
+}
+
 function openEnquiryDrawer(id) {
   const item = enquiries.find((e) => e.id === id);
   if (!item) return;
@@ -149,16 +165,30 @@ function openEnquiryDrawer(id) {
   const reg = item.region || item.country || 'Global';
   const ind = item.industry || item.companyType || 'Technology';
 
+  const avatarImg = document.getElementById('drawer-avatar-img');
+  if (avatarImg) {
+    avatarImg.src = getAvatarUrl(item.name);
+    avatarImg.alt = item.name;
+  }
+
   document.getElementById('drawer-name').textContent = item.name;
-  document.getElementById('drawer-status').textContent = STATUS_LABEL[item.status];
-  document.getElementById('drawer-status').className = `status-badge ${STATUS_BADGE_CLASS[item.status]}`;
   document.getElementById('drawer-date').textContent = `Submitted on ${submittedTime}`;
-  document.getElementById('drawer-email').textContent = item.email;
+  
+  const emailLink = document.getElementById('drawer-email');
+  if (emailLink) {
+    emailLink.textContent = item.email;
+    emailLink.href = `mailto:${item.email}`;
+  }
+
+  const emailBtn = document.getElementById('drawer-email-btn');
+  if (emailBtn) {
+    emailBtn.href = `mailto:${item.email}?subject=${encodeURIComponent('FWC Follow-up: ' + org)}`;
+  }
+
   document.getElementById('drawer-org').textContent = org;
   document.getElementById('drawer-region').textContent = reg;
   document.getElementById('drawer-industry').textContent = ind;
   document.getElementById('drawer-message').textContent = message;
-  document.getElementById('drawer-status-select').value = item.status;
 
   openDrawer('enquiry-drawer');
 }
@@ -174,11 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Search & Filter
   const searchInput = document.getElementById('enquiry-search');
-  const statusFilter = document.getElementById('enquiry-status-filter');
+  const dateFilter = document.getElementById('enquiry-date-filter');
 
   function applyFilters() {
     const q = (searchInput?.value || '').toLowerCase().trim();
-    const st = statusFilter?.value || 'all';
 
     const filtered = enquiries.filter((item) => {
       const org = (item.organisation || item.companyType || '').toLowerCase();
@@ -194,15 +223,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ind.includes(q) ||
         enq.includes(q);
 
-      const matchStatus = st === 'all' || item.status === st;
-      return matchSearch && matchStatus;
+      return matchSearch;
     });
 
     renderTable(filtered);
   }
 
   searchInput?.addEventListener('input', applyFilters);
-  statusFilter?.addEventListener('change', applyFilters);
+  dateFilter?.addEventListener('change', applyFilters);
 
   document.getElementById('export-csv-btn')?.addEventListener('click', () => {
     exportTableToCSV('enquiries-table', 'fwc-enquiries.csv');
@@ -213,15 +241,5 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!row) return;
     const id = Number(row.dataset.id);
     openEnquiryDrawer(id);
-  });
-
-  document.getElementById('drawer-save-btn')?.addEventListener('click', () => {
-    if (!activeEnquiry) return;
-    const newStatus = document.getElementById('drawer-status-select').value;
-    activeEnquiry.status = newStatus;
-    saveCollection(ENQUIRY_KEY, enquiries);
-    refreshAll();
-    closeDrawer('enquiry-drawer');
-    showToast(`Updated enquiry status for ${activeEnquiry.name} to "${STATUS_LABEL[newStatus]}".`, 'success');
   });
 });

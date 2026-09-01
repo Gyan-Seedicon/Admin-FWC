@@ -50,7 +50,25 @@ const adminSeedData = [
 let admins = loadCollection(ADMIN_KEY, adminSeedData);
 let pendingToggle = null;
 
-const AVATAR_COLORS = ['avatar-color-1', 'avatar-color-2', 'avatar-color-3', 'avatar-color-4', 'avatar-color-5'];
+const ADMIN_AVATARS = {
+  'Elena Rostova': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+  'David Chen': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+  'Sarah Jenkins': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+  'Priya Nair': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+  'Marcus Vance': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80'
+};
+
+function getAvatarUrl(name, idx = 0) {
+  if (ADMIN_AVATARS[name]) return ADMIN_AVATARS[name];
+  const fallback = [
+    'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80'
+  ];
+  return fallback[idx % fallback.length];
+}
 
 function initials(name) {
   return (name || '').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
@@ -88,7 +106,7 @@ function renderTable(items) {
       <td class="table-id">ADM-${100 + admin.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">
         <div class="table-avatar-cell" style="white-space: nowrap;">
-          <span class="table-avatar ${AVATAR_COLORS[idx % AVATAR_COLORS.length]}">${initials(admin.name)}</span>
+          <img class="table-avatar-img" src="${getAvatarUrl(admin.name, idx)}" alt="${admin.name}" width="26" height="26">
           <span>${admin.name}</span>
         </div>
       </td>
