@@ -367,6 +367,34 @@ function extractSectionsFromHtml(html) {
   return sections;
 }
 
+function autofillSampleStory() {
+  const sampleTitle = 'Architecting Real-Time Streaming Data Platforms with Apache Flink & AWS';
+  const sampleCover = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80';
+  const sampleContent = `
+    <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">In modern enterprise ecosystems, real-time data streaming architectures have shifted from an experimental competitive advantage into a baseline operational requirement.</p>
+    <h2>1. The Evolution Toward Stateful Stream Processing</h2>
+    <p>Legacy batch pipelines inherently incur significant processing latency, leading to stale telemetry and delayed fraud detection. By adopting stateful stream processing with Apache Flink and Apache Kafka on AWS, engineering teams can guarantee exactly-once semantics with sub-second end-to-end latency.</p>
+    <blockquote>"Stateful stream computation enables organizations to make authoritative operational decisions at the point of ingestion rather than hours after reconciliation."</blockquote>
+    <h2>2. Fault Tolerance and Elastic Scaling</h2>
+    <p>Leveraging distributed checkpointing to Amazon S3 ensures rapid recovery from pod terminations without state corruption. Coupled with automated partition rebalancing, the ingest layer dynamically absorbs traffic spikes during peak global market trading windows.</p>
+    <h2>3. Governance and Schema Evolution</h2>
+    <p>Enforcing strict schema validation using AWS Glue Schema Registry ensures backwards compatibility across heterogeneous event producers, preventing downstream consumers from deserialization faults.</p>
+  `.trim();
+
+  const titleInput = document.getElementById('story-title-input');
+  const editor = document.getElementById('story-editor-body');
+
+  titleInput.value = sampleTitle;
+  editor.innerHTML = sampleContent;
+  setCoverImage(sampleCover);
+
+  titleInput.style.height = 'auto';
+  titleInput.style.height = titleInput.scrollHeight + 'px';
+
+  updateWordStats();
+  showToast('Sample article content autofilled successfully.', 'success');
+}
+
 function saveStory(status = 'pending') {
   const title = document.getElementById('story-title-input').value.trim();
   const htmlContent = document.getElementById('story-editor-body').innerHTML;
@@ -404,7 +432,7 @@ function saveStory(status = 'pending') {
     currentPost.coverImage = coverImageUrl;
     if (status) currentPost.status = status;
     saveCollection(BLOG_KEY, blogPosts);
-    showToast('Story updated successfully.', 'success');
+    showToast(status === 'published' ? 'Story published live!' : (status === 'draft' ? 'Draft saved successfully.' : 'Story submitted for approval! Status is now Pending Review.'), 'success');
   } else {
     const newId = blogPosts.length ? Math.max(...blogPosts.map((p) => p.id)) + 1 : 1;
     const newPost = {
@@ -424,13 +452,19 @@ function saveStory(status = 'pending') {
     };
     blogPosts.push(newPost);
     saveCollection(BLOG_KEY, blogPosts);
-    showToast(status === 'published' ? 'Story published!' : 'Story submitted for approval.', 'success');
+    showToast(status === 'published' ? 'Story published live!' : (status === 'draft' ? 'Draft saved successfully.' : 'Story submitted for approval! Status is now Pending Review.'), 'success');
   }
 
   setTimeout(() => {
     window.location.href = 'blog-posts.html';
-  }, 400);
+  }, 450);
   return true;
+}
+
+function triggerDeleteFlow() {
+  const title = currentPost ? currentPost.title : (document.getElementById('story-title-input').value.trim() || 'Untitled Story');
+  document.getElementById('delete-story-title').textContent = title;
+  openModal('delete-confirm-modal');
 }
 
 // --------------------------------------------------------------------------
@@ -465,9 +499,6 @@ function setupReviewMode(post) {
 
   // Populate Editor Fields
   document.getElementById('story-title-input').value = post.title || '';
-  document.getElementById('meta-category').value = post.category || 'AI';
-  document.getElementById('meta-author').value = post.author || '';
-  document.getElementById('meta-excerpt').value = post.excerpt || '';
 
   if (post.coverImage) setCoverImage(post.coverImage);
   if (post.content) {
@@ -481,7 +512,7 @@ function setupReviewMode(post) {
   // Approve Trigger
   document.getElementById('review-approve-btn').addEventListener('click', () => {
     document.getElementById('approve-story-title').textContent = post.title;
-    document.getElementById('approve-story-author').textContent = post.author;
+    document.getElementById('approve-story-author').textContent = post.author || 'Author';
     openModal('approve-confirm-modal');
   });
 
@@ -496,7 +527,7 @@ function setupReviewMode(post) {
       saveCollection(BLOG_KEY, blogPosts);
     }
     closeModal('approve-confirm-modal');
-    showToast(`Approved "${post.title}" — published live!`, 'success');
+    showToast(`Article approved and published live to the website!`, 'success');
     setTimeout(() => {
       window.location.href = 'approval-requests.html';
     }, 450);
@@ -569,6 +600,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('story-title-input').value = currentPost.title || '';
 
+        // Reveal delete button in creator mode when editing existing post
+        document.getElementById('delete-story-btn')?.classList.remove('hidden');
+
         if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
         if (currentPost.content) editor.innerHTML = currentPost.content;
         else if (currentPost.sections && currentPost.sections.length) {
@@ -585,11 +619,57 @@ document.addEventListener('DOMContentLoaded', () => {
     editor.innerHTML = '<p><br></p>';
   }
 
+  // Autofill button click handler
+  document.getElementById('autofill-demo-btn')?.addEventListener('click', autofillSampleStory);
+
+  // Save Draft
   document.getElementById('save-draft-btn')?.addEventListener('click', () => {
     saveStory('draft');
   });
 
+  // Submit for Approval (triggers confirmation modal)
   document.getElementById('submit-approval-btn')?.addEventListener('click', () => {
+    const title = document.getElementById('story-title-input').value.trim();
+    const htmlContent = document.getElementById('story-editor-body').innerHTML;
+    const textContent = stripHtml(htmlContent);
+
+    if (!title) {
+      showToast('Please add a title for your story before submitting.', 'error');
+      document.getElementById('story-title-input').focus();
+      return;
+    }
+
+    if (!textContent) {
+      showToast('Please write some content for your story before submitting.', 'error');
+      document.getElementById('story-editor-body').focus();
+      return;
+    }
+
+    document.getElementById('submit-confirm-title').textContent = title;
+    openModal('submit-confirm-modal');
+  });
+
+  // Confirm Submit in Modal
+  document.getElementById('confirm-submit-btn')?.addEventListener('click', () => {
+    closeModal('submit-confirm-modal');
     saveStory('pending');
+  });
+
+  // Delete Handlers
+  document.getElementById('delete-story-btn')?.addEventListener('click', triggerDeleteFlow);
+  document.getElementById('review-delete-btn')?.addEventListener('click', triggerDeleteFlow);
+
+  // Confirm Delete in Modal
+  document.getElementById('confirm-delete-btn')?.addEventListener('click', () => {
+    if (currentPost && currentPost.id) {
+      let blogPosts = loadCollection(BLOG_KEY, []);
+      blogPosts = blogPosts.filter((p) => p.id !== currentPost.id);
+      saveCollection(BLOG_KEY, blogPosts);
+    }
+    closeModal('delete-confirm-modal');
+    showToast('Story has been permanently deleted.', 'error');
+    setTimeout(() => {
+      window.location.href = isReviewMode ? 'approval-requests.html' : 'blog-posts.html';
+    }, 450);
   });
 });

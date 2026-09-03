@@ -111,24 +111,35 @@
           <span id="save-status-text">Saved</span>
         </div>
         <div class="story-status-tag hidden" id="review-status-bar" style="background: #FEF3C7; border: 1px solid #FDE68A; padding: 4px 10px; border-radius: var(--radius-pill); color: #92400E;">
-          <span style="font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Review Mode</span>
+          <span style="font-weight: 600; font-size: 11px;">Review mode</span>
           <span>·</span>
           <span id="review-meta-text">Submitted by Alex Kim</span>
         </div>
 
         <div class="flex items-center gap-2" id="normal-nav-actions">
+          <button class="btn btn-secondary btn-icon-only" id="autofill-demo-btn" type="button" title="Autofill sample article" aria-label="Autofill sample article" style="color: var(--brand-blue); border-color: var(--border-card); width: 38px; height: 38px; padding: 0;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M215.79,118.17a8,8,0,0,0-7.79-6.17H152V40a8,8,0,0,0-13.66-5.66l-96,96a8,8,0,0,0,5.66,13.66H104v72a8,8,0,0,0,13.66,5.66l96-96A8,8,0,0,0,215.79,118.17ZM120,200.69V136a8,8,0,0,0-8-8H59.31l72-72V120a8,8,0,0,0,8,8h52.69Z"/></svg>
+          </button>
           <button class="btn btn-secondary" id="save-draft-btn" type="button">Save draft</button>
-          <button class="btn btn-primary" id="submit-approval-btn" type="button">Submit for Approval</button>
+          <button class="btn btn-secondary hidden" id="delete-story-btn" type="button" style="color: var(--danger); border-color: var(--border-subtle);" title="Delete story">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/></svg>
+            Delete
+          </button>
+          <button class="btn btn-primary" id="submit-approval-btn" type="button">Submit for approval</button>
         </div>
 
         <div class="flex items-center gap-2 hidden" id="review-nav-actions">
+          <button class="btn btn-secondary" id="review-delete-btn" type="button" style="color: var(--danger); border-color: var(--border-subtle);" title="Delete story">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/></svg>
+            Delete
+          </button>
           <button class="btn btn-danger" id="review-reject-btn" type="button" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
-            Reject Submission
+            Reject submission
           </button>
           <button class="btn btn-success" id="review-approve-btn" type="button" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
-            Approve & Publish Live
+            Approve & publish live
           </button>
         </div>
       </div>
@@ -252,22 +263,40 @@
   </button>
 </div>
 
+<!-- Submit for Approval Confirmation Modal -->
+<div class="modal-overlay" id="submit-confirm-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Submit for review?</span>
+      <button class="modal-close" data-close-modal="submit-confirm-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="margin: 0; color: var(--ink-secondary); font-size: var(--text-xs); line-height: 1.5;">Submit "<strong id="submit-confirm-title" style="color: var(--ink-primary);"></strong>" to the moderation queue?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close-modal="submit-confirm-modal">Cancel</button>
+      <button class="btn btn-primary" id="confirm-submit-btn">Submit</button>
+    </div>
+  </div>
+</div>
+
 <!-- Approve Confirmation Modal -->
 <div class="modal-overlay" id="approve-confirm-modal" aria-hidden="true">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Approve & Publish Story?</span>
+      <span class="modal-title">Publish story live?</span>
       <button class="modal-close" data-close-modal="approve-confirm-modal" aria-label="Close">
         <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
       </button>
     </div>
     <div class="modal-body">
-      <p style="margin-bottom: var(--space-2);">"<strong id="approve-story-title"></strong>" submitted by <span id="approve-story-author" style="font-weight: 600;"></span> will be approved and published live to the website immediately.</p>
-      <p style="font-size: var(--text-xs); color: var(--ink-muted);">This action will be logged with your super admin signature and timestamp.</p>
+      <p style="margin: 0; color: var(--ink-secondary); font-size: var(--text-xs); line-height: 1.5;">Approve and publish "<strong id="approve-story-title" style="color: var(--ink-primary);"></strong>" live to the website?</p>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" data-close-modal="approve-confirm-modal">Cancel</button>
-      <button class="btn btn-success" id="confirm-approve-btn">Approve & Publish Live</button>
+      <button class="btn btn-success" id="confirm-approve-btn">Publish live</button>
     </div>
   </div>
 </div>
@@ -276,22 +305,40 @@
 <div class="modal-overlay" id="reject-feedback-modal" aria-hidden="true">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">Reject Submission & Send Feedback</span>
+      <span class="modal-title">Reject submission</span>
       <button class="modal-close" data-close-modal="reject-feedback-modal" aria-label="Close">
         <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
       </button>
     </div>
     <div class="modal-body">
-      <p style="margin-bottom: var(--space-3); font-size: var(--text-xs); color: var(--ink-secondary);">"<strong id="reject-story-title"></strong>" will be rejected and sent back to the creator with your required modifications.</p>
-      <div class="form-group">
-        <label class="form-label" for="rejection-reason-input">Reason for Rejection & Required Changes <span class="form-required">*</span></label>
-        <textarea class="form-textarea" id="rejection-reason-input" placeholder="Explain what changes are needed before this story can be published..." rows="4"></textarea>
-        <span class="form-error-text" id="rejection-error-text" style="display: none; color: var(--danger); font-size: 11px;">Feedback is required so the author knows what to update.</span>
+      <div class="form-group" style="margin: 0;">
+        <label class="form-label" for="rejection-reason-input" style="font-size: var(--text-xs); color: var(--ink-secondary);">Feedback notes for "<strong id="reject-story-title" style="color: var(--ink-primary);"></strong>":</label>
+        <textarea class="form-textarea" id="rejection-reason-input" placeholder="Required changes or reason for rejection..." rows="3"></textarea>
+        <span class="form-error-text" id="rejection-error-text" style="display: none; color: var(--danger); font-size: 11px;">Feedback is required before rejecting.</span>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" data-close-modal="reject-feedback-modal">Cancel</button>
-      <button class="btn btn-danger" id="confirm-reject-btn">Reject Submission</button>
+      <button class="btn btn-danger" id="confirm-reject-btn">Reject</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Story Confirmation Modal -->
+<div class="modal-overlay" id="delete-confirm-modal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Delete story?</span>
+      <button class="modal-close" data-close-modal="delete-confirm-modal" aria-label="Close">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="margin: 0; color: var(--ink-secondary); font-size: var(--text-xs); line-height: 1.5;">Permanently delete "<strong id="delete-story-title" style="color: var(--ink-primary);"></strong>"? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-close-modal="delete-confirm-modal">Cancel</button>
+      <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
     </div>
   </div>
 </div>

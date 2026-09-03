@@ -358,10 +358,9 @@ function setupReviewMode(job) {
   document.getElementById('nav-link-jobs')?.classList.remove('active');
   document.getElementById('nav-link-approvals')?.classList.add('active');
 
-  // Sticky action bar toggles
-  document.getElementById('normal-sticky-left')?.classList.add('hidden');
-  document.getElementById('normal-sticky-right')?.classList.add('hidden');
-  document.getElementById('review-sticky-actions')?.classList.remove('hidden');
+  // Header action bar toggles
+  document.getElementById('normal-header-actions')?.classList.add('hidden');
+  document.getElementById('review-header-actions')?.classList.remove('hidden');
   document.getElementById('review-back-icon-btn')?.classList.remove('hidden');
 
   document.getElementById('job-header-heading').textContent = job.title;
@@ -406,7 +405,6 @@ function setupReviewMode(job) {
   // Approve Trigger
   document.getElementById('review-approve-btn')?.addEventListener('click', () => {
     document.getElementById('approve-job-title').textContent = job.title;
-    document.getElementById('approve-job-dept').textContent = job.department || 'Engineering';
     openModal('approve-job-modal');
   });
 
@@ -463,6 +461,12 @@ function setupReviewMode(job) {
   });
 }
 
+function triggerDeleteJobFlow() {
+  const title = editingJob ? editingJob.title : (document.getElementById('job-title-input').value.trim() || 'Untitled Requisition');
+  document.getElementById('delete-job-confirm-title').textContent = title;
+  openModal('delete-job-modal');
+}
+
 function saveJobRequisition(status = 'pending') {
   const title = document.getElementById('job-title-input').value.trim();
   const overview = document.getElementById('field-overview').value.trim();
@@ -484,7 +488,7 @@ function saveJobRequisition(status = 'pending') {
   const location = document.getElementById('field-location').value.trim() || 'Remote';
   const type = document.getElementById('field-type').value;
   const experience = document.getElementById('field-experience').value;
-  const salary = (editingJob && editingJob.salary) ? editingJob.salary : '';
+  const salary = (editingJob && editingJob.salary) ? editingJob.salary : '$130,000 – $160,000 / yr';
 
   const respItems = respVal
     .split(/•|\n/)
@@ -511,7 +515,7 @@ function saveJobRequisition(status = 'pending') {
     if (status) editingJob.status = status;
     saveCollection(JOBS_KEY, jobListings);
     savedJob = editingJob;
-    showToast('Job requisition updated successfully.', 'success');
+    showToast(status === 'published' ? 'Job published live!' : (status === 'draft' ? 'Draft saved successfully.' : 'Job submitted for approval! Status is now pending review.'), 'success');
   } else {
     const newId = jobListings.length ? Math.max(...jobListings.map((j) => j.id)) + 1 : 1;
     const newJob = {
@@ -536,12 +540,12 @@ function saveJobRequisition(status = 'pending') {
     jobListings.push(newJob);
     saveCollection(JOBS_KEY, jobListings);
     savedJob = newJob;
-    showToast(status === 'published' ? 'Job published live!' : 'Job submitted for approval.', 'success');
+    showToast(status === 'published' ? 'Job published live!' : (status === 'draft' ? 'Draft saved successfully.' : 'Job submitted for approval! Status is now pending review.'), 'success');
   }
 
   currentJobForShare = savedJob;
 
-  if (status === 'published' || status === 'pending') {
+  if (status === 'published') {
     setTimeout(() => {
       openModal('social-share-channel-modal');
     }, 400);
@@ -573,11 +577,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mode === 'review') {
         setupReviewMode(editingJob);
       } else if (mode === 'edit') {
-        document.getElementById('page-title').textContent = `Edit Requisition — ${editingJob.title}`;
-        document.getElementById('page-heading').textContent = 'Edit Job Posting';
-        document.getElementById('breadcrumb-current').textContent = 'Edit Job Posting';
+        document.getElementById('page-title').textContent = `Edit requisition — ${editingJob.title}`;
+        document.getElementById('page-heading').textContent = 'Edit job posting';
+        document.getElementById('breadcrumb-current').textContent = 'Edit job posting';
         document.getElementById('job-header-heading').textContent = `Edit: ${editingJob.title}`;
         document.getElementById('job-header-subtext').textContent = 'Modify requisition details and requirements.';
+
+        // Reveal delete button in creator mode when editing existing requisition
+        document.getElementById('delete-job-btn')?.classList.remove('hidden');
 
         document.getElementById('job-title-input').value = editingJob.title || '';
         document.getElementById('field-location').value = editingJob.location || 'Remote';
@@ -604,11 +611,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Save Draft
   document.getElementById('save-draft-btn')?.addEventListener('click', () => {
     saveJobRequisition('draft');
   });
 
+  // Submit for Approval (triggers confirmation modal)
   document.getElementById('submit-approval-btn')?.addEventListener('click', () => {
-    saveJobRequisition('published');
+    const title = document.getElementById('job-title-input').value.trim();
+    const overview = document.getElementById('field-overview').value.trim();
+
+    if (!title) {
+      showToast('Please enter a role title for the requisition before submitting.', 'error');
+      document.getElementById('job-title-input').focus();
+      return;
+    }
+
+    if (!overview) {
+      showToast('Please describe the role overview before submitting.', 'error');
+      document.getElementById('field-overview').focus();
+      return;
+    }
+
+    document.getElementById('submit-job-confirm-title').textContent = title;
+    openModal('submit-job-modal');
+  });
+
+  // Confirm Submit in Modal
+  document.getElementById('confirm-submit-job-btn')?.addEventListener('click', () => {
+    closeModal('submit-job-modal');
+    saveJobRequisition('pending');
+  });
+
+  // Delete Handlers
+  document.getElementById('delete-job-btn')?.addEventListener('click', triggerDeleteJobFlow);
+  document.getElementById('review-delete-btn')?.addEventListener('click', triggerDeleteJobFlow);
+
+  // Confirm Delete in Modal
+  document.getElementById('confirm-delete-job-btn')?.addEventListener('click', () => {
+    if (editingJob && editingJob.id) {
+      let jobListings = loadCollection(JOBS_KEY, []);
+      jobListings = jobListings.filter((j) => j.id !== editingJob.id);
+      saveCollection(JOBS_KEY, jobListings);
+    }
+    closeModal('delete-job-modal');
+    showToast('Job requisition has been permanently deleted.', 'error');
+    setTimeout(() => {
+      window.location.href = isReviewMode ? 'approval-requests.html' : 'job-listings.html';
+    }, 450);
   });
 });
