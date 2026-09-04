@@ -1,0 +1,646 @@
+/* ==========================================================================
+   Job Applicants Directory & Management
+   View candidates by job requisition with contact info and PDF resumes.
+   ========================================================================== */
+
+const JOBS_KEY = 'fwc-job-listings';
+const CANDIDATES_KEY = 'fwc-job-candidates';
+
+const defaultCandidateSeeds = [
+  // Candidates for Job 1 (Cybersecurity Analyst & Threat Hunting Specialist)
+  {
+    id: 101,
+    jobId: 1,
+    name: 'Elena Rostova',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    email: 'elena.rostova@techdefense.io',
+    phone: '+1 (415) 892-3401',
+    location: 'San Francisco, CA',
+    appliedOn: 'Aug 28, 2026 · 10:15 AM',
+    appliedISO: '2026-08-28T10:15:00',
+    resumeFileName: 'elena-rostova-cybersecurity-resume.pdf',
+    resumeFileSize: '1.2 MB',
+    summary: 'Senior Cybersecurity Engineer with 5+ years of experience in enterprise SIEM threat hunting, Splunk query optimization, SOC2 compliance governance, and automated incident triage across AWS multi-cloud environments.',
+    skills: ['SIEM & Splunk (Expert)', 'AWS Security Hub', 'SOC2 / HIPAA Audit Readiness', 'Threat Hunting', 'Zero-Trust IAM', 'Python & Bash Automation'],
+    experience: [
+      {
+        role: 'Threat Intelligence Lead',
+        company: 'Vanguard Cyber Systems',
+        period: '2023 – Present',
+        bullets: [
+          'Led continuous 24/7 security event telemetry triage across 4,000+ cloud instances reducing mean time to detect (MTTD) by 40%.',
+          'Architected automated Splunk Phantom SOAR playbooks for rapid zero-day quarantine.',
+          'Spearheaded annual SOC2 Type II and ISO 27001 external audit defense with zero critical findings.'
+        ]
+      },
+      {
+        role: 'SOC Security Analyst',
+        company: 'Apex Cloud Defense',
+        period: '2021 – 2023',
+        bullets: [
+          'Monitored AWS GuardDuty and Security Hub alerts; triaged over 200 suspicious telemetry vectors monthly.',
+          'Conducted threat simulation drills and authoring post-incident forensic root cause analyses.'
+        ]
+      }
+    ],
+    education: 'B.S. in Computer Science & Information Assurance — UC Berkeley (2021)'
+  },
+  {
+    id: 102,
+    jobId: 1,
+    name: 'David Chen',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    email: 'david.chen@cybermesh.org',
+    phone: '+1 (213) 449-7712',
+    location: 'Los Angeles, CA',
+    appliedOn: 'Aug 27, 2026 · 02:40 PM',
+    appliedISO: '2026-08-27T14:40:00',
+    resumeFileName: 'david-chen-security-analyst.pdf',
+    resumeFileSize: '980 KB',
+    summary: 'Cybersecurity Analyst specializing in vulnerability management, automated SAST/DAST pipeline integration, and DevSecOps compliance automation.',
+    skills: ['AWS Security', 'Splunk', 'Tenable / Nessus', 'SOC2 Compliance', 'Docker Security', 'Terraform'],
+    experience: [
+      {
+        role: 'Cybersecurity Analyst',
+        company: 'Nexus Tech Partners',
+        period: '2022 – Present',
+        bullets: [
+          'Integrated Snyk and Trivy automated scanning into GitHub Actions CI/CD pipelines.',
+          'Remediated 300+ container vulnerabilities across production Kubernetes clusters.'
+        ]
+      }
+    ],
+    education: 'B.S. in Cybersecurity — USC Viterbi (2022)'
+  },
+  {
+    id: 103,
+    jobId: 1,
+    name: 'Marcus Holloway',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    email: 'm.holloway@defenselogic.com',
+    phone: '+1 (312) 581-9034',
+    location: 'Chicago, IL',
+    appliedOn: 'Aug 26, 2026 · 11:20 AM',
+    appliedISO: '2026-08-26T11:20:00',
+    resumeFileName: 'marcus-holloway-lead-analyst.pdf',
+    resumeFileSize: '1.4 MB',
+    summary: '6+ years in zero-trust architecture, cloud telemetry analysis, and enterprise identity security.',
+    skills: ['Zero-Trust', 'Splunk Enterprise', 'Okta / Azure AD IAM', 'Incident Response', 'HIPAA Compliance'],
+    experience: [
+      {
+        role: 'Senior Information Security Analyst',
+        company: 'Horizon Health Systems',
+        period: '2021 – Present',
+        bullets: [
+          'Oversaw HIPAA-aligned security posture for medical telemetry systems.',
+          'Configured zero-trust conditional access policies for 12,000 corporate devices.'
+        ]
+      }
+    ],
+    education: 'M.S. in Information Systems — Northwestern University'
+  },
+  {
+    id: 104,
+    jobId: 1,
+    name: 'Aisha Al-Mansoor',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    email: 'aisha.mansoor@infosec-hub.net',
+    phone: '+1 (646) 320-1995',
+    location: 'New York, NY',
+    appliedOn: 'Aug 25, 2026 · 04:10 PM',
+    appliedISO: '2026-08-25T16:10:00',
+    resumeFileName: 'aisha-mansoor-threat-hunter.pdf',
+    resumeFileSize: '1.1 MB',
+    summary: 'Threat Hunter and Penetration Tester with OSCP and CISSP certifications.',
+    skills: ['Threat Hunting', 'Penetration Testing (OSCP)', 'SIEM Splunk', 'Zero-Trust', 'Python'],
+    experience: [
+      {
+        role: 'Offensive Security Specialist',
+        company: 'Starlight Security Labs',
+        period: '2022 – Present',
+        bullets: [
+          'Conducted red-team simulations and cloud infrastructure penetration tests.',
+          'Authored comprehensive audit remediation guides for executive engineering stakeholders.'
+        ]
+      }
+    ],
+    education: 'B.S. in Computer Engineering — Columbia University'
+  },
+
+  // Candidates for Job 2 (Senior Technology Consultant)
+  {
+    id: 201,
+    jobId: 2,
+    name: 'Siddharth Rao',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+    email: 'siddharth.rao@advisorycloud.com',
+    phone: '+1 (626) 714-8830',
+    location: 'Pasadena, CA',
+    appliedOn: 'Aug 25, 2026 · 01:20 PM',
+    appliedISO: '2026-08-25T13:20:00',
+    resumeFileName: 'siddharth-rao-tech-consultant.pdf',
+    resumeFileSize: '1.5 MB',
+    summary: '7+ years leading enterprise cloud migrations, modernizing legacy monolithic architectures, and structuring digital transformation roadmaps for Fortune 500 manufacturing clients.',
+    skills: ['Enterprise Architecture', 'Cloud Migration Strategy', 'Agile Pod Leadership', 'Financial ROI Modeling', 'AWS & Azure'],
+    experience: [
+      {
+        role: 'Lead Cloud Strategy Consultant',
+        company: 'Deloitte Consulting LLP',
+        period: '2022 – Present',
+        bullets: [
+          'Advised C-suite leadership on $15M multi-year digital transformation program.',
+          'Structured agile pod delivery governance improving sprint velocity by 35%.'
+        ]
+      }
+    ],
+    education: 'MBA — UCLA Anderson School of Management | B.Tech in IT — NIT'
+  },
+  {
+    id: 202,
+    jobId: 2,
+    name: 'Claire Dupont',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+    email: 'claire.dupont@consulting-tech.fr',
+    phone: '+1 (310) 902-5519',
+    location: 'Los Angeles, CA',
+    appliedOn: 'Aug 24, 2026 · 09:45 AM',
+    appliedISO: '2026-08-24T09:45:00',
+    resumeFileName: 'claire-dupont-senior-consultant.pdf',
+    resumeFileSize: '1.3 MB',
+    summary: 'Technology Consultant with deep specialization in legacy system modernization, microservices migration, and client stakeholder management.',
+    skills: ['Cloud Transformation', 'Client Advisory', 'Enterprise Architecture', 'Microservices', 'Scrum / Agile'],
+    experience: [
+      {
+        role: 'Senior Digital Consultant',
+        company: 'Accenture Technology',
+        period: '2021 – Present',
+        bullets: [
+          'Led architecture discovery workshops across 6 international enterprise clients.',
+          'Migrated legacy on-prem core banking workflows to AWS serverless architectures.'
+        ]
+      }
+    ],
+    education: 'M.S. in Management Information Systems — NYU Stern'
+  },
+
+  // Candidates for Job 3 (Senior AI Architect & GenAI Team Lead)
+  {
+    id: 301,
+    jobId: 3,
+    name: 'Dr. Vikram Malhotra',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    email: 'vikram.malhotra@neuralscale.ai',
+    phone: '+91 98450 12890',
+    location: 'Bangalore, India',
+    appliedOn: 'Aug 22, 2026 · 11:30 AM',
+    appliedISO: '2026-08-22T11:30:00',
+    resumeFileName: 'dr-vikram-malhotra-ai-architect.pdf',
+    resumeFileSize: '1.8 MB',
+    summary: 'Ph.D. in Machine Learning with 9+ years architecting enterprise RAG systems, LLM orchestration frameworks, and vector index clusters on Kubernetes.',
+    skills: ['LLM Orchestration', 'RAG Architectures', 'PyTorch / LangChain', 'Vector DBs (Milvus/pgvector)', 'MLOps on Kubernetes'],
+    experience: [
+      {
+        role: 'Principal AI Architect',
+        company: 'Cognitive Intelligence Labs',
+        period: '2021 – Present',
+        bullets: [
+          'Designed enterprise-grade RAG pipeline serving 2M daily semantic queries at <120ms P99 latency.',
+          'Built automated model evaluation benchmarking suite for hallucination suppression and alignment.'
+        ]
+      }
+    ],
+    education: 'Ph.D. in Computer Science (NLP & Deep Learning) — IISc Bangalore'
+  },
+  {
+    id: 302,
+    jobId: 3,
+    name: 'Ananya Deshmukh',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    email: 'ananya.deshmukh@genai-systems.io',
+    phone: '+91 99801 44520',
+    location: 'Bangalore, India',
+    appliedOn: 'Aug 20, 2026 · 03:15 PM',
+    appliedISO: '2026-08-20T15:15:00',
+    resumeFileName: 'ananya-deshmukh-staff-ai-engineer.pdf',
+    resumeFileSize: '1.4 MB',
+    summary: 'Staff AI Engineer with expertise in model fine-tuning, latency optimization on NVIDIA H100 clusters, and agentic workflows.',
+    skills: ['LangGraph / AutoGen', 'PyTorch & vLLM', 'Model Fine-tuning (LoRA)', 'Triton Inference Server', 'AWS Bedrock'],
+    experience: [
+      {
+        role: 'Staff Machine Learning Engineer',
+        company: 'HyperScale AI Labs',
+        period: '2022 – Present',
+        bullets: [
+          'Deployed multi-agent autonomous support pods reducing human escalation by 60%.',
+          'Optimized LLM serving throughput with vLLM tensor parallelism on AWS EC2 G5/P4 instances.'
+        ]
+      }
+    ],
+    education: 'M.Tech in Artificial Intelligence — IIT Bombay'
+  },
+  {
+    id: 303,
+    jobId: 3,
+    name: 'Robert Vance',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    email: 'robert.vance@ai-foundry.com',
+    phone: '+1 (415) 329-8810',
+    location: 'San Francisco, CA',
+    appliedOn: 'Aug 19, 2026 · 09:20 AM',
+    appliedISO: '2026-08-19T09:20:00',
+    resumeFileName: 'robert-vance-ai-lead.pdf',
+    resumeFileSize: '1.6 MB',
+    summary: 'AI Systems Architect with 8+ years building high-throughput inference engines and deep learning deployment frameworks.',
+    skills: ['PyTorch', 'Distributed Training', 'Kubernetes', 'Triton', 'RAG Pipelines'],
+    experience: [
+      {
+        role: 'Lead ML Engineer',
+        company: 'Apex Vision AI',
+        period: '2021 – Present',
+        bullets: [
+          'Orchestrated multi-GPU training clusters reducing training iterations from days to hours.',
+          'Maintained 99.99% uptime across production model serving pods.'
+        ]
+      }
+    ],
+    education: 'M.S. in Computer Science — Stanford University'
+  },
+  {
+    id: 304,
+    jobId: 3,
+    name: 'Maya Lin',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    email: 'maya.lin@intelligence-cloud.net',
+    phone: '+1 (206) 771-4093',
+    location: 'Seattle, WA',
+    appliedOn: 'Aug 18, 2026 · 04:30 PM',
+    appliedISO: '2026-08-18T16:30:00',
+    resumeFileName: 'maya-lin-ai-architect.pdf',
+    resumeFileSize: '1.3 MB',
+    summary: 'Senior Machine Learning Architect with specialized background in NLP and responsible AI guardrails.',
+    skills: ['GenAI Governance', 'LangChain', 'Python', 'Azure OpenAI', 'Semantic Kernel'],
+    experience: [
+      {
+        role: 'Senior NLP Architect',
+        company: 'CloudMatrix Global',
+        period: '2022 – Present',
+        bullets: [
+          'Constructed hallucination detection and prompt injection firewalls for enterprise clients.'
+        ]
+      }
+    ],
+    education: 'B.S. in Artificial Intelligence — University of Washington'
+  },
+
+  // Candidates for Job 4 (Cloud Infrastructure Engineer)
+  {
+    id: 401,
+    jobId: 4,
+    name: 'Liam O’Connor',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    email: 'liam.oconnor@cloudinfra.io',
+    phone: '+1 (626) 819-4402',
+    location: 'Alhambra, CA',
+    appliedOn: 'Aug 18, 2026 · 02:00 PM',
+    appliedISO: '2026-08-18T14:00:00',
+    resumeFileName: 'liam-oconnor-cloud-infra.pdf',
+    resumeFileSize: '1.2 MB',
+    summary: 'DevOps & Cloud Engineer with 4+ years authoring reusable Terraform modules, managing Kubernetes clusters on AWS EKS, and building Datadog observability dashboards.',
+    skills: ['Terraform & Terragrunt', 'Kubernetes / EKS', 'AWS Multi-Account', 'Prometheus & Grafana', 'GitHub Actions CI/CD'],
+    experience: [
+      {
+        role: 'Cloud Infrastructure Engineer',
+        company: 'Skyward Systems',
+        period: '2022 – Present',
+        bullets: [
+          'Migrated 40+ microservices to multi-tenant EKS clusters with Karpenter auto-scaling.',
+          'Reduced monthly cloud infrastructure costs by 22% through automated spot instance orchestration.'
+        ]
+      }
+    ],
+    education: 'B.S. in Computer Science — Cal Poly Pomona'
+  },
+  {
+    id: 402,
+    jobId: 4,
+    name: 'Sofia Ramirez',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+    email: 'sofia.ramirez@devops-scale.com',
+    phone: '+1 (626) 304-9981',
+    location: 'Pasadena, CA',
+    appliedOn: 'Aug 16, 2026 · 11:15 AM',
+    appliedISO: '2026-08-16T11:15:00',
+    resumeFileName: 'sofia-ramirez-devops.pdf',
+    resumeFileSize: '1.1 MB',
+    summary: 'Infrastructure Automation Engineer focused on zero-downtime CI/CD and multi-cloud Kubernetes deployment.',
+    skills: ['Terraform', 'AWS ECS / EKS', 'Datadog', 'ArgoCD', 'Python'],
+    experience: [
+      {
+        role: 'DevOps Engineer',
+        company: 'Nexus Platforms',
+        period: '2021 – Present',
+        bullets: [
+          'Implemented GitOps deployment automation using ArgoCD and Helm charts.'
+        ]
+      }
+    ],
+    education: 'B.S. in Software Engineering — UC Riverside'
+  },
+
+  // Candidates for Job 5 (Blockchain Developer)
+  {
+    id: 501,
+    jobId: 5,
+    name: 'Mateo Morales',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+    email: 'mateo.morales@web3foundry.dev',
+    phone: '+1 (512) 670-3321',
+    location: 'Austin, TX',
+    appliedOn: 'Aug 14, 2026 · 10:45 AM',
+    appliedISO: '2026-08-14T10:45:00',
+    resumeFileName: 'mateo-morales-solidity-developer.pdf',
+    resumeFileSize: '1.0 MB',
+    summary: 'Smart Contract Engineer with extensive experience in Solidity, Foundry test suites, and gas optimization for EVM Layer 2 protocols.',
+    skills: ['Solidity', 'Foundry & Hardhat', 'EVM Chains', 'Smart Contract Auditing', 'OpenZeppelin Contracts'],
+    experience: [
+      {
+        role: 'Smart Contract Developer',
+        company: 'EtherFlow Protocol',
+        period: '2023 – Present',
+        bullets: [
+          'Authored decentralized asset escrow contracts handling over $4M in testnet transactions.',
+          'Passed third-party security audits with zero high-severity findings.'
+        ]
+      }
+    ],
+    education: 'B.S. in Software Engineering — UT Austin'
+  }
+];
+
+let allCandidates = loadCollection(CANDIDATES_KEY, defaultCandidateSeeds);
+let currentJob = null;
+let currentJobCandidates = [];
+
+function getQueryParam(key) {
+  return new URLSearchParams(window.location.search).get(key);
+}
+
+function initJobContext() {
+  const jobIdParam = getQueryParam('jobId');
+  const targetId = jobIdParam ? Number(jobIdParam) : 3;
+
+  const jobListings = loadCollection(JOBS_KEY, []);
+  currentJob = jobListings.find((j) => j.id === targetId) || {
+    id: targetId,
+    title: 'Senior AI Architect',
+    department: 'AI & Advanced Tech',
+    location: 'Bangalore, India',
+    type: 'Full-time',
+    status: 'published'
+  };
+
+  // Update Breadcrumb & Header
+  document.getElementById('breadcrumb-requisition-name').textContent = `${currentJob.title} — Applicants`;
+  document.getElementById('context-job-title').textContent = currentJob.title;
+  document.getElementById('context-job-id').textContent = `JOB-${100 + currentJob.id}`;
+  document.getElementById('context-job-dept').textContent = currentJob.department || 'Engineering';
+  document.getElementById('context-job-loc').textContent = currentJob.location || 'Remote';
+  document.getElementById('context-job-type').textContent = currentJob.type || 'Full-time';
+  
+  const statusEl = document.getElementById('context-job-status');
+  if (statusEl) {
+    statusEl.className = `status-badge ${currentJob.status === 'published' ? 'status-approved' : 'status-pending'}`;
+    statusEl.textContent = currentJob.status === 'published' ? 'Published' : (currentJob.status === 'draft' ? 'Draft' : 'Pending review');
+  }
+
+  // Filter candidates for this job
+  currentJobCandidates = allCandidates.filter((c) => c.jobId === currentJob.id);
+
+  // If no candidates found for this specific job ID, provide representative sample candidates
+  if (!currentJobCandidates.length) {
+    currentJobCandidates = allCandidates.slice(0, 3).map((c, i) => ({
+      ...c,
+      id: 900 + i,
+      jobId: currentJob.id
+    }));
+  }
+}
+
+function renderStats(items) {
+  const total = items.length;
+  const recent = items.slice(0, Math.min(items.length, 3)).length;
+
+  document.getElementById('stat-total-applicants').textContent = total;
+  document.getElementById('stat-resumes-count').textContent = total;
+  document.getElementById('stat-recent-count').textContent = recent;
+  document.getElementById('stat-verified-count').textContent = total;
+}
+
+function renderTable(items) {
+  const tbody = document.getElementById('applicants-table-body');
+  if (!tbody) return;
+
+  if (!items.length) {
+    tbody.innerHTML = `
+      <tr class="request-list-empty-row">
+        <td colspan="6" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
+          No candidate applications found matching your search.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = items.map((candidate, idx) => {
+    const avatarHtml = candidate.avatar
+      ? `<img src="${candidate.avatar}" alt="${candidate.name}" class="candidate-avatar">`
+      : `<div class="candidate-avatar-fallback">${candidate.name.split(' ').map((n) => n[0]).join('')}</div>`;
+
+    return `
+      <tr>
+        <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+        <td>
+          <div class="candidate-cell">
+            ${avatarHtml}
+            <span class="candidate-name">${candidate.name}</span>
+          </div>
+        </td>
+        <td>
+          <a href="mailto:${candidate.email}" class="contact-link" title="Email ${candidate.name}">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg>
+            <span>${candidate.email}</span>
+          </a>
+        </td>
+        <td>
+          <a href="tel:${candidate.phone}" class="contact-link" title="Call ${candidate.name}">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M222.37,158.46l-47.11-21.11a16,16,0,0,0-15.17,1.4L136.4,154.2a111.41,111.41,0,0,1-34.6-34.6l15.45-23.69a16,16,0,0,0,1.4-15.17L97.54,33.63A16,16,0,0,0,83,24H40A16,16,0,0,0,24,40,192.21,192.21,0,0,0,216,232a16,16,0,0,0,16-16V173A16,16,0,0,0,222.37,158.46ZM216,216A176.2,176.2,0,0,1,40,40H83l21.11,47.11L86.82,107a8,8,0,0,0-.7,8.23A127.38,127.38,0,0,0,140.77,169.88a8,8,0,0,0,8.23-.7l19.89-17.29L216,173Z"/></svg>
+            <span>${candidate.phone}</span>
+          </a>
+        </td>
+        <td style="color: var(--ink-secondary); font-size: var(--text-2xs); white-space: nowrap;">${candidate.appliedOn}</td>
+        <td style="text-align: center; white-space: nowrap;">
+          <button type="button" class="btn-resume-view" data-action="view-resume" data-id="${candidate.id}">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
+            View resume
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function openResumeModal(candidateId) {
+  const candidate = currentJobCandidates.find((c) => c.id === candidateId);
+  if (!candidate) return;
+
+  document.getElementById('resume-modal-title').textContent = `${candidate.name} — Resume`;
+  document.getElementById('modal-candidate-name').textContent = candidate.name;
+  document.getElementById('modal-candidate-email').textContent = candidate.email;
+  document.getElementById('modal-candidate-phone').textContent = candidate.phone;
+  document.getElementById('modal-candidate-location').textContent = candidate.location || 'Remote';
+
+  const avatarImg = document.getElementById('modal-candidate-avatar');
+  if (candidate.avatar) {
+    avatarImg.src = candidate.avatar;
+    avatarImg.style.display = 'block';
+  } else {
+    avatarImg.style.display = 'none';
+  }
+
+  document.getElementById('modal-resume-summary').textContent = candidate.summary || 'Experienced engineering specialist with demonstrated technical excellence.';
+
+  // Skills
+  const skillsContainer = document.getElementById('modal-resume-skills');
+  const skills = candidate.skills || ['Technical Leadership', 'Problem Solving', 'System Architecture'];
+  skillsContainer.innerHTML = skills.map((s) => `<span class="resume-skill-tag">${s}</span>`).join('');
+
+  // Experience
+  const expContainer = document.getElementById('modal-resume-experience');
+  if (Array.isArray(candidate.experience) && candidate.experience.length) {
+    expContainer.innerHTML = candidate.experience.map((exp) => `
+      <div class="resume-exp-item">
+        <div class="resume-exp-header">
+          <span class="resume-exp-role">${exp.role}</span>
+          <span class="resume-exp-period">${exp.period}</span>
+        </div>
+        <div class="resume-exp-company">${exp.company}</div>
+        <ul class="resume-exp-bullets">
+          ${exp.bullets.map((b) => `<li>${b}</li>`).join('')}
+        </ul>
+      </div>
+    `).join('');
+  } else {
+    expContainer.innerHTML = `<p class="resume-summary-text">Verified industry work history submitted.</p>`;
+  }
+
+  // Education
+  document.getElementById('modal-resume-education').textContent = candidate.education || 'Bachelor of Science in Computer Science';
+
+  // File info
+  document.getElementById('modal-resume-file-info').textContent = `${candidate.resumeFileName || 'resume.pdf'} (${candidate.resumeFileSize || '1.2 MB'}) • PDF Document`;
+
+  // Download Action
+  document.getElementById('download-resume-btn').onclick = () => {
+    showToast(`Downloading ${candidate.resumeFileName || 'candidate-resume.pdf'}...`, 'info');
+  };
+
+  openModal('view-resume-modal');
+}
+
+function exportApplicantsCSV(items) {
+  if (!items.length) {
+    showToast('No applicants to export.', 'error');
+    return;
+  }
+
+  const headers = ['S.No.', 'Candidate Name', 'Email ID', 'Phone No.', 'Applied On', 'Resume File'];
+  const rows = items.map((c, idx) => [
+    idx + 1,
+    `"${c.name}"`,
+    `"${c.email}"`,
+    `"${c.phone}"`,
+    `"${c.appliedOn}"`,
+    `"${c.resumeFileName || 'resume.pdf'}"`
+  ]);
+
+  const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', `applicants-${currentJob ? currentJob.title.toLowerCase().replace(/\s+/g, '-') : 'job'}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast('Applicants list exported to CSV!', 'success');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initJobContext();
+  renderStats(currentJobCandidates);
+  renderTable(currentJobCandidates);
+
+  const searchInput = document.getElementById('applicant-search');
+  const dateFilter = document.getElementById('applicant-date-filter');
+
+  function applyFilters() {
+    const q = (searchInput?.value || '').toLowerCase().trim();
+    const days = dateFilter?.value || 'all';
+
+    const filtered = currentJobCandidates.filter((c) => {
+      const matchSearch = !q ||
+        c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.phone.toLowerCase().includes(q);
+
+      let matchDate = true;
+      if (days !== 'all' && c.appliedISO) {
+        const itemDate = new Date(c.appliedISO);
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - Number(days));
+        matchDate = itemDate >= cutoff;
+      }
+
+      return matchSearch && matchDate;
+    });
+
+    renderStats(filtered);
+    renderTable(filtered);
+  }
+
+  searchInput?.addEventListener('input', applyFilters);
+  dateFilter?.addEventListener('change', applyFilters);
+
+  // Resume button click handler
+  document.getElementById('applicants-table-body')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action="view-resume"]');
+    if (btn) {
+      const id = Number(btn.dataset.id);
+      openResumeModal(id);
+    }
+  });
+
+  // Export CSV
+  document.getElementById('export-applicants-csv-btn')?.addEventListener('click', () => {
+    const q = (searchInput?.value || '').toLowerCase().trim();
+    const days = dateFilter?.value || 'all';
+
+    const filtered = currentJobCandidates.filter((c) => {
+      const matchSearch = !q ||
+        c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.phone.toLowerCase().includes(q);
+
+      let matchDate = true;
+      if (days !== 'all' && c.appliedISO) {
+        const itemDate = new Date(c.appliedISO);
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - Number(days));
+        matchDate = itemDate >= cutoff;
+      }
+
+      return matchSearch && matchDate;
+    });
+
+    exportApplicantsCSV(filtered);
+  });
+});

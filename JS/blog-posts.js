@@ -113,21 +113,25 @@ function getAvatarUrl(name, idx = 0) {
 
 function renderStats() {
   const publishedCount = blogPosts.filter((b) => b.status === 'published').length;
-  const pendingCount = blogPosts.filter((b) => b.status === 'pending').length;
   const draftCount = blogPosts.filter((b) => b.status === 'draft').length;
+  const authorsCount = new Set(blogPosts.filter((b) => b.status === 'published').map((b) => b.author)).size;
+  const totalDirectory = publishedCount + draftCount;
 
-  document.getElementById('stat-total-blogs').textContent = blogPosts.length;
-  document.getElementById('stat-published-blogs').textContent = publishedCount;
-  document.getElementById('stat-pending-blogs').textContent = pendingCount;
-  document.getElementById('stat-draft-blogs').textContent = draftCount;
+  const totalEl = document.getElementById('stat-total-blogs');
+  if (totalEl) totalEl.textContent = totalDirectory;
+
+  const pubEl = document.getElementById('stat-published-blogs');
+  if (pubEl) pubEl.textContent = publishedCount;
+
+  const draftEl = document.getElementById('stat-draft-blogs');
+  if (draftEl) draftEl.textContent = draftCount;
+
+  const authorsEl = document.getElementById('stat-authors-count');
+  if (authorsEl) authorsEl.textContent = authorsCount;
 }
 
 function renderActionCell(post) {
-  const isPending = post.status === 'pending';
-  const isRejected = post.status === 'rejected';
   const isPublished = post.status === 'published' || post.status === 'draft';
-
-  const reviewUrl = `add-blog-post.html?mode=review&id=${post.id}`;
   const editUrl = `add-blog-post.html?mode=edit&id=${post.id}`;
 
   return `
@@ -137,30 +141,10 @@ function renderActionCell(post) {
       </button>
 
       <div class="table-context-menu">
-        ${isPending ? `
-          <a href="${reviewUrl}" class="table-context-menu-item item-primary">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Review & Moderate
-          </a>
-        ` : ''}
-
-        ${isPublished ? `
-          <a href="${editUrl}" class="table-context-menu-item">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit Story
-          </a>
-        ` : ''}
-
-        ${isRejected ? `
-          <button type="button" class="table-context-menu-item" data-action="view-feedback" data-id="${post.id}">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Rejection Notes
-          </button>
-          <a href="${editUrl}" class="table-context-menu-item">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit & Resubmit
-          </a>
-        ` : ''}
+        <a href="${editUrl}" class="table-context-menu-item">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          Edit story
+        </a>
       </div>
     </div>
   `;
@@ -173,8 +157,8 @@ function renderTable(items) {
   if (!items.length) {
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
-        <td colspan="8" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
-          No blog posts found matching your search.
+        <td colspan="9" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
+          No published or draft blog posts found.
         </td>
       </tr>
     `;
@@ -223,7 +207,9 @@ function closeAllContextMenus() {
 
 function refreshAll() {
   blogPosts = loadCollection(BLOG_KEY, blogPostsSeed);
-  renderTable(blogPosts);
+  // Only show published and draft posts in the blog directory
+  const livePosts = blogPosts.filter((p) => p.status === 'published' || p.status === 'draft');
+  renderTable(livePosts);
   renderStats();
 }
 
@@ -238,7 +224,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const q = (searchInput?.value || '').toLowerCase().trim();
     const st = statusFilter?.value || 'all';
 
-    const filtered = blogPosts.filter((post) => {
+    // Only filter among published and draft posts
+    const livePosts = blogPosts.filter((p) => p.status === 'published' || p.status === 'draft');
+
+    const filtered = livePosts.filter((post) => {
       const matchSearch = !q || post.title.toLowerCase().includes(q) || post.author.toLowerCase().includes(q) || post.category.toLowerCase().includes(q);
       const matchStatus = st === 'all' || post.status === st;
       return matchSearch && matchStatus;

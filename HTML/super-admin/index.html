@@ -6,6 +6,8 @@
 <title>Super Admin Dashboard — FWC</title>
 <link rel="stylesheet" href="../../CSS/global.css">
 <link rel="stylesheet" href="../../CSS/super-admin-dashboard.css">
+<!-- ApexCharts for interactive telemetry & analytics -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
@@ -13,8 +15,14 @@
 <div class="dashboard-shell">
   <header class="dashboard-header">
     <div class="header-title-wrap">
-      <h1 class="header-title" id="page-heading">Super Admin Dashboard</h1>
-      <span class="header-subtitle">Welcome back, Taylor. System operational and content moderation queue active.</span>
+      <div class="flex items-center gap-3">
+        <h1 class="header-title" id="page-heading">Super Admin Dashboard</h1>
+        <div class="live-telemetry-badge" title="Real-time Google Analytics active connection">
+          <span class="live-pulse-dot"></span>
+          <span class="live-status-text"><strong id="live-visitors-count">42</strong> active visitors online</span>
+        </div>
+      </div>
+      <span class="header-subtitle">Google Analytics telemetry, candidate resume inflow, and content moderation queue.</span>
     </div>
     <div class="header-actions">
       <div class="popover-anchor">
@@ -73,6 +81,10 @@
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v41.61A184,184,0,0,1,128,136a184.07,184.07,0,0,1-88-22.38V72Zm0,128H40V131.64A200.19,200.19,0,0,0,128,152a200.25,200.25,0,0,0,88-20.37V200ZM104,112a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H112A8,8,0,0,1,104,112Z"/></svg>
           <span class="sidebar-nav-label">Job Listings</span>
         </a>
+        <a href="job-applicants.html" class="sidebar-nav-link">
+          <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.29a8,8,0,0,1-11.07-2.36,79.83,79.83,0,0,0-58.49-38.31,8,8,0,1,1,2.84-15.75,95.74,95.74,0,0,1,69.08,45.35A8,8,0,0,1,250.14,206.29ZM176,144a44,44,0,0,1-22.46-6.14,8,8,0,0,1,8.24-13.72,28,28,0,1,0,0-48.28,8,8,0,0,1-8.24-13.72A44,44,0,1,1,176,144Z"/></svg>
+          <span class="sidebar-nav-label">Candidates & Resumes</span>
+        </a>
         <a href="enquiry.html" class="sidebar-nav-link">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80ZM66.55,137.78,40,159.25V48H168v88H71.58A8,8,0,0,0,66.55,137.78ZM216,207.25l-26.55-21.47a8,8,0,0,0-5-1.78H88V152h80a16,16,0,0,0,16-16V96h32Z"/></svg>
           <span class="sidebar-nav-label">Enquiry</span>
@@ -92,57 +104,160 @@
   </aside>
 
   <main class="dashboard-main" id="main-content">
-    <div class="stat-cards-grid">
-      <div class="stat-card">
+    <!-- Google Analytics & Platform Performance Top KPI Cards (4 Cards) -->
+    <div class="stat-cards-grid analytics-kpi-grid">
+      <div class="stat-card analytics-stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Pending Blog Requests</span>
+          <span class="stat-card-label">Total website visitors</span>
           <span class="stat-card-icon icon-blue">
-            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM128,40a87.65,87.65,0,0,0-24,3.31V80h48V43.31A87.65,87.65,0,0,0,128,40Zm-40,56h80a133.72,133.72,0,0,1,4.78,32H83.22A133.72,133.72,0,0,1,88,96Zm-8,48h96a133.72,133.72,0,0,1-4.78,32H84.78A133.72,133.72,0,0,1,80,144Zm24,48h48v36.69A87.65,87.65,0,0,0,128,216a87.65,87.65,0,0,0,24-3.31V192Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-pending-blogs">3</span>
-        <span class="stat-card-subtext">Awaiting super admin review</span>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-header">
-          <span class="stat-card-label">Pending Job Requests</span>
-          <span class="stat-card-icon icon-warning">
-            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Z"/></svg>
+        <div class="stat-card-main-row">
+          <span class="stat-card-value" id="stat-total-visitors">48,250</span>
+          <span class="trend-badge positive" title="Versus previous 30-day period">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="10" height="10"><path d="M213.66,101.66l-80-80a8,8,0,0,0-11.32,0l-80,80a8,8,0,0,0,11.32,11.32L120,47.31V208a8,8,0,0,0,16,0V47.31l66.34,65.67a8,8,0,0,0,11.32-11.32Z"/></svg>
+            +14.2%
           </span>
         </div>
-        <span class="stat-card-value" id="stat-pending-jobs">2</span>
-        <span class="stat-card-subtext">Awaiting super admin review</span>
+        <div class="stat-card-subtext-row">
+          <span class="stat-card-subtext">39,120 unique landing users</span>
+          <span class="stat-card-micro-badge">GA4 live</span>
+        </div>
       </div>
-      <div class="stat-card">
+
+      <div class="stat-card analytics-stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Total Approval Requests</span>
+          <span class="stat-card-label">Resumes & applications</span>
+          <span class="stat-card-icon icon-success">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM152,43.31,196.69,88H152ZM200,216H56V40h80V88a8,8,0,0,0,8,8h56V216Zm-40-64a8,8,0,0,1-8,8H104a8,8,0,0,1,0-16h48A8,8,0,0,1,160,152Zm0,32a8,8,0,0,1-8,8H104a8,8,0,0,1,0-16h48A8,8,0,0,1,160,184Z"/></svg>
+          </span>
+        </div>
+        <div class="stat-card-main-row">
+          <span class="stat-card-value" id="stat-total-resumes">84</span>
+          <span class="trend-badge positive" title="Candidate resume inflow up 22.4%">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="10" height="10"><path d="M213.66,101.66l-80-80a8,8,0,0,0-11.32,0l-80,80a8,8,0,0,0,11.32,11.32L120,47.31V208a8,8,0,0,0,16,0V47.31l66.34,65.67a8,8,0,0,0,11.32-11.32Z"/></svg>
+            +22.4%
+          </span>
+        </div>
+        <div class="stat-card-subtext-row">
+          <span class="stat-card-subtext">4.8% landing-to-apply conversion</span>
+          <a href="job-applicants.html" class="stat-card-link">View all →</a>
+        </div>
+      </div>
+
+      <div class="stat-card analytics-stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-label">Client enquiry</span>
+          <span class="stat-card-icon icon-blue">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80ZM66.55,137.78,40,159.25V48H168v88H71.58A8,8,0,0,0,66.55,137.78ZM216,207.25l-26.55-21.47a8,8,0,0,0-5-1.78H88V152h80a16,16,0,0,0,16-16V96h32Z"/></svg>
+          </span>
+        </div>
+        <div class="stat-card-main-row">
+          <span class="stat-card-value" id="stat-total-enquiries">64</span>
+          <span class="trend-badge positive" title="Lead submissions up 16.1%">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="10" height="10"><path d="M213.66,101.66l-80-80a8,8,0,0,0-11.32,0l-80,80a8,8,0,0,0,11.32,11.32L120,47.31V208a8,8,0,0,0,16,0V47.31l66.34,65.67a8,8,0,0,0,11.32-11.32Z"/></svg>
+            +16.1%
+          </span>
+        </div>
+        <div class="stat-card-subtext-row">
+          <span class="stat-card-subtext">3.2% enterprise inquiry rate</span>
+          <a href="enquiry.html" class="stat-card-link">View leads →</a>
+        </div>
+      </div>
+
+      <div class="stat-card analytics-stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-label">Pending moderation</span>
           <span class="stat-card-icon icon-warning">
             <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-total-pending">5</span>
-        <span class="stat-card-subtext">Across all modules</span>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-header">
-          <span class="stat-card-label">Approved & Published</span>
-          <span class="stat-card-icon icon-success">
-            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
-          </span>
+        <div class="stat-card-main-row">
+          <span class="stat-card-value" id="stat-total-pending">5</span>
+          <span class="status-badge status-pending" style="font-size: 11px; padding: 3px 8px;">Action required</span>
         </div>
-        <span class="stat-card-value" id="stat-total-published">3</span>
-        <span class="stat-card-subtext">Live content on site</span>
+        <div class="stat-card-subtext-row">
+          <span class="stat-card-subtext" id="stat-pending-breakdown">3 blogs · 2 jobs awaiting review</span>
+          <a href="approval-requests.html" class="stat-card-link">Queue →</a>
+        </div>
       </div>
     </div>
 
+    <!-- Analytics Charts Section (Traffic Trends + Acquisition Channels) -->
+    <div class="analytics-charts-grid">
+      <!-- Main Visitor Traffic & Engagement Area Chart -->
+      <div class="card chart-card main-traffic-card">
+        <div class="card-header chart-card-header">
+          <div>
+            <h2 class="card-title">Website traffic & visitor engagement trends</h2>
+            <p class="card-subtitle">Daily landing users, unique visitors, and candidate application telemetry</p>
+          </div>
+          <div class="chart-controls-wrap">
+            <div class="time-pill-group" role="tablist" aria-label="Chart time range">
+              <button class="time-pill-btn" data-range="7d" type="button">7 days</button>
+              <button class="time-pill-btn active" data-range="30d" type="button">30 days</button>
+              <button class="time-pill-btn" data-range="90d" type="button">90 days</button>
+            </div>
+          </div>
+        </div>
+        <div class="chart-container-wrap">
+          <div id="chart-visitor-traffic" class="apex-chart-target"></div>
+        </div>
+      </div>
+
+      <!-- Traffic Acquisition Channels Donut Chart -->
+      <div class="card chart-card channels-card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Traffic acquisition channels</h2>
+            <p class="card-subtitle">GA4 default channel grouping and applicant volume</p>
+          </div>
+        </div>
+        <div class="chart-container-wrap chart-container-donut">
+          <div id="chart-traffic-channels" class="apex-chart-target"></div>
+        </div>
+        <div class="channel-breakdown-list">
+          <div class="channel-row">
+            <span class="channel-dot" style="background: #1662F0;"></span>
+            <span class="channel-name">Organic search</span>
+            <span class="channel-metric">20,265 (42%)</span>
+            <span class="channel-conversion">38 resumes</span>
+          </div>
+          <div class="channel-row">
+            <span class="channel-dot" style="background: #0284C7;"></span>
+            <span class="channel-name">LinkedIn & social</span>
+            <span class="channel-metric">13,510 (28%)</span>
+            <span class="channel-conversion">32 resumes</span>
+          </div>
+          <div class="channel-row">
+            <span class="channel-dot" style="background: #10B981;"></span>
+            <span class="channel-name">Direct traffic</span>
+            <span class="channel-metric">8,685 (18%)</span>
+            <span class="channel-conversion">10 resumes</span>
+          </div>
+          <div class="channel-row">
+            <span class="channel-dot" style="background: #F59E0B;"></span>
+            <span class="channel-name">Referrals & job boards</span>
+            <span class="channel-metric">5,790 (12%)</span>
+            <span class="channel-conversion">4 resumes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Moderation Queue & Notifications -->
     <div class="dashboard-grid">
       <section class="dashboard-grid-main">
         <div class="card card-table-wrap">
           <div class="card-header">
-            <span class="card-title">Pending Moderation Queue</span>
+            <div>
+              <h2 class="card-title">Pending moderation queue</h2>
+              <p class="card-subtitle">Content and job listings awaiting super admin review</p>
+            </div>
             <div class="flex items-center gap-2">
-              <a href="add-blog-post.html" class="btn btn-secondary btn-sm">+ Add Blog</a>
-              <a href="add-job-listing.html" class="btn btn-secondary btn-sm">+ Add Job</a>
+              <a href="add-blog-post.html" class="btn btn-secondary btn-sm">+ Add blog</a>
+              <a href="add-job-listing.html" class="btn btn-secondary btn-sm">+ Add job</a>
               <a href="approval-requests.html" class="btn btn-primary btn-sm">View full queue →</a>
             </div>
           </div>
@@ -150,7 +265,7 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th>Title / Role</th>
+                  <th>Title / role</th>
                   <th>Type</th>
                   <th>Submitted</th>
                   <th>Status</th>
@@ -166,16 +281,12 @@
       <aside class="dashboard-grid-aside">
         <div class="card">
           <div class="card-header">
-            <span class="card-title">Recent Notifications</span>
+            <div>
+              <h2 class="card-title">Recent notifications</h2>
+              <p class="card-subtitle">Real-time platform activity alerts</p>
+            </div>
           </div>
           <div class="notification-list" id="home-notification-list"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Admin Activity Log</span>
-          </div>
-          <div class="activity-timeline" id="activity-timeline"></div>
         </div>
       </aside>
     </div>

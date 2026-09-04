@@ -6,6 +6,100 @@
 
 const BLOG_KEY = 'fwc-blog-posts';
 
+const blogSeedItems = [
+  {
+    id: 1,
+    title: 'The Future of AI in Manufacturing Supply Chains',
+    author: 'Alex Kim',
+    category: 'AI & Tech Staffing',
+    submitted: 'Aug 25, 2026 · 02:30 PM',
+    submittedISO: '2026-08-25T14:30:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'As manufacturers increasingly turn to artificial intelligence to streamline operations, understanding how to integrate AI responsibly into supply chain management has never been more critical.',
+    content: `
+      <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">As manufacturers increasingly turn to artificial intelligence to streamline operations, understanding how to integrate AI responsibly into supply chain management has never been more critical.</p>
+      <h2>1. The Shift from Reactive to Predictive Supply Networks</h2>
+      <p>Traditional manufacturing logistics were built on static forecasting models that struggled with sudden macro volatility. By integrating generative AI, computer vision, and real-time telemetry from connected warehouse floors, enterprise leaders can now predict inventory bottlenecks up to 72 hours before they ripple into downstream assembly lines.</p>
+      <blockquote>"Autonomous supply chains do not replace human oversight; they augment supply chain officers with high-fidelity simulations of risk before capital is committed."</blockquote>
+      <h2>2. Addressing Data Silos Across Global Tier-1 Suppliers</h2>
+      <p>A primary failure point in supply chain AI deployments is fragmented vendor data. Modern data mesh architectures unify disparate ERP systems, providing a single operational dashboard for logistics coordinators and procurement teams.</p>
+      <h2>3. Regulatory Compliance & Carbon Footprint Optimization</h2>
+      <p>Beyond throughput efficiency, AI algorithms now optimize transport routes for minimal carbon emissions, ensuring tier-1 suppliers meet aggressive ESG reporting standards across North American and European logistics corridors.</p>
+    `
+  },
+  {
+    id: 2,
+    title: '5 Ways Predictive Maintenance Cuts Downtime',
+    author: 'Sam Patel',
+    category: 'Manufacturing',
+    submitted: 'Aug 24, 2026 · 11:15 AM',
+    submittedISO: '2026-08-24T11:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Unplanned downtime costs manufacturers millions each year. Predictive maintenance strategies powered by IoT sensors and machine learning are changing the equation.',
+    content: `
+      <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">Unplanned machinery outages remain one of the costliest line items in industrial operations. Predictive maintenance models powered by edge AI sensors are redefining reliability engineering.</p>
+      <h2>1. Continuous Acoustic & Vibration Telemetry</h2>
+      <p>High-frequency acoustic sensors detect micro-fractures in industrial turbine bearings weeks before thermal anomalies become visible to conventional monitoring systems.</p>
+      <blockquote>"Predictive telemetry converts catastrophic emergency line stops into scheduled off-peak maintenance intervals."</blockquote>
+      <h2>2. Automated Spare Parts Procurement</h2>
+      <p>When an IoT node detects anomalous vibration thresholds, ERP integration triggers an automated requisition for required replacement components, eliminating critical parts delivery lead times.</p>
+    `
+  },
+  {
+    id: 3,
+    title: 'Why Digital Twins Are the Next Big Thing',
+    author: 'Jordan Lee',
+    category: 'AI',
+    submitted: 'Aug 22, 2026 · 04:45 PM',
+    submittedISO: '2026-08-22T16:45:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Digital twin technology allows manufacturers to simulate, predict, and optimize physical processes before committing real-world resources.',
+    content: `
+      <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">Digital twin technology allows manufacturers to simulate, predict, and optimize physical processes before committing real-world resources.</p>
+      <h2>1. Real-Time Virtual Representation</h2>
+      <p>By creating virtual replicas of physical production assets, engineering pods can test edge-case stress scenarios without endangering floor personnel or interrupting live assembly lines.</p>
+      <blockquote>"Digital twins transform physical factories into computable software systems."</blockquote>
+      <h2>2. Accelerated R&D and Iteration Loops</h2>
+      <p>Product designers can prototype mechanical tolerances in cloud-rendered digital environments, compressing prototype iteration cycles from months to days.</p>
+    `
+  },
+  {
+    id: 4,
+    title: '5 Signs Your Enterprise Is Ready for AI Staffing',
+    author: 'Priya Nair',
+    category: 'AI & Tech Staffing',
+    submitted: 'Aug 18, 2026 · 09:20 AM',
+    submittedISO: '2026-08-18T09:20:00',
+    status: 'published',
+    actionTakenOn: 'Aug 19, 2026 · 10:05 AM',
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'AI-augmented staffing models are moving from pilot programs to core hiring strategy.'
+  },
+  {
+    id: 5,
+    title: 'Building Zero-Trust Teams for Engineering',
+    author: 'Marcus Vance',
+    category: 'Governance & Compliance',
+    submitted: 'Aug 12, 2026 · 01:10 PM',
+    submittedISO: '2026-08-12T13:10:00',
+    status: 'rejected',
+    actionTakenOn: 'Aug 13, 2026 · 03:25 PM',
+    feedback: 'Please include verified benchmark figures and engineering team citations before submitting for final review.',
+    coverImage: null,
+    excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.'
+  }
+];
+
 let coverImageUrl = null;
 let currentPost = null;
 let isReviewMode = false;
@@ -498,13 +592,32 @@ function setupReviewMode(post) {
   document.getElementById('review-meta-text').textContent = `Submitted by ${post.author} on ${post.submitted}`;
 
   // Populate Editor Fields
-  document.getElementById('story-title-input').value = post.title || '';
+  document.getElementById('story-title-input').value = post.title || 'Untitled Story';
+  document.getElementById('story-title-input').setAttribute('readonly', 'true');
+  document.getElementById('story-editor-body').setAttribute('contenteditable', 'false');
 
-  if (post.coverImage) setCoverImage(post.coverImage);
-  if (post.content) {
+  if (post.coverImage) {
+    setCoverImage(post.coverImage);
+  } else {
+    setCoverImage('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80');
+  }
+
+  if (post.content && post.content.length > 80) {
     document.getElementById('story-editor-body').innerHTML = post.content;
   } else if (post.sections && post.sections.length) {
     document.getElementById('story-editor-body').innerHTML = post.sections.map((s) => `<h2>${s.heading}</h2><p>${s.content}</p>`).join('');
+  } else {
+    const excerpt = post.excerpt || 'Exploring the intersection of modern technology and enterprise operational excellence.';
+    document.getElementById('story-editor-body').innerHTML = `
+      <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">${excerpt}</p>
+      <h2>1. The Shift from Reactive to Autonomous Operations</h2>
+      <p>Modern enterprise ecosystems require scalable architectures that adapt to real-time market shifts without introducing downtime or operational fragility. Deploying dedicated AI pods and automated telemetry enables engineers to proactively mitigate production bottlenecks before downstream impacts occur.</p>
+      <blockquote>"True digital resilience is built by empowering engineering teams with automated governance, transparent workflows, and continuous telemetry."</blockquote>
+      <h2>2. Implementation Architecture & Data Integrity</h2>
+      <p>By establishing rigorous quality gates, automated benchmarking, and transparent cross-functional collaboration, distributed engineering teams consistently achieve high-velocity outcomes while avoiding legacy technical debt.</p>
+      <h2>3. Leadership Recommendations & Next Steps</h2>
+      <p>Organizations should prioritize scalable delivery frameworks, cross-team transparency, and continuous feedback loops to ensure lasting business agility and measurable performance gains.</p>
+    `;
   }
 
   updateWordStats();
@@ -518,7 +631,7 @@ function setupReviewMode(post) {
 
   // Confirm Approve
   document.getElementById('confirm-approve-btn').addEventListener('click', () => {
-    let blogPosts = loadCollection(BLOG_KEY, []);
+    let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
     const match = blogPosts.find((p) => p.id === post.id);
     if (match) {
       match.status = 'published';
@@ -551,7 +664,7 @@ function setupReviewMode(post) {
       return;
     }
 
-    let blogPosts = loadCollection(BLOG_KEY, []);
+    let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
     const match = blogPosts.find((p) => p.id === post.id);
     if (match) {
       match.status = 'rejected';
@@ -584,34 +697,39 @@ document.addEventListener('DOMContentLoaded', () => {
   const mode = params.get('mode');
   const targetId = params.get('id') ? Number(params.get('id')) : null;
 
+  const blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
+
   if (targetId != null) {
-    const blogPosts = loadCollection(BLOG_KEY, []);
     currentPost = blogPosts.find((p) => p.id === targetId);
+  }
 
-    if (currentPost) {
-      if (mode === 'review') {
-        setupReviewMode(currentPost);
-      } else if (mode === 'edit') {
-        document.getElementById('page-title').textContent = `Edit — ${currentPost.title}`;
-        const currBreadcrumb = document.getElementById('breadcrumb-current');
-        if (currBreadcrumb) currBreadcrumb.textContent = 'Edit Blog Post';
-        const pageHeading = document.getElementById('page-heading');
-        if (pageHeading) pageHeading.textContent = 'Edit Blog Post';
-
-        document.getElementById('story-title-input').value = currentPost.title || '';
-
-        // Reveal delete button in creator mode when editing existing post
-        document.getElementById('delete-story-btn')?.classList.remove('hidden');
-
-        if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
-        if (currentPost.content) editor.innerHTML = currentPost.content;
-        else if (currentPost.sections && currentPost.sections.length) {
-          editor.innerHTML = currentPost.sections.map((s) => `<h2>${s.heading}</h2><p>${s.content}</p>`).join('');
-        }
-
-        updateWordStats();
-      }
+  if (mode === 'review') {
+    if (!currentPost) {
+      currentPost = blogPosts.find((p) => p.status === 'pending') || blogPosts[0] || blogSeedItems[0];
     }
+    setupReviewMode(currentPost);
+  } else if (mode === 'edit') {
+    if (!currentPost) {
+      currentPost = blogPosts[0] || blogSeedItems[0];
+    }
+    document.getElementById('page-title').textContent = `Edit — ${currentPost.title}`;
+    const currBreadcrumb = document.getElementById('breadcrumb-current');
+    if (currBreadcrumb) currBreadcrumb.textContent = 'Edit blog post';
+    const pageHeading = document.getElementById('page-heading');
+    if (pageHeading) pageHeading.textContent = 'Edit blog post';
+
+    document.getElementById('story-title-input').value = currentPost.title || '';
+
+    // Reveal delete button in creator mode when editing existing post
+    document.getElementById('delete-story-btn')?.classList.remove('hidden');
+
+    if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
+    if (currentPost.content) editor.innerHTML = currentPost.content;
+    else if (currentPost.sections && currentPost.sections.length) {
+      editor.innerHTML = currentPost.sections.map((s) => `<h2>${s.heading}</h2><p>${s.content}</p>`).join('');
+    }
+
+    updateWordStats();
   }
 
   // Set default starting paragraph if empty

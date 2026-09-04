@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog Posts — FWC Super Admin</title>
+<title>Job Applicants — FWC Super Admin</title>
 <link rel="stylesheet" href="../../CSS/global.css">
-<link rel="stylesheet" href="../../CSS/blog-posts.css">
+<link rel="stylesheet" href="../../CSS/job-applicants.css">
 </head>
 <body>
 <a href="#main-content" class="skip-link">Skip to content</a>
@@ -13,8 +13,8 @@
 <div class="dashboard-shell">
   <header class="dashboard-header">
     <div class="header-title-wrap">
-      <h1 class="header-title" id="page-heading">Blog Posts</h1>
-      <span class="header-subtitle">Manage all published, draft, pending, and rejected blog articles</span>
+      <h1 class="header-title" id="page-heading">Job Applicants</h1>
+      <span class="header-subtitle" id="page-subtitle">Candidate applications, verified contact details, and submitted resumes</span>
     </div>
     <div class="header-actions">
       <div class="popover-anchor">
@@ -65,11 +65,11 @@
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
           <span class="sidebar-nav-label">Approval Requests</span>
         </a>
-        <a href="blog-posts.html" class="sidebar-nav-link active">
+        <a href="blog-posts.html" class="sidebar-nav-link">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
           <span class="sidebar-nav-label">Blog Posts</span>
         </a>
-        <a href="job-listings.html" class="sidebar-nav-link">
+        <a href="job-listings.html" class="sidebar-nav-link active">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v41.61A184,184,0,0,1,128,136a184.07,184.07,0,0,1-88-22.38V72Zm0,128H40V131.64A200.19,200.19,0,0,0,128,152a200.25,200.25,0,0,0,88-20.37V200ZM104,112a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H112A8,8,0,0,1,104,112Z"/></svg>
           <span class="sidebar-nav-label">Job Listings</span>
         </a>
@@ -92,122 +92,183 @@
   </aside>
 
   <main class="dashboard-main" id="main-content">
+    <!-- Requisition Context Header Card with Left-Aligned Back Button -->
+    <div class="applicant-context-card">
+      <a href="job-listings.html" class="applicant-back-circle-btn" title="Back to job listings" aria-label="Back to job listings">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
+      </a>
+      <div class="applicant-context-main">
+        <div class="applicant-context-breadcrumbs">
+          <a href="index.html">Dashboard</a>
+          <span>/</span>
+          <a href="job-listings.html">Job listings</a>
+          <span>/</span>
+          <span id="breadcrumb-requisition-name">Applicants</span>
+        </div>
+        <div class="applicant-context-title-row">
+          <h2 class="applicant-context-role" id="context-job-title">Senior AI Architect</h2>
+          <div class="applicant-context-tags">
+            <span class="status-badge status-approved" id="context-job-status">Published</span>
+            <span class="applicant-meta-chip" id="context-job-id">JOB-103</span>
+            <span class="applicant-meta-chip" id="context-job-dept">AI & Advanced Tech</span>
+            <span class="applicant-meta-chip" id="context-job-loc">Bangalore, India</span>
+            <span class="applicant-meta-chip" id="context-job-type">Full-time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat KPI Metric Cards -->
     <div class="stat-cards-grid">
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Published articles</span>
-          <span class="stat-card-icon icon-success">
-            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,1,216,128Z"/></svg>
-          </span>
-        </div>
-        <span class="stat-card-value" id="stat-published-blogs">1</span>
-        <span class="stat-card-subtext">Live on site</span>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-header">
-          <span class="stat-card-label">Draft stories</span>
+          <span class="stat-card-label">Total applicants</span>
           <span class="stat-card-icon icon-blue">
-            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M227.31,73.37,182.63,28.69a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.62ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.69,147.31,64l24-24L216,84.69Z"/></svg>
-          </span>
-        </div>
-        <span class="stat-card-value" id="stat-draft-blogs">0</span>
-        <span class="stat-card-subtext">Unsubmitted work</span>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-header">
-          <span class="stat-card-label">Active contributors</span>
-          <span class="stat-card-icon icon-warning">
             <svg viewBox="0 0 256 256" fill="currentColor"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,44,44,0,1,0-16.34-84.87,8,8,0,1,1-5.92-14.85,60,60,0,1,1,28.76,113.82,95.84,95.84,0,0,1,73.64,41.2A8,8,0,0,1,250.14,206.7Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-authors-count">1</span>
-        <span class="stat-card-subtext">Published authors</span>
+        <span class="stat-card-value" id="stat-total-applicants">0</span>
+        <span class="stat-card-subtext">Received candidate profiles</span>
       </div>
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Total directory items</span>
-          <span class="stat-card-icon icon-blue">
-            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+          <span class="stat-card-label">Resumes submitted</span>
+          <span class="stat-card-icon icon-success">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-total-blogs">1</span>
-        <span class="stat-card-subtext">Live and draft entries</span>
+        <span class="stat-card-value" id="stat-resumes-count">0</span>
+        <span class="stat-card-subtext">PDF portfolios attached</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-label">Applied this week</span>
+          <span class="stat-card-icon icon-warning">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"/></svg>
+          </span>
+        </div>
+        <span class="stat-card-value" id="stat-recent-count">0</span>
+        <span class="stat-card-subtext">Recent submissions</span>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-card-label">Verified contact profiles</span>
+          <span class="stat-card-icon icon-blue">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg>
+          </span>
+        </div>
+        <span class="stat-card-value" id="stat-verified-count">0</span>
+        <span class="stat-card-subtext">Phone & email validated</span>
       </div>
     </div>
 
+    <!-- Filter & Search Bar -->
     <div class="inline-filter-bar">
       <div class="search-bar">
         <svg class="search-bar-icon" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,218.34,187.32,176a92.14,92.14,0,1,0-11.31,11.31l42.34,42.35a8,8,0,0,0,11.31-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
-        <input class="form-input" type="search" id="blog-search" placeholder="Search by title, creator, or category..." data-role="search-input">
+        <input class="form-input" type="search" id="applicant-search" placeholder="Search by candidate name, email, or phone...">
       </div>
-      <select class="form-select" id="blog-status-filter" data-role="status-filter">
-        <option value="all">All statuses</option>
-        <option value="published">Published</option>
-        <option value="draft">Draft</option>
-      </select>
-      <select class="form-select" id="blog-date-filter" data-role="date-filter">
+      <select class="form-select" id="applicant-date-filter">
         <option value="all">All time</option>
         <option value="7">Last 7 days</option>
         <option value="30">Last 30 days</option>
-        <option value="90">Last 90 days</option>
       </select>
       <div class="inline-filter-bar-actions">
-        <button class="btn btn-secondary" id="export-csv-btn" type="button">
+        <button class="btn btn-secondary" id="export-applicants-csv-btn" type="button">
           <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M224,152v56a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H208V152a8,8,0,0,1,16,0Zm-101.66,3.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,132.69V40a8,8,0,0,0-16,0v92.69L91.66,104.34a8,8,0,0,0-11.32,11.32Z"/></svg>
           Export CSV
         </button>
-        <a href="add-blog-post.html" class="btn btn-primary">+ Add blog post</a>
       </div>
     </div>
 
+    <!-- Applicants Table without Location or Status column -->
     <div class="table-wrapper">
-      <table class="table" id="blogs-table">
+      <table class="table" id="applicants-table">
         <thead>
           <tr>
             <th style="width: 50px;">S.No.</th>
-            <th>Post ID</th>
-            <th>Title</th>
-            <th>Created by</th>
-            <th>Category</th>
-            <th>Submitted</th>
-            <th>Status</th>
-            <th>Action taken on</th>
-            <th style="text-align: right;">Actions</th>
+            <th>Candidate name</th>
+            <th>Email ID</th>
+            <th>Phone no.</th>
+            <th>Applied on</th>
+            <th style="text-align: center;">Resume</th>
           </tr>
         </thead>
-        <tbody id="blog-posts-table-body"></tbody>
+        <tbody id="applicants-table-body"></tbody>
       </table>
     </div>
   </main>
 </div>
 
-<!-- Rejection Notes Modal -->
-<div class="modal-overlay" id="blog-feedback-modal" aria-hidden="true">
-  <div class="modal">
+<!-- Resume Preview Modal -->
+<div class="modal-overlay" id="view-resume-modal" aria-hidden="true">
+  <div class="modal resume-modal-dialog">
     <div class="modal-header">
       <div class="flex items-center gap-2">
-        <svg viewBox="0 0 256 256" fill="currentColor" width="18" height="18" style="color: var(--danger);"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
-        <span class="modal-title">Rejection Notes</span>
+        <svg viewBox="0 0 256 256" fill="currentColor" width="20" height="20" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
+        <span class="modal-title" id="resume-modal-title">Candidate Resume</span>
       </div>
-      <button class="modal-close" data-close-modal="blog-feedback-modal" aria-label="Close">
+      <button class="modal-close" data-close-modal="view-resume-modal" aria-label="Close">
         <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
       </button>
     </div>
-    <div class="modal-body">
-      <p style="font-size: var(--text-xs); color: var(--ink-secondary); margin-bottom: var(--space-3);" id="blog-feedback-title"></p>
-      <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius-md); padding: var(--space-3);">
-        <span style="font-size: var(--text-2xs); font-weight: var(--weight-bold); color: #991B1B; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">Reviewer Notes</span>
-        <p id="blog-feedback-text" style="font-size: var(--text-xs); color: #7F1D1D; line-height: 1.5; margin: 0;"></p>
+
+    <div class="resume-modal-body-scroll">
+      <!-- Candidate Profile Header -->
+      <div class="resume-candidate-hero">
+        <img src="" alt="Candidate" class="resume-candidate-avatar-lg" id="modal-candidate-avatar">
+        <div class="resume-candidate-hero-details">
+          <h3 class="resume-candidate-hero-name" id="modal-candidate-name">Candidate Name</h3>
+          <div class="resume-candidate-contact-grid">
+            <span id="modal-candidate-email">email@example.com</span>
+            <span>•</span>
+            <span id="modal-candidate-phone">+1 (555) 000-0000</span>
+            <span>•</span>
+            <span id="modal-candidate-location">Location</span>
+          </div>
+        </div>
       </div>
-      <div style="margin-top: var(--space-3); font-size: var(--text-2xs); color: var(--ink-muted);" id="blog-feedback-date"></div>
+
+      <!-- Resume Canvas -->
+      <div class="resume-paper-canvas">
+        <div class="resume-paper-section">
+          <div class="resume-section-title">Executive Summary</div>
+          <p class="resume-summary-text" id="modal-resume-summary">Candidate executive summary description...</p>
+        </div>
+
+        <div class="resume-paper-section">
+          <div class="resume-section-title">Key Technical Competencies</div>
+          <div class="resume-skills-wrap" id="modal-resume-skills"></div>
+        </div>
+
+        <div class="resume-paper-section">
+          <div class="resume-section-title">Professional Experience</div>
+          <div id="modal-resume-experience"></div>
+        </div>
+
+        <div class="resume-paper-section">
+          <div class="resume-section-title">Education & Credentials</div>
+          <p class="resume-summary-text" id="modal-resume-education">B.S. in Computer Science</p>
+        </div>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" data-close-modal="blog-feedback-modal">Close</button>
+
+    <div class="resume-modal-footer">
+      <div style="font-size: var(--text-2xs); color: var(--ink-muted);" id="modal-resume-file-info">
+        Verified applicant submission • PDF format
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-close-modal="view-resume-modal">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" id="download-resume-btn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M224,152v56a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V152a8,8,0,0,1,16,0v56H208V152a8,8,0,0,1,16,0Zm-101.66,3.66a8,8,0,0,0,11.32,0l40-40a8,8,0,0,0-11.32-11.32L136,132.69V40a8,8,0,0,0-16,0v92.69L91.66,104.34a8,8,0,0,0-11.32,11.32Z"/></svg>
+          Download PDF
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <script src="../../JS/global.js"></script>
-<script src="../../JS/blog-posts.js"></script>
+<script src="../../JS/job-applicants.js"></script>
 </body>
 </html>

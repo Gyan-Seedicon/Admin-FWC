@@ -1,11 +1,358 @@
 @import url('./global.css');
 
+/* ==========================================================================
+   Super Admin Dashboard — Refined Analytics & Platform Operations
+   Consistent Card Captions, Typography, Spacing & Streamlined Telemetry
+   ========================================================================== */
+
 /* --------------------------------------------------------------------------
-   01. Two-Column Dashboard Layout (Condensed)
+   01. Header Real-time Telemetry Pulse Badge
+   -------------------------------------------------------------------------- */
+.live-telemetry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  color: #065F46;
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: telemetry-pulse 1.8s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes telemetry-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.live-status-text {
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.01em;
+}
+
+.live-status-text strong {
+  font-weight: var(--weight-bold);
+  color: #047857;
+}
+
+/* --------------------------------------------------------------------------
+   02. Analytics KPI Stat Cards Grid (4 Columns)
+   -------------------------------------------------------------------------- */
+.analytics-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+@media (max-width: 1100px) {
+  .analytics-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .analytics-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.analytics-stat-card {
+  padding: 16px 18px;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--duration-fast) var(--ease-smooth), box-shadow var(--duration-fast) var(--ease-smooth);
+}
+
+.analytics-stat-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-hover);
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: 6px;
+}
+
+.stat-card-label {
+  font-size: 12.5px;
+  font-weight: var(--weight-semibold);
+  color: var(--ink-secondary);
+  line-height: var(--leading-snug);
+}
+
+.stat-card-main-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 4px 0 6px 0;
+}
+
+.stat-card-value {
+  font-size: 24px;
+  font-weight: var(--weight-bold);
+  color: var(--ink-primary);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: var(--weight-bold);
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.trend-badge.positive {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.trend-badge.neutral {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+}
+
+.stat-card-subtext-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: 2px;
+}
+
+.stat-card-subtext {
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.45;
+}
+
+.stat-card-micro-badge {
+  font-size: 10px;
+  font-weight: var(--weight-semibold);
+  background: var(--bg-hover);
+  color: var(--ink-muted);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-card);
+  white-space: nowrap;
+}
+
+.stat-card-link {
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  color: var(--brand-blue);
+  transition: color var(--duration-fast) var(--ease-smooth);
+  white-space: nowrap;
+}
+
+.stat-card-link:hover {
+  text-decoration: underline;
+  color: var(--brand-blue-hover);
+}
+
+/* --------------------------------------------------------------------------
+   03. Card Headers, Titles, Captions & Spacing
+   -------------------------------------------------------------------------- */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: var(--weight-bold);
+  color: var(--ink-primary);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.01em;
+}
+
+.card-subtitle,
+.chart-subtitle {
+  font-size: 12.5px;
+  font-weight: var(--weight-regular);
+  color: var(--ink-muted);
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   04. Analytics Charts Grid Layouts
+   -------------------------------------------------------------------------- */
+.analytics-charts-grid {
+  display: grid;
+  grid-template-columns: 1.85fr 1.15fr;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .analytics-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card .card-header {
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Time Range Pill Switcher */
+.time-pill-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-pill);
+  padding: 2px;
+}
+
+.time-pill-btn {
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: var(--weight-medium);
+  color: var(--ink-secondary);
+  border-radius: var(--radius-pill);
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.time-pill-btn:hover {
+  color: var(--ink-primary);
+}
+
+.time-pill-btn.active {
+  background: var(--brand-blue);
+  color: #FFFFFF;
+  font-weight: var(--weight-semibold);
+  box-shadow: 0 1px 3px rgba(22, 98, 240, 0.28);
+}
+
+/* Chart Canvas Wrappers */
+.chart-container-wrap {
+  flex: 1;
+  position: relative;
+  min-height: 380px;
+}
+
+.chart-container-donut {
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apex-chart-target {
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   05. Acquisition Channels List Breakdown
+   -------------------------------------------------------------------------- */
+.channel-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.channel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: var(--radius-xs);
+  transition: background-color var(--duration-fast) var(--ease-smooth);
+}
+
+.channel-row:hover {
+  background-color: var(--bg-hover);
+}
+
+.channel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.channel-name {
+  flex: 1;
+  font-weight: var(--weight-medium);
+  color: var(--ink-secondary);
+}
+
+.channel-metric {
+  font-weight: var(--weight-semibold);
+  color: var(--ink-primary);
+}
+
+.channel-conversion {
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  color: #059669;
+  background: #ECFDF5;
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  border: 1px solid #A7F3D0;
+}
+
+/* --------------------------------------------------------------------------
+   06. Moderation Queue & Notifications 2-Column Grid
    -------------------------------------------------------------------------- */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1.8fr 1fr;
+  grid-template-columns: 1.85fr 1.15fr;
   gap: var(--space-4);
   align-items: start;
 }
@@ -14,22 +361,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.card-title {
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  color: var(--ink-primary);
 }
 
 .card-table-wrap {
@@ -51,68 +382,4 @@
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-}
-
-/* --------------------------------------------------------------------------
-   02. Activity Timeline (Condensed)
-   -------------------------------------------------------------------------- */
-.activity-timeline {
-  display: flex;
-  flex-direction: column;
-}
-
-.activity-item {
-  position: relative;
-  display: flex;
-  gap: var(--space-2);
-  padding-left: var(--space-1);
-  padding-bottom: var(--space-3);
-}
-
-.activity-item:last-child {
-  padding-bottom: 0;
-}
-
-.activity-item:not(:last-child)::before {
-  content: '';
-  position: absolute;
-  left: 6px;
-  top: 16px;
-  bottom: -2px;
-  width: 2px;
-  background: var(--border-card);
-}
-
-.activity-dot {
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--brand-blue-light);
-  border: 2px solid var(--brand-blue);
-  margin-top: 2px;
-}
-
-.activity-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.activity-text {
-  font-size: var(--text-xs);
-  color: var(--ink-secondary);
-  line-height: var(--leading-snug);
-}
-
-.activity-actor {
-  font-weight: var(--weight-semibold);
-  color: var(--ink-primary);
-}
-
-.activity-time {
-  margin-top: 2px;
-  font-size: var(--text-2xs);
-  color: var(--ink-muted);
 }

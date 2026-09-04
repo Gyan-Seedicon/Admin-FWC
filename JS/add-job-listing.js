@@ -5,11 +5,131 @@
 
 const JOBS_KEY = 'fwc-job-listings';
 
+const jobSeedItems = [
+  {
+    id: 1,
+    title: 'Cybersecurity Analyst & Threat Hunting Specialist',
+    department: 'Cybersecurity & Governance',
+    location: 'Remote (US / CA)',
+    type: 'Full-time',
+    experience: '3–5 Years',
+    salary: '$125,000 – $150,000 / yr',
+    submitted: 'Aug 26, 2026 · 10:30 AM',
+    submittedISO: '2026-08-26T10:30:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'cybersecurity-analyst-jd.pdf',
+    pdfSize: '1.4 MB',
+    overview: 'We are seeking a Cybersecurity Analyst & Threat Hunting Specialist to safeguard client cloud ecosystems and spearhead continuous vulnerability mitigation across our distributed engineering engagements.',
+    responsibilities: [
+      'Perform continuous threat monitoring, log telemetry analysis, and vulnerability triage across multi-cloud environments.',
+      'Collaborate with DevSecOps engineers to integrate automated security scanning into CI/CD pipelines.',
+      'Lead incident response simulations and prepare audit-ready compliance documentation for SOC2 and HIPAA requirements.',
+      'Conduct regular penetration testing and threat intelligence briefings for enterprise executive teams.'
+    ],
+    skills: ['SIEM & Splunk', 'AWS Security Hub', 'SOC2 / HIPAA Compliance', 'Threat Hunting', 'Zero-Trust Architecture', 'Python Scripting']
+  },
+  {
+    id: 2,
+    title: 'Senior Technology Consultant & Cloud Architect',
+    department: 'Technology Consulting',
+    location: 'Alhambra, CA (Hybrid)',
+    type: 'Full-time',
+    experience: '5–8 Years',
+    salary: '$140,000 – $170,000 / yr',
+    submitted: 'Aug 23, 2026 · 03:15 PM',
+    submittedISO: '2026-08-23T15:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'technology-consultant-jd.pdf',
+    pdfSize: '1.1 MB',
+    overview: 'Join our technology consulting practice to advise enterprise manufacturing and fintech clients on legacy technology modernization, architecture roadmaps, and digital transformation.',
+    responsibilities: [
+      'Conduct comprehensive technical discovery workshops with client CTO and engineering leadership.',
+      'Formulate multi-year digital transformation roadmaps and cost-benefit trade-off analyses.',
+      'Oversee agile pod delivery handoffs and ensure strategic architecture alignment.',
+      'Mentor junior consultants and deliver high-impact executive technology presentations.'
+    ],
+    skills: ['Enterprise Architecture', 'Cloud Migration Strategy', 'Client Advisory', 'Agile Pod Leadership', 'Financial Modeling', 'Kubernetes']
+  },
+  {
+    id: 3,
+    title: 'Senior AI Architect & GenAI Team Lead',
+    department: 'AI & Advanced Tech',
+    location: 'Bangalore, India',
+    type: 'Full-time',
+    experience: 'Staff / Lead (8+ Yrs)',
+    salary: '$160,000 – $195,000 / yr',
+    submitted: 'Aug 10, 2026 · 09:00 AM',
+    submittedISO: '2026-08-10T09:00:00',
+    status: 'published',
+    actionTakenOn: 'Aug 11, 2026 · 11:40 AM',
+    feedback: null,
+    pdfName: 'senior-ai-architect-jd.pdf',
+    pdfSize: '2.1 MB',
+    overview: 'Lead the design of AI-augmented delivery pods for enterprise manufacturing and fintech clients, setting technical direction across a growing generative AI architecture team.',
+    responsibilities: [
+      'Design scalable LLM pipelines, Retrieval-Augmented Generation (RAG) frameworks, and vector index architectures.',
+      'Establish enterprise model governance, evaluation metrics, and responsible AI safety guardrails.',
+      'Mentor senior machine learning engineers and present architecture strategies to Fortune 500 stakeholders.'
+    ],
+    skills: ['LLM Orchestration', 'RAG Architectures', 'PyTorch / LangChain', 'Vector Databases', 'MLOps on Kubernetes']
+  },
+  {
+    id: 4,
+    title: 'Cloud Infrastructure Engineer',
+    department: 'Cloud Services',
+    location: 'Alhambra, CA',
+    type: 'Full-time',
+    experience: '3–5 Years',
+    salary: '$115,000 – $140,000 / yr',
+    submitted: 'Aug 08, 2026 · 02:20 PM',
+    submittedISO: '2026-08-08T14:20:00',
+    status: 'published',
+    actionTakenOn: 'Aug 09, 2026 · 04:15 PM',
+    feedback: null,
+    pdfName: 'cloud-infrastructure-engineer-jd.pdf',
+    pdfSize: '1.3 MB',
+    overview: 'Design and operate scalable cloud infrastructure for enterprise clients, with a focus on reliability, cost efficiency, infrastructure-as-code, and secure-by-default deployments.',
+    responsibilities: [
+      'Author and maintain reusable Terraform / Terragrunt modules for multi-account AWS and Azure setups.',
+      'Implement automated observability dashboards and alerting systems via Prometheus, Grafana, and Datadog.',
+      'Lead infrastructure cost optimization sprints reducing cloud spend by up to 25%.'
+    ],
+    skills: ['Terraform', 'Kubernetes / EKS', 'AWS & Azure', 'CI/CD Pipelines', 'Prometheus & Grafana']
+  },
+  {
+    id: 5,
+    title: 'Blockchain Developer & Smart Contract Auditor',
+    department: 'Blockchain',
+    location: 'Remote',
+    type: 'Contract',
+    experience: 'Entry Level (1–2 Yrs)',
+    salary: '$90,000 – $110,000 / yr',
+    submitted: 'Aug 02, 2026 · 11:00 AM',
+    submittedISO: '2026-08-02T11:00:00',
+    status: 'rejected',
+    actionTakenOn: 'Aug 03, 2026 · 01:30 PM',
+    feedback: 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.',
+    pdfName: 'blockchain-developer-jd.pdf',
+    pdfSize: '950 KB',
+    overview: 'Build and audit smart-contract based solutions for enterprise clients exploring blockchain-backed supply chain traceability and verifiable digital credentials.',
+    responsibilities: [
+      'Write, test, and formally verify Solidity smart contracts on EVM-compatible layer 1 and layer 2 networks.',
+      'Collaborate with security auditors to remediate gas optimization and reentrancy vulnerabilities.',
+      'Integrate Web3 RPC endpoints into client React frontends.'
+    ],
+    skills: ['Solidity', 'EVM Chains', 'Hardhat & Foundry', 'Smart Contract Auditing', 'Web3.js']
+  }
+];
+
 let editingJob = null;
 let isReviewMode = false;
 let uploadedPdfName = 'cybersecurity-analyst-jd.pdf';
 let uploadedPdfSize = '1.4 MB';
-let currentSkills = ['SIEM & Splunk', 'AWS Security', 'SOC2 / HIPAA Compliance', 'Zero-Trust'];
+let currentSkills = ['SIEM & Splunk', 'AWS Security Hub', 'SOC2 / HIPAA Compliance', 'Zero-Trust Architecture'];
 let currentJobForShare = null;
 
 const sampleAutoFillPresets = [
@@ -374,11 +494,11 @@ function setupReviewMode(job) {
 
     // Populate Read-Only Typography Content
     document.getElementById('review-display-title').textContent = job.title;
-    document.getElementById('review-val-loc').textContent = job.location || 'Remote';
+    document.getElementById('review-val-loc').textContent = job.location || 'Remote (US / CA)';
     document.getElementById('review-val-type').textContent = job.type || 'Full-time';
     document.getElementById('review-val-exp').textContent = job.experience || '3–5 Years';
 
-    document.getElementById('review-display-overview').textContent = job.overview || job.excerpt || 'No specific overview provided.';
+    document.getElementById('review-display-overview').textContent = job.overview || job.excerpt || 'We are seeking an experienced specialist to safeguard client infrastructure, architect zero-trust boundaries, and lead delivery across our distributed engineering teams.';
 
     // Bullets
     const respContainer = document.getElementById('review-display-responsibilities');
@@ -388,16 +508,21 @@ function setupReviewMode(job) {
       const parts = job.responsibilities.split(/•|\n/).map((s) => s.trim()).filter(Boolean);
       respContainer.innerHTML = parts.map((r) => `<li>${r}</li>`).join('');
     } else {
-      respContainer.innerHTML = `<li>Standard role responsibilities apply.</li>`;
+      respContainer.innerHTML = `
+        <li>Lead continuous telemetry monitoring and proactive vulnerability mitigation across multi-cloud environments.</li>
+        <li>Collaborate with DevSecOps engineers to integrate automated security scanning into CI/CD pipelines.</li>
+        <li>Prepare audit-ready compliance documentation for SOC2 and HIPAA regulatory standards.</li>
+        <li>Conduct regular threat modeling workshops and briefings for enterprise client stakeholders.</li>
+      `;
     }
 
     // Skills
     const skillsContainer = document.getElementById('review-display-skills');
-    const skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['Technical Leadership', 'Problem Solving', 'Domain Expertise'];
+    const skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['SIEM & Splunk', 'AWS Security Hub', 'SOC2 / HIPAA Compliance', 'Zero-Trust Architecture', 'Threat Hunting'];
     skillsContainer.innerHTML = skills.map((s) => `<span class="job-skill-tag">${s}</span>`).join('');
 
     // PDF
-    const pdfName = job.pdfName || 'job-specification.pdf';
+    const pdfName = job.pdfName || 'cybersecurity-analyst-jd.pdf';
     const pdfSize = job.pdfSize || '1.4 MB';
     document.getElementById('review-display-pdf-name').textContent = `${pdfName} (${pdfSize})`;
   }
@@ -569,45 +694,50 @@ document.addEventListener('DOMContentLoaded', () => {
   const mode = params.get('mode');
   const targetId = params.get('id') ? Number(params.get('id')) : null;
 
+  const jobListings = loadCollection(JOBS_KEY, jobSeedItems);
+
   if (targetId != null) {
-    const jobListings = loadCollection(JOBS_KEY, []);
     editingJob = jobListings.find((j) => j.id === targetId);
+  }
 
-    if (editingJob) {
-      if (mode === 'review') {
-        setupReviewMode(editingJob);
-      } else if (mode === 'edit') {
-        document.getElementById('page-title').textContent = `Edit requisition — ${editingJob.title}`;
-        document.getElementById('page-heading').textContent = 'Edit job posting';
-        document.getElementById('breadcrumb-current').textContent = 'Edit job posting';
-        document.getElementById('job-header-heading').textContent = `Edit: ${editingJob.title}`;
-        document.getElementById('job-header-subtext').textContent = 'Modify requisition details and requirements.';
+  if (mode === 'review') {
+    if (!editingJob) {
+      editingJob = jobListings.find((j) => j.status === 'pending') || jobListings[0] || jobSeedItems[0];
+    }
+    setupReviewMode(editingJob);
+  } else if (mode === 'edit') {
+    if (!editingJob) {
+      editingJob = jobListings[0] || jobSeedItems[0];
+    }
+    document.getElementById('page-title').textContent = `Edit requisition — ${editingJob.title}`;
+    document.getElementById('page-heading').textContent = 'Edit job posting';
+    document.getElementById('breadcrumb-current').textContent = 'Edit job posting';
+    document.getElementById('job-header-heading').textContent = `Edit: ${editingJob.title}`;
+    document.getElementById('job-header-subtext').textContent = 'Modify requisition details and requirements.';
 
-        // Reveal delete button in creator mode when editing existing requisition
-        document.getElementById('delete-job-btn')?.classList.remove('hidden');
+    // Reveal delete button in creator mode when editing existing requisition
+    document.getElementById('delete-job-btn')?.classList.remove('hidden');
 
-        document.getElementById('job-title-input').value = editingJob.title || '';
-        document.getElementById('field-location').value = editingJob.location || 'Remote';
-        document.getElementById('field-type').value = editingJob.type || 'Full-time';
-        document.getElementById('field-experience').value = editingJob.experience || 'Mid-Level (3–5 Yrs)';
-        document.getElementById('field-overview').value = editingJob.overview || editingJob.excerpt || '';
+    document.getElementById('job-title-input').value = editingJob.title || '';
+    document.getElementById('field-location').value = editingJob.location || 'Remote';
+    document.getElementById('field-type').value = editingJob.type || 'Full-time';
+    document.getElementById('field-experience').value = editingJob.experience || 'Mid-Level (3–5 Yrs)';
+    document.getElementById('field-overview').value = editingJob.overview || editingJob.excerpt || '';
 
-        if (Array.isArray(editingJob.responsibilities)) {
-          document.getElementById('field-responsibilities').value = editingJob.responsibilities.map((r) => `• ${r}`).join('\n');
-        }
+    if (Array.isArray(editingJob.responsibilities)) {
+      document.getElementById('field-responsibilities').value = editingJob.responsibilities.map((r) => `• ${r}`).join('\n');
+    }
 
-        if (Array.isArray(editingJob.skills)) {
-          currentSkills = [...editingJob.skills];
-          renderSkills();
-        }
+    if (Array.isArray(editingJob.skills)) {
+      currentSkills = [...editingJob.skills];
+      renderSkills();
+    }
 
-        if (editingJob.pdfName) {
-          uploadedPdfName = editingJob.pdfName;
-          uploadedPdfSize = editingJob.pdfSize || '1.2 MB';
-          document.getElementById('attached-pdf-name').textContent = uploadedPdfName;
-          document.getElementById('attached-pdf-size').textContent = `${uploadedPdfSize} · Attached PDF Specification`;
-        }
-      }
+    if (editingJob.pdfName) {
+      uploadedPdfName = editingJob.pdfName;
+      uploadedPdfSize = editingJob.pdfSize || '1.2 MB';
+      document.getElementById('attached-pdf-name').textContent = uploadedPdfName;
+      document.getElementById('attached-pdf-size').textContent = `${uploadedPdfSize} · Attached PDF Specification`;
     }
   }
 

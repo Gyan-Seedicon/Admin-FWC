@@ -248,12 +248,13 @@ function renderStats() {
   const pendingBlogs = blogItems.filter((b) => b.status === 'pending').length;
   const pendingJobs = jobItems.filter((j) => j.status === 'pending').length;
   const totalPending = pendingBlogs + pendingJobs;
-  const totalPublished = blogItems.filter((b) => b.status === 'published').length + jobItems.filter((j) => j.status === 'published').length;
+  const totalRejected = blogItems.filter((b) => b.status === 'rejected').length + jobItems.filter((j) => j.status === 'rejected').length;
 
   document.getElementById('stat-pending-blogs').textContent = pendingBlogs;
   document.getElementById('stat-pending-jobs').textContent = pendingJobs;
   document.getElementById('stat-total-pending').textContent = totalPending;
-  document.getElementById('stat-total-published').textContent = totalPublished;
+  const rejectedEl = document.getElementById('stat-total-rejected');
+  if (rejectedEl) rejectedEl.textContent = totalRejected;
 }
 
 function renderActionCell(type, item) {
@@ -279,34 +280,34 @@ function renderActionCell(type, item) {
         ${isPending ? `
           <a href="${reviewUrl}" class="table-context-menu-item item-primary">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Review & Take Action
+            Review & take action
           </a>
           ${type === 'job' ? `
             <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="10" r="3"/></svg>
-              View Full JD
+              View full JD
             </button>
           ` : ''}
           <div class="table-context-menu-divider"></div>
           <button type="button" class="table-context-menu-item" data-action="quick-approve" data-type="${type}" data-id="${item.id}" style="color: var(--success);">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"/></svg>
-            Quick Approve
+            Quick approve
           </button>
           <button type="button" class="table-context-menu-item item-danger" data-action="quick-reject" data-type="${type}" data-id="${item.id}">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Reject Request
+            Reject request
           </button>
         ` : ''}
 
         ${isPublished ? `
           <a href="${editUrl}" class="table-context-menu-item">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit Content
+            Edit content
           </a>
           ${type === 'job' ? `
             <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-              View Full JD
+              View full JD
             </button>
           ` : ''}
         ` : ''}
@@ -314,17 +315,17 @@ function renderActionCell(type, item) {
         ${isRejected ? `
           <button type="button" class="table-context-menu-item" data-action="view-feedback" data-type="${type}" data-id="${item.id}">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Rejection Notes
+            Rejection notes
           </button>
           ${type === 'job' ? `
             <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-              View Full JD
+              View full JD
             </button>
           ` : ''}
           <a href="${editUrl}" class="table-context-menu-item">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit & Resubmit
+            Edit & resubmit
           </a>
         ` : ''}
       </div>
@@ -336,7 +337,21 @@ function renderBlogsTable() {
   const tbody = document.getElementById('blogs-table-body');
   if (!tbody) return;
 
-  tbody.innerHTML = blogItems.map((blog, idx) => `
+  // Only show blog items that are pending or rejected in approval requests
+  const moderationBlogs = blogItems.filter((b) => b.status === 'pending' || b.status === 'rejected');
+
+  if (!moderationBlogs.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="9" style="text-align: center; color: var(--ink-muted); padding: var(--space-8);">
+          No pending or rejected blog posts in moderation queue.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = moderationBlogs.map((blog, idx) => `
     <tr data-status="${blog.status}" data-id="${blog.id}" style="cursor: pointer;" title="Click to review or edit story">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">POST-${100 + blog.id}</td>
@@ -360,7 +375,21 @@ function renderJobsTable() {
   const tbody = document.getElementById('jobs-table-body');
   if (!tbody) return;
 
-  tbody.innerHTML = jobItems.map((job, idx) => `
+  // Only show job items that are pending or rejected in approval requests
+  const moderationJobs = jobItems.filter((j) => j.status === 'pending' || j.status === 'rejected');
+
+  if (!moderationJobs.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="11" style="text-align: center; color: var(--ink-muted); padding: var(--space-8);">
+          No pending or rejected job requisitions in moderation queue.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = moderationJobs.map((job, idx) => `
     <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view job requisition details">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">JOB-${100 + job.id}</td>

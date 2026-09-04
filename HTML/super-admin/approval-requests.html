@@ -96,7 +96,7 @@
     <div class="stat-cards-grid">
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Pending Blog Requests</span>
+          <span class="stat-card-label">Pending blog requests</span>
           <span class="stat-card-icon icon-blue">
             <svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
           </span>
@@ -106,7 +106,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Pending Job Requests</span>
+          <span class="stat-card-label">Pending job requests</span>
           <span class="stat-card-icon icon-warning">
             <svg viewBox="0 0 256 256" fill="currentColor"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Z"/></svg>
           </span>
@@ -116,7 +116,7 @@
       </div>
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Total Approval Requests</span>
+          <span class="stat-card-label">Total pending review</span>
           <span class="stat-card-icon icon-warning">
             <svg viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
           </span>
@@ -126,31 +126,31 @@
       </div>
       <div class="stat-card">
         <div class="stat-card-header">
-          <span class="stat-card-label">Approved & Published</span>
-          <span class="stat-card-icon icon-success">
-            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,1,216,128Z"/></svg>
+          <span class="stat-card-label">Rejected submissions</span>
+          <span class="stat-card-icon icon-danger">
+            <svg viewBox="0 0 256 256" fill="currentColor"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
           </span>
         </div>
-        <span class="stat-card-value" id="stat-total-published">3</span>
-        <span class="stat-card-subtext">Live on corporate site</span>
+        <span class="stat-card-value" id="stat-total-rejected">2</span>
+        <span class="stat-card-subtext">Awaiting revision</span>
       </div>
     </div>
 
     <div class="tabs-wrapper">
       <div class="tabs-header">
         <div class="tabs-nav" role="tablist" aria-label="Approval categories">
-          <button class="tab-btn active" role="tab" aria-selected="true" data-tab="panel-blogs">Blog Posts</button>
-          <button class="tab-btn" role="tab" aria-selected="false" data-tab="panel-jobs">Job Postings</button>
+          <button class="tab-btn active" role="tab" aria-selected="true" data-tab="panel-blogs">Blog posts</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-tab="panel-jobs">Job postings</button>
         </div>
         <div class="flex items-center gap-2">
           <span class="status-badge status-pending" id="requests-count-badge" style="padding: 4px 9px;">5 pending</span>
           <a href="add-blog-post.html" class="btn btn-secondary">
             <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></svg>
-            Add Blog Post
+            Add blog post
           </a>
           <a href="add-job-listing.html" class="btn btn-primary">
             <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></svg>
-            Add Job Posting
+            Add job posting
           </a>
         </div>
       </div>
@@ -164,11 +164,11 @@
                 <th style="width: 50px;">S.No.</th>
                 <th>Post ID</th>
                 <th>Title</th>
-                <th>Created By</th>
+                <th>Created by</th>
                 <th>Category</th>
-                <th>Submitted On</th>
+                <th>Submitted on</th>
                 <th>Status</th>
-                <th>Action Taken On</th>
+                <th>Action taken on</th>
                 <th style="text-align: right;">Action</th>
               </tr>
             </thead>
@@ -185,13 +185,13 @@
               <tr>
                 <th style="width: 50px;">S.No.</th>
                 <th>Job ID</th>
-                <th>Job Title</th>
-                <th>Submitted On</th>
+                <th>Job title</th>
+                <th>Submitted on</th>
                 <th>Status</th>
-                <th>Action Taken On</th>
-                <th style="text-align: center;">Job Description</th>
+                <th>Action taken on</th>
+                <th style="text-align: center;">Job description</th>
                 <th>Location</th>
-                <th>Job Type</th>
+                <th>Job type</th>
                 <th>Experience</th>
                 <th style="text-align: right;">Action</th>
               </tr>

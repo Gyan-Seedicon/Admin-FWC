@@ -1,5 +1,34 @@
 @import url('./global.css');
 
-/* Job Listings has no styles of its own beyond global.css — it's built
-   entirely from the shared shell, card, table, status-filter, and modal
-   components. Kept as its own file so it can grow independently later. */
+/* ==========================================================================
+   Job Listings & Applicants Pill Badges
+   ========================================================================== */
+
+.applicant-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: var(--weight-semibold);
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  white-space: nowrap;
+}
+
+.applicant-pill-badge:hover {
+  background: #DBEAFE;
+  border-color: #93C5FD;
+  color: #1E40AF;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.12);
+}
+
+.applicant-pill-badge svg {
+  color: #2563EB;
+  flex-shrink: 0;
+}

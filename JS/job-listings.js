@@ -14,6 +14,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$120,000 – $145,000 / yr',
+    applicantsCount: 14,
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
     status: 'pending',
@@ -37,6 +38,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '$135,000 – $165,000 / yr',
+    applicantsCount: 8,
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
     status: 'pending',
@@ -60,6 +62,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '$160,000 – $195,000 / yr',
+    applicantsCount: 22,
     submitted: 'Aug 10, 2026 · 09:00 AM',
     submittedISO: '2026-08-10T09:00:00',
     status: 'published',
@@ -83,6 +86,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$115,000 – $140,000 / yr',
+    applicantsCount: 16,
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
     status: 'published',
@@ -106,6 +110,7 @@ const jobListingsSeed = [
     type: 'Contract',
     experience: 'Entry Level (1–2 Yrs)',
     salary: '$90,000 – $110,000 / yr',
+    applicantsCount: 6,
     submitted: 'Aug 02, 2026 · 11:00 AM',
     submittedISO: '2026-08-02T11:00:00',
     status: 'rejected',
@@ -141,21 +146,24 @@ const STATUS_LABEL = {
 
 function renderStats() {
   const publishedCount = jobListings.filter((j) => j.status === 'published').length;
-  const pendingCount = jobListings.filter((j) => j.status === 'pending').length;
   const draftCount = jobListings.filter((j) => j.status === 'draft').length;
+  const deptCount = new Set(jobListings.filter((j) => j.status === 'published').map((j) => j.department).filter(Boolean)).size;
+  const totalDirectory = publishedCount + draftCount;
 
-  document.getElementById('stat-total-jobs').textContent = jobListings.length;
-  document.getElementById('stat-published-jobs').textContent = publishedCount;
-  document.getElementById('stat-pending-jobs').textContent = pendingCount;
-  document.getElementById('stat-draft-jobs').textContent = draftCount;
+  const totalEl = document.getElementById('stat-total-jobs');
+  if (totalEl) totalEl.textContent = totalDirectory;
+
+  const pubEl = document.getElementById('stat-published-jobs');
+  if (pubEl) pubEl.textContent = publishedCount;
+
+  const draftEl = document.getElementById('stat-draft-jobs');
+  if (draftEl) draftEl.textContent = draftCount;
+
+  const deptEl = document.getElementById('stat-departments-count');
+  if (deptEl) deptEl.textContent = deptCount;
 }
 
 function renderActionCell(job) {
-  const isPending = job.status === 'pending';
-  const isRejected = job.status === 'rejected';
-  const isPublished = job.status === 'published' || job.status === 'draft';
-
-  const reviewUrl = `add-job-listing.html?mode=review&id=${job.id}`;
   const editUrl = `add-job-listing.html?mode=edit&id=${job.id}`;
 
   return `
@@ -167,33 +175,12 @@ function renderActionCell(job) {
       <div class="table-context-menu">
         <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${job.id}">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-          View Full JD
+          View full JD
         </button>
-
-        ${isPending ? `
-          <a href="${reviewUrl}" class="table-context-menu-item item-primary">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Review & Moderate
-          </a>
-        ` : ''}
-
-        ${isPublished ? `
-          <a href="${editUrl}" class="table-context-menu-item">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit Requisition
-          </a>
-        ` : ''}
-
-        ${isRejected ? `
-          <button type="button" class="table-context-menu-item" data-action="view-feedback" data-id="${job.id}">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Rejection Notes
-          </button>
-          <a href="${editUrl}" class="table-context-menu-item">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit & Resubmit
-          </a>
-        ` : ''}
+        <a href="${editUrl}" class="table-context-menu-item">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          Edit requisition
+        </a>
       </div>
     </div>
   `;
@@ -206,8 +193,8 @@ function renderTable(items) {
   if (!items.length) {
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
-        <td colspan="11" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
-          No job listings found matching your search.
+        <td colspan="12" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
+          No published or draft job requisitions found.
         </td>
       </tr>
     `;
@@ -223,6 +210,12 @@ function renderTable(items) {
       </td>
       <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
       <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
+      <td style="text-align: center; white-space: nowrap;">
+        <a href="job-applicants.html?jobId=${job.id}" class="applicant-pill-badge" title="View candidates applied for ${job.title}">
+          <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.7a8,8,0,0,1-11.07-2.33A79.83,79.83,0,0,0,172,168a8,8,0,0,1,0-16,44,44,0,1,0-16.34-84.87,8,8,0,1,1-5.92-14.85,60,60,0,1,1,28.76,113.82,95.84,95.84,0,0,1,73.64,41.2A8,8,0,0,1,250.14,206.7Z"/></svg>
+          <span>${job.applicantsCount || 12} candidates</span>
+        </a>
+      </td>
       <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
       <td style="text-align: center; white-space: nowrap;">
         <button class="btn btn-sm btn-secondary" data-action="view-jd" data-id="${job.id}" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
@@ -314,7 +307,9 @@ function closeAllContextMenus() {
 
 function refreshAll() {
   jobListings = loadCollection(JOBS_KEY, jobListingsSeed);
-  renderTable(jobListings);
+  // Only show published and draft jobs in the job listings directory
+  const liveJobs = jobListings.filter((j) => j.status === 'published' || j.status === 'draft');
+  renderTable(liveJobs);
   renderStats();
 }
 
@@ -329,7 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const q = (searchInput?.value || '').toLowerCase().trim();
     const st = statusFilter?.value || 'all';
 
-    const filtered = jobListings.filter((job) => {
+    // Only filter among published and draft jobs
+    const liveJobs = jobListings.filter((j) => j.status === 'published' || j.status === 'draft');
+
+    const filtered = liveJobs.filter((job) => {
       const matchSearch = !q ||
         job.title.toLowerCase().includes(q) ||
         (job.department && job.department.toLowerCase().includes(q)) ||
