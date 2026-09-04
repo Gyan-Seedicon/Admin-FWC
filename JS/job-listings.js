@@ -147,8 +147,8 @@ const STATUS_LABEL = {
 function renderStats() {
   const publishedCount = jobListings.filter((j) => j.status === 'published').length;
   const draftCount = jobListings.filter((j) => j.status === 'draft').length;
-  const deptCount = new Set(jobListings.filter((j) => j.status === 'published').map((j) => j.department).filter(Boolean)).size;
   const totalDirectory = publishedCount + draftCount;
+  const totalCandidates = jobListings.reduce((sum, j) => sum + (Number(j.applicantsCount) || 12), 0);
 
   const totalEl = document.getElementById('stat-total-jobs');
   if (totalEl) totalEl.textContent = totalDirectory;
@@ -159,8 +159,8 @@ function renderStats() {
   const draftEl = document.getElementById('stat-draft-jobs');
   if (draftEl) draftEl.textContent = draftCount;
 
-  const deptEl = document.getElementById('stat-departments-count');
-  if (deptEl) deptEl.textContent = deptCount;
+  const candEl = document.getElementById('stat-total-candidates');
+  if (candEl) candEl.textContent = totalCandidates;
 }
 
 function renderActionCell(job) {
@@ -173,10 +173,6 @@ function renderActionCell(job) {
       </button>
 
       <div class="table-context-menu">
-        <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${job.id}">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-          View full JD
-        </button>
         <a href="${editUrl}" class="table-context-menu-item">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
           Edit requisition
@@ -201,8 +197,10 @@ function renderTable(items) {
     return;
   }
 
-  tbody.innerHTML = items.map((job, idx) => `
-    <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view job description">
+  tbody.innerHTML = items.map((job, idx) => {
+    const editUrl = `add-job-listing.html?mode=edit&id=${job.id}`;
+    return `
+    <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view and edit job requisition">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">JOB-${100 + job.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
@@ -218,71 +216,18 @@ function renderTable(items) {
       </td>
       <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
       <td style="text-align: center; white-space: nowrap;">
-        <button class="btn btn-sm btn-secondary" data-action="view-jd" data-id="${job.id}" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
+        <a href="${editUrl}" class="btn btn-sm btn-secondary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; text-decoration: none;">
           <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
           View JD
-        </button>
+        </a>
       </td>
       <td style="white-space: nowrap;">${job.location || 'Remote'}</td>
       <td><span style="font-size: var(--text-2xs); color: var(--ink-secondary); font-weight: 500; white-space: nowrap;">${job.type}</span></td>
       <td><span class="status-badge status-draft" style="white-space: nowrap;">${job.experience || '3–5 Years'}</span></td>
       <td class="table-actions" style="text-align: right;">${renderActionCell(job)}</td>
     </tr>
-  `).join('');
-}
-
-function openViewJdModal(id) {
-  const job = jobListings.find((j) => j.id === id);
-  if (!job) return;
-
-  document.getElementById('jd-modal-role-title').textContent = `${job.title} — Job Description`;
-  document.getElementById('jd-chip-id').textContent = `JOB-${100 + job.id}`;
-  document.getElementById('jd-chip-dept').textContent = job.department || 'Engineering';
-  document.getElementById('jd-chip-loc').textContent = job.location || 'Remote';
-  document.getElementById('jd-chip-type').textContent = job.type;
-  document.getElementById('jd-chip-exp').textContent = job.experience || '3–5 Years';
-  document.getElementById('jd-chip-salary').textContent = job.salary || 'Competitive';
-
-  const badgeEl = document.getElementById('jd-modal-status-badge');
-  badgeEl.className = `status-badge ${STATUS_BADGE_CLASS[job.status]}`;
-  badgeEl.textContent = STATUS_LABEL[job.status];
-
-  // Overview
-  document.getElementById('jd-modal-overview').textContent = job.overview || job.excerpt || 'No specific overview provided.';
-
-  // Responsibilities
-  const respContainer = document.getElementById('jd-modal-responsibilities');
-  if (Array.isArray(job.responsibilities) && job.responsibilities.length) {
-    respContainer.innerHTML = job.responsibilities.map((r) => `<li>${r}</li>`).join('');
-  } else {
-    respContainer.innerHTML = `<li>${job.excerpt || 'Standard role responsibilities apply.'}</li>`;
-  }
-
-  // Skills
-  const skillsContainer = document.getElementById('jd-modal-skills');
-  const skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['Problem Solving', 'Team Leadership', 'Domain Expertise'];
-  skillsContainer.innerHTML = skills.map((s) => `<span class="job-skill-tag">${s}</span>`).join('');
-
-  // PDF
-  const pdfName = job.pdfName || 'job-specification.pdf';
-  const pdfSize = job.pdfSize || '1.4 MB';
-  document.getElementById('jd-modal-pdf-text').textContent = `${pdfName} (${pdfSize})`;
-
-  // Action Button
-  const actionBtn = document.getElementById('jd-modal-action-btn');
-  if (job.status === 'pending') {
-    actionBtn.textContent = 'Review & Take Action →';
-    actionBtn.href = `add-job-listing.html?mode=review&id=${job.id}`;
-    actionBtn.className = 'btn btn-primary';
-    actionBtn.style.display = 'inline-flex';
-  } else {
-    actionBtn.textContent = 'Edit Requisition →';
-    actionBtn.href = `add-job-listing.html?mode=edit&id=${job.id}`;
-    actionBtn.className = 'btn btn-secondary';
-    actionBtn.style.display = 'inline-flex';
-  }
-
-  openModal('view-jd-modal');
+    `;
+  }).join('');
 }
 
 function handleViewFeedback(id) {
@@ -366,12 +311,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 2. View JD Button
+    // 2. View JD Button -> Edit Requisition
     const jdBtn = e.target.closest('[data-action="view-jd"]');
     if (jdBtn) {
       closeAllContextMenus();
       const id = Number(jdBtn.dataset.id);
-      openViewJdModal(id);
+      window.location.href = `add-job-listing.html?mode=edit&id=${id}`;
       return;
     }
 
@@ -384,11 +329,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 4. Row click navigation -> Open View JD modal
+    // 4. Row click navigation -> Open Edit Requisition UI
     const row = e.target.closest('#job-listings-table-body tr[data-id]');
     if (row && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
       const id = Number(row.dataset.id);
-      openViewJdModal(id);
+      window.location.href = `add-job-listing.html?mode=edit&id=${id}`;
       return;
     }
 

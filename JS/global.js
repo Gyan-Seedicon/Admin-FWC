@@ -558,12 +558,57 @@ function exportTableToCSV(tableOrSelector, filename = 'export.csv') {
 }
 
 // --------------------------------------------------------------------------
+// 08a. Dynamic Sidebar Nav Counts
+// --------------------------------------------------------------------------
+
+function updateSidebarCounts() {
+  try {
+    const blogPosts = typeof loadCollection === 'function' ? loadCollection('fwc-blog-posts', []) : [];
+    const jobListings = typeof loadCollection === 'function' ? loadCollection('fwc-job-listings', []) : [];
+    const enquiries = typeof loadCollection === 'function' ? loadCollection('fwc-enquiries', []) : [];
+    const candidates = typeof loadCollection === 'function' ? loadCollection('fwc-job-candidates', []) : [];
+
+    const pendingBlogs = blogPosts.length ? blogPosts.filter((b) => b.status === 'pending').length : 3;
+    const pendingJobs = jobListings.length ? jobListings.filter((j) => j.status === 'pending').length : 2;
+    const approvalCount = pendingBlogs + pendingJobs;
+
+    const blogsTotal = blogPosts.length ? blogPosts.length : 4;
+    const jobsTotal = jobListings.length ? jobListings.length : 5;
+    const enquiriesTotal = enquiries.length ? enquiries.length : 5;
+    const candidatesTotal = candidates.length ? candidates.length : 84;
+
+    document.querySelectorAll('.sidebar-nav-scroll .sidebar-nav-link').forEach((link) => {
+      const href = (link.getAttribute('href') || '').split('?')[0];
+      const labelEl = link.querySelector('.sidebar-nav-label');
+      if (!labelEl) return;
+
+      if (href.includes('approval-requests.html')) {
+        labelEl.textContent = `Approval requests (${approvalCount})`;
+      } else if (href.includes('blog-posts.html')) {
+        labelEl.textContent = `Blog posts (${blogsTotal})`;
+      } else if (href.includes('job-listings.html')) {
+        labelEl.textContent = `Job listings (${jobsTotal})`;
+      } else if (href.includes('job-applicants.html')) {
+        labelEl.textContent = `Candidates & resumes (${candidatesTotal})`;
+      } else if (href.includes('enquiry.html')) {
+        labelEl.textContent = `Enquiry (${enquiriesTotal})`;
+      } else if (href.includes('index.html') || href === '/' || href === '') {
+        labelEl.textContent = `Dashboard`;
+      }
+    });
+  } catch (err) {
+    console.warn('updateSidebarCounts warning:', err);
+  }
+}
+
+// --------------------------------------------------------------------------
 // 09. Auto Initialization
 // --------------------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
   initSidebarActiveLink();
   initSidebarCollapse();
+  updateSidebarCounts();
   initPopover('user-menu-trigger', 'user-menu-panel');
   initPopover('notifications-trigger', 'notifications-panel');
   initModalTriggers();

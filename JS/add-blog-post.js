@@ -511,7 +511,7 @@ function saveStory(status = 'pending') {
   const excerpt = textContent.slice(0, 240);
   const sections = extractSectionsFromHtml(htmlContent);
 
-  let blogPosts = loadCollection(BLOG_KEY, []);
+  let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
   const nowFormatted = formatNow();
   const today = new Date();
   const submittedISO = today.toISOString().slice(0, 10);
@@ -589,12 +589,12 @@ function setupReviewMode(post) {
   document.getElementById('review-status-bar')?.classList.remove('hidden');
   document.getElementById('review-nav-actions')?.classList.remove('hidden');
 
-  document.getElementById('review-meta-text').textContent = `Submitted by ${post.author} on ${post.submitted}`;
+  document.getElementById('review-meta-text').textContent = `Submitted by ${post.author || 'Author'} on ${post.submitted}`;
 
-  // Populate Editor Fields
+  // Populate Editor Fields (Keep editable so super admin can review and fix typos)
   document.getElementById('story-title-input').value = post.title || 'Untitled Story';
-  document.getElementById('story-title-input').setAttribute('readonly', 'true');
-  document.getElementById('story-editor-body').setAttribute('contenteditable', 'false');
+  document.getElementById('story-title-input').removeAttribute('readonly');
+  document.getElementById('story-editor-body').setAttribute('contenteditable', 'true');
 
   if (post.coverImage) {
     setCoverImage(post.coverImage);
@@ -621,63 +621,62 @@ function setupReviewMode(post) {
   }
 
   updateWordStats();
+}
 
-  // Approve Trigger
-  document.getElementById('review-approve-btn').addEventListener('click', () => {
-    document.getElementById('approve-story-title').textContent = post.title;
-    document.getElementById('approve-story-author').textContent = post.author || 'Author';
-    openModal('approve-confirm-modal');
-  });
+function handleApproveStory() {
+  const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
+  if (!post) return;
 
-  // Confirm Approve
-  document.getElementById('confirm-approve-btn').addEventListener('click', () => {
-    let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
-    const match = blogPosts.find((p) => p.id === post.id);
-    if (match) {
-      match.status = 'published';
-      match.actionTakenOn = formatNow();
-      match.feedback = null;
-      saveCollection(BLOG_KEY, blogPosts);
-    }
-    closeModal('approve-confirm-modal');
-    showToast(`Article approved and published live to the website!`, 'success');
-    setTimeout(() => {
-      window.location.href = 'approval-requests.html';
-    }, 450);
-  });
+  const title = document.getElementById('story-title-input').value.trim() || post.title;
+  const htmlContent = document.getElementById('story-editor-body').innerHTML;
+  const textContent = stripHtml(htmlContent);
 
-  // Reject Trigger
-  document.getElementById('review-reject-btn').addEventListener('click', () => {
-    document.getElementById('reject-story-title').textContent = post.title;
-    document.getElementById('rejection-reason-input').value = '';
-    document.getElementById('rejection-error-text').style.display = 'none';
-    openModal('reject-feedback-modal');
-  });
+  let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
+  const match = blogPosts.find((p) => p.id === post.id);
+  if (match) {
+    match.title = title;
+    match.content = htmlContent;
+    match.excerpt = textContent.slice(0, 240);
+    match.sections = extractSectionsFromHtml(htmlContent);
+    if (coverImageUrl) match.coverImage = coverImageUrl;
+    match.status = 'published';
+    match.actionTakenOn = formatNow();
+    match.feedback = null;
+    saveCollection(BLOG_KEY, blogPosts);
+  }
 
-  // Confirm Reject
-  document.getElementById('confirm-reject-btn').addEventListener('click', () => {
-    const reasonInput = document.getElementById('rejection-reason-input');
-    const reason = reasonInput.value.trim();
-    if (!reason) {
-      document.getElementById('rejection-error-text').style.display = 'block';
-      reasonInput.focus();
-      return;
-    }
+  closeModal('approve-confirm-modal');
+  showToast('Article approved and published live to the website!', 'success');
+  setTimeout(() => {
+    window.location.href = isReviewMode ? 'approval-requests.html' : 'blog-posts.html';
+  }, 450);
+}
 
-    let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
-    const match = blogPosts.find((p) => p.id === post.id);
-    if (match) {
-      match.status = 'rejected';
-      match.actionTakenOn = formatNow();
-      match.feedback = reason;
-      saveCollection(BLOG_KEY, blogPosts);
-    }
-    closeModal('reject-feedback-modal');
-    showToast(`Rejected "${post.title}" and sent feedback notes.`, 'error');
-    setTimeout(() => {
-      window.location.href = 'approval-requests.html';
-    }, 450);
-  });
+function handleRejectStory() {
+  const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
+  if (!post) return;
+
+  const reasonInput = document.getElementById('rejection-reason-input');
+  const reason = reasonInput.value.trim();
+  if (!reason) {
+    document.getElementById('rejection-error-text').style.display = 'block';
+    reasonInput.focus();
+    return;
+  }
+
+  let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
+  const match = blogPosts.find((p) => p.id === post.id);
+  if (match) {
+    match.status = 'rejected';
+    match.actionTakenOn = formatNow();
+    match.feedback = reason;
+    saveCollection(BLOG_KEY, blogPosts);
+  }
+  closeModal('reject-feedback-modal');
+  showToast(`Rejected "${post.title}" and sent feedback notes.`, 'error');
+  setTimeout(() => {
+    window.location.href = 'approval-requests.html';
+  }, 450);
 }
 
 // --------------------------------------------------------------------------
@@ -703,12 +702,12 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPost = blogPosts.find((p) => p.id === targetId);
   }
 
-  if (mode === 'review') {
+  if (mode === 'review' || (currentPost && currentPost.status === 'pending')) {
     if (!currentPost) {
       currentPost = blogPosts.find((p) => p.status === 'pending') || blogPosts[0] || blogSeedItems[0];
     }
     setupReviewMode(currentPost);
-  } else if (mode === 'edit') {
+  } else if (mode === 'edit' || currentPost) {
     if (!currentPost) {
       currentPost = blogPosts[0] || blogSeedItems[0];
     }
@@ -773,6 +772,33 @@ document.addEventListener('DOMContentLoaded', () => {
     saveStory('pending');
   });
 
+  // Review Mode: Approve Button Trigger
+  document.getElementById('review-approve-btn')?.addEventListener('click', () => {
+    const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
+    const title = document.getElementById('story-title-input').value.trim() || (post ? post.title : 'Story');
+    const author = post?.author || 'Author';
+    document.getElementById('approve-story-title').textContent = title;
+    const authorEl = document.getElementById('approve-story-author');
+    if (authorEl) authorEl.textContent = author;
+    openModal('approve-confirm-modal');
+  });
+
+  // Review Mode: Confirm Approve
+  document.getElementById('confirm-approve-btn')?.addEventListener('click', handleApproveStory);
+
+  // Review Mode: Reject Button Trigger
+  document.getElementById('review-reject-btn')?.addEventListener('click', () => {
+    const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
+    const title = document.getElementById('story-title-input').value.trim() || (post ? post.title : 'Story');
+    document.getElementById('reject-story-title').textContent = title;
+    document.getElementById('rejection-reason-input').value = '';
+    document.getElementById('rejection-error-text').style.display = 'none';
+    openModal('reject-feedback-modal');
+  });
+
+  // Review Mode: Confirm Reject
+  document.getElementById('confirm-reject-btn')?.addEventListener('click', handleRejectStory);
+
   // Delete Handlers
   document.getElementById('delete-story-btn')?.addEventListener('click', triggerDeleteFlow);
   document.getElementById('review-delete-btn')?.addEventListener('click', triggerDeleteFlow);
@@ -780,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Confirm Delete in Modal
   document.getElementById('confirm-delete-btn')?.addEventListener('click', () => {
     if (currentPost && currentPost.id) {
-      let blogPosts = loadCollection(BLOG_KEY, []);
+      let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
       blogPosts = blogPosts.filter((p) => p.id !== currentPost.id);
       saveCollection(BLOG_KEY, blogPosts);
     }

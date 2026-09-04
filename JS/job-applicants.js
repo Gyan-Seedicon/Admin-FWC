@@ -430,10 +430,17 @@ function renderStats(items) {
   const total = items.length;
   const recent = items.slice(0, Math.min(items.length, 3)).length;
 
-  document.getElementById('stat-total-applicants').textContent = total;
-  document.getElementById('stat-resumes-count').textContent = total;
-  document.getElementById('stat-recent-count').textContent = recent;
-  document.getElementById('stat-verified-count').textContent = total;
+  const totalEl = document.getElementById('stat-total-applicants');
+  if (totalEl) totalEl.textContent = total;
+
+  const resumesEl = document.getElementById('stat-resumes-count');
+  if (resumesEl) resumesEl.textContent = total;
+
+  const recentEl = document.getElementById('stat-recent-count');
+  if (recentEl) recentEl.textContent = recent;
+
+  const verEl = document.getElementById('stat-verified-count');
+  if (verEl) verEl.textContent = total;
 }
 
 function renderTable(items) {
@@ -479,72 +486,14 @@ function renderTable(items) {
         </td>
         <td style="color: var(--ink-secondary); font-size: var(--text-2xs); white-space: nowrap;">${candidate.appliedOn}</td>
         <td style="text-align: center; white-space: nowrap;">
-          <button type="button" class="btn-resume-view" data-action="view-resume" data-id="${candidate.id}">
+          <a href="../../assets/resume.png" target="_blank" rel="noopener noreferrer" class="btn-resume-view" title="Open resume for ${candidate.name} in new tab">
             <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
-            View resume
-          </button>
+            <span>View resume</span>
+          </a>
         </td>
       </tr>
     `;
   }).join('');
-}
-
-function openResumeModal(candidateId) {
-  const candidate = currentJobCandidates.find((c) => c.id === candidateId);
-  if (!candidate) return;
-
-  document.getElementById('resume-modal-title').textContent = `${candidate.name} — Resume`;
-  document.getElementById('modal-candidate-name').textContent = candidate.name;
-  document.getElementById('modal-candidate-email').textContent = candidate.email;
-  document.getElementById('modal-candidate-phone').textContent = candidate.phone;
-  document.getElementById('modal-candidate-location').textContent = candidate.location || 'Remote';
-
-  const avatarImg = document.getElementById('modal-candidate-avatar');
-  if (candidate.avatar) {
-    avatarImg.src = candidate.avatar;
-    avatarImg.style.display = 'block';
-  } else {
-    avatarImg.style.display = 'none';
-  }
-
-  document.getElementById('modal-resume-summary').textContent = candidate.summary || 'Experienced engineering specialist with demonstrated technical excellence.';
-
-  // Skills
-  const skillsContainer = document.getElementById('modal-resume-skills');
-  const skills = candidate.skills || ['Technical Leadership', 'Problem Solving', 'System Architecture'];
-  skillsContainer.innerHTML = skills.map((s) => `<span class="resume-skill-tag">${s}</span>`).join('');
-
-  // Experience
-  const expContainer = document.getElementById('modal-resume-experience');
-  if (Array.isArray(candidate.experience) && candidate.experience.length) {
-    expContainer.innerHTML = candidate.experience.map((exp) => `
-      <div class="resume-exp-item">
-        <div class="resume-exp-header">
-          <span class="resume-exp-role">${exp.role}</span>
-          <span class="resume-exp-period">${exp.period}</span>
-        </div>
-        <div class="resume-exp-company">${exp.company}</div>
-        <ul class="resume-exp-bullets">
-          ${exp.bullets.map((b) => `<li>${b}</li>`).join('')}
-        </ul>
-      </div>
-    `).join('');
-  } else {
-    expContainer.innerHTML = `<p class="resume-summary-text">Verified industry work history submitted.</p>`;
-  }
-
-  // Education
-  document.getElementById('modal-resume-education').textContent = candidate.education || 'Bachelor of Science in Computer Science';
-
-  // File info
-  document.getElementById('modal-resume-file-info').textContent = `${candidate.resumeFileName || 'resume.pdf'} (${candidate.resumeFileSize || '1.2 MB'}) • PDF Document`;
-
-  // Download Action
-  document.getElementById('download-resume-btn').onclick = () => {
-    showToast(`Downloading ${candidate.resumeFileName || 'candidate-resume.pdf'}...`, 'info');
-  };
-
-  openModal('view-resume-modal');
 }
 
 function exportApplicantsCSV(items) {
@@ -609,15 +558,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchInput?.addEventListener('input', applyFilters);
   dateFilter?.addEventListener('change', applyFilters);
-
-  // Resume button click handler
-  document.getElementById('applicants-table-body')?.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-action="view-resume"]');
-    if (btn) {
-      const id = Number(btn.dataset.id);
-      openResumeModal(id);
-    }
-  });
 
   // Export CSV
   document.getElementById('export-applicants-csv-btn')?.addEventListener('click', () => {

@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/HTML/super-admin/index.html",
+      "permanent": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 /* ==========================================================================
    Add / Edit / Review Job Requisition — Canvas & Management
-   Auto-Fill Details, LinkedIn Social Share Composer & Markdown Generator
+   Auto-Fill Details, LinkedIn Social Share Composer & Smart Editable UI
    ========================================================================== */
 
 const JOBS_KEY = 'fwc-job-listings';
@@ -9,10 +9,10 @@ const jobSeedItems = [
   {
     id: 1,
     title: 'Cybersecurity Analyst & Threat Hunting Specialist',
-    department: 'Cybersecurity & Governance',
-    location: 'Remote (US / CA)',
+    department: 'Cybersecurity',
+    location: 'Remote',
     type: 'Full-time',
-    experience: '3–5 Years',
+    experience: 'Mid-Level (3–5 Yrs)',
     salary: '$125,000 – $150,000 / yr',
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
@@ -34,9 +34,9 @@ const jobSeedItems = [
     id: 2,
     title: 'Senior Technology Consultant & Cloud Architect',
     department: 'Technology Consulting',
-    location: 'Alhambra, CA (Hybrid)',
+    location: 'Alhambra, CA',
     type: 'Full-time',
-    experience: '5–8 Years',
+    experience: 'Senior (5–8 Yrs)',
     salary: '$140,000 – $170,000 / yr',
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
@@ -83,7 +83,7 @@ const jobSeedItems = [
     department: 'Cloud Services',
     location: 'Alhambra, CA',
     type: 'Full-time',
-    experience: '3–5 Years',
+    experience: 'Mid-Level (3–5 Yrs)',
     salary: '$115,000 – $140,000 / yr',
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
@@ -291,27 +291,42 @@ function initPdfUploader() {
     if (file) {
       uploadedPdfName = file.name;
       uploadedPdfSize = `${(file.size / (1024 * 1024)).toFixed(1)} MB`;
-      document.getElementById('attached-pdf-name').textContent = uploadedPdfName;
-      document.getElementById('attached-pdf-size').textContent = `${uploadedPdfSize} · Attached PDF document`;
+      const nameEl = document.getElementById('attached-pdf-name');
+      const sizeEl = document.getElementById('attached-pdf-size');
+      if (nameEl) nameEl.textContent = uploadedPdfName;
+      if (sizeEl) sizeEl.textContent = `${uploadedPdfSize} · Attached PDF specification`;
     }
   });
 }
 
 function applyPresetToForm(preset) {
-  document.getElementById('job-title-input').value = preset.title;
-  document.getElementById('field-location').value = preset.location;
-  document.getElementById('field-type').value = preset.type;
-  document.getElementById('field-experience').value = preset.experience;
-  document.getElementById('field-overview').value = preset.overview;
-  document.getElementById('field-responsibilities').value = preset.responsibilities.map((r) => `• ${r}`).join('\n');
+  if (preset.title) document.getElementById('job-title-input').value = preset.title;
+  if (preset.department) document.getElementById('field-department').value = preset.department;
+  if (preset.location) document.getElementById('field-location').value = preset.location;
+  if (preset.type) document.getElementById('field-type').value = preset.type;
+  if (preset.experience) document.getElementById('field-experience').value = preset.experience;
+  if (preset.salary) document.getElementById('field-salary').value = preset.salary;
+  if (preset.overview) document.getElementById('field-overview').value = preset.overview;
 
-  currentSkills = [...preset.skills];
-  renderSkills();
+  if (Array.isArray(preset.responsibilities)) {
+    document.getElementById('field-responsibilities').value = preset.responsibilities.map((r) => `• ${r}`).join('\n');
+  } else if (preset.responsibilities) {
+    document.getElementById('field-responsibilities').value = preset.responsibilities;
+  }
 
-  uploadedPdfName = preset.pdfName;
-  uploadedPdfSize = preset.pdfSize;
-  document.getElementById('attached-pdf-name').textContent = uploadedPdfName;
-  document.getElementById('attached-pdf-size').textContent = `${uploadedPdfSize} · Attached PDF specification`;
+  if (Array.isArray(preset.skills)) {
+    currentSkills = [...preset.skills];
+    renderSkills();
+  }
+
+  if (preset.pdfName) {
+    uploadedPdfName = preset.pdfName;
+    uploadedPdfSize = preset.pdfSize || '1.4 MB';
+    const nameEl = document.getElementById('attached-pdf-name');
+    const sizeEl = document.getElementById('attached-pdf-size');
+    if (nameEl) nameEl.textContent = uploadedPdfName;
+    if (sizeEl) sizeEl.textContent = `${uploadedPdfSize} · Attached PDF specification`;
+  }
 }
 
 function initAutoFillButton() {
@@ -429,8 +444,8 @@ function initLinkedInComposer() {
   // Download Banner Graphic
   document.getElementById('download-banner-btn')?.addEventListener('click', () => {
     const link = document.createElement('a');
-    link.href = '../../assets/banners/linkedin-hiring-banner.jpg';
-    link.download = 'fwc-hiring-banner.jpg';
+    link.href = '../../assets/logos/navy-logo.png';
+    link.download = 'fwc-hiring-banner.png';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -443,7 +458,6 @@ function initLinkedInComposer() {
     const text = editor ? editor.value : '';
     const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://fwc.com/careers/job-' + (currentJobForShare?.id || 101))}`;
     
-    // Copy content for easy paste into LinkedIn
     if (editor) {
       navigator.clipboard.writeText(text);
     }
@@ -454,144 +468,8 @@ function initLinkedInComposer() {
 }
 
 // --------------------------------------------------------------------------
-// Pure Read-Only Written Document Review Flow (NO EDITING / NO CARDS / NO EMOJIS)
+// Core Save and Submit Requisition Function
 // --------------------------------------------------------------------------
-function setupReviewMode(job) {
-  isReviewMode = true;
-  currentJobForShare = job;
-
-  document.getElementById('page-title').textContent = `Review: ${job.title} — FWC Super Admin`;
-  
-  // Breadcrumbs
-  const parentBreadcrumb = document.getElementById('breadcrumb-parent');
-  if (parentBreadcrumb) {
-    parentBreadcrumb.href = 'approval-requests.html';
-    parentBreadcrumb.textContent = 'Approval Requests';
-  }
-  const currBreadcrumb = document.getElementById('breadcrumb-current');
-  if (currBreadcrumb) {
-    currBreadcrumb.textContent = 'Review Requisition';
-  }
-  document.getElementById('page-heading').textContent = 'Review Job Requisition';
-
-  // Active sidebar link
-  document.getElementById('nav-link-jobs')?.classList.remove('active');
-  document.getElementById('nav-link-approvals')?.classList.add('active');
-
-  // Header action bar toggles
-  document.getElementById('normal-header-actions')?.classList.add('hidden');
-  document.getElementById('review-header-actions')?.classList.remove('hidden');
-  document.getElementById('review-back-icon-btn')?.classList.remove('hidden');
-
-  document.getElementById('job-header-heading').textContent = job.title;
-  document.getElementById('job-header-subtext').textContent = `Submitted by ${job.department} on ${job.submitted}`;
-
-  // Hide Create Canvas Form, Show Pure Read-Only Document
-  document.getElementById('job-creation-canvas')?.classList.add('hidden');
-  const reviewDoc = document.getElementById('job-review-canvas');
-  if (reviewDoc) {
-    reviewDoc.classList.remove('hidden');
-
-    // Populate Read-Only Typography Content
-    document.getElementById('review-display-title').textContent = job.title;
-    document.getElementById('review-val-loc').textContent = job.location || 'Remote (US / CA)';
-    document.getElementById('review-val-type').textContent = job.type || 'Full-time';
-    document.getElementById('review-val-exp').textContent = job.experience || '3–5 Years';
-
-    document.getElementById('review-display-overview').textContent = job.overview || job.excerpt || 'We are seeking an experienced specialist to safeguard client infrastructure, architect zero-trust boundaries, and lead delivery across our distributed engineering teams.';
-
-    // Bullets
-    const respContainer = document.getElementById('review-display-responsibilities');
-    if (Array.isArray(job.responsibilities) && job.responsibilities.length) {
-      respContainer.innerHTML = job.responsibilities.map((r) => `<li>${r}</li>`).join('');
-    } else if (job.responsibilities) {
-      const parts = job.responsibilities.split(/•|\n/).map((s) => s.trim()).filter(Boolean);
-      respContainer.innerHTML = parts.map((r) => `<li>${r}</li>`).join('');
-    } else {
-      respContainer.innerHTML = `
-        <li>Lead continuous telemetry monitoring and proactive vulnerability mitigation across multi-cloud environments.</li>
-        <li>Collaborate with DevSecOps engineers to integrate automated security scanning into CI/CD pipelines.</li>
-        <li>Prepare audit-ready compliance documentation for SOC2 and HIPAA regulatory standards.</li>
-        <li>Conduct regular threat modeling workshops and briefings for enterprise client stakeholders.</li>
-      `;
-    }
-
-    // Skills
-    const skillsContainer = document.getElementById('review-display-skills');
-    const skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['SIEM & Splunk', 'AWS Security Hub', 'SOC2 / HIPAA Compliance', 'Zero-Trust Architecture', 'Threat Hunting'];
-    skillsContainer.innerHTML = skills.map((s) => `<span class="job-skill-tag">${s}</span>`).join('');
-
-    // PDF
-    const pdfName = job.pdfName || 'cybersecurity-analyst-jd.pdf';
-    const pdfSize = job.pdfSize || '1.4 MB';
-    document.getElementById('review-display-pdf-name').textContent = `${pdfName} (${pdfSize})`;
-  }
-
-  // Approve Trigger
-  document.getElementById('review-approve-btn')?.addEventListener('click', () => {
-    document.getElementById('approve-job-title').textContent = job.title;
-    openModal('approve-job-modal');
-  });
-
-  // Confirm Approve -> Prompts Social Share
-  document.getElementById('confirm-approve-job-btn')?.addEventListener('click', () => {
-    let jobListings = loadCollection(JOBS_KEY, []);
-    const match = jobListings.find((j) => j.id === job.id);
-    if (match) {
-      match.status = 'published';
-      match.actionTakenOn = formatNow();
-      match.feedback = null;
-      saveCollection(JOBS_KEY, jobListings);
-    }
-    closeModal('approve-job-modal');
-    showToast(`Approved "${job.title}" — published live!`, 'success');
-    
-    // Open Social Broadcast Modal
-    setTimeout(() => {
-      openModal('social-share-channel-modal');
-    }, 350);
-  });
-
-  // Reject Trigger
-  document.getElementById('review-reject-btn')?.addEventListener('click', () => {
-    document.getElementById('reject-job-title').textContent = job.title;
-    document.getElementById('rejection-job-reason').value = '';
-    document.getElementById('rejection-job-error').style.display = 'none';
-    openModal('reject-job-modal');
-  });
-
-  // Confirm Reject
-  document.getElementById('confirm-reject-job-btn')?.addEventListener('click', () => {
-    const reasonInput = document.getElementById('rejection-job-reason');
-    const reason = reasonInput.value.trim();
-    if (!reason) {
-      document.getElementById('rejection-job-error').style.display = 'block';
-      reasonInput.focus();
-      return;
-    }
-
-    let jobListings = loadCollection(JOBS_KEY, []);
-    const match = jobListings.find((j) => j.id === job.id);
-    if (match) {
-      match.status = 'rejected';
-      match.actionTakenOn = formatNow();
-      match.feedback = reason;
-      saveCollection(JOBS_KEY, jobListings);
-    }
-    closeModal('reject-job-modal');
-    showToast(`Rejected "${job.title}" and sent feedback notes.`, 'error');
-    setTimeout(() => {
-      window.location.href = 'approval-requests.html';
-    }, 450);
-  });
-}
-
-function triggerDeleteJobFlow() {
-  const title = editingJob ? editingJob.title : (document.getElementById('job-title-input').value.trim() || 'Untitled Requisition');
-  document.getElementById('delete-job-confirm-title').textContent = title;
-  openModal('delete-job-modal');
-}
-
 function saveJobRequisition(status = 'pending') {
   const title = document.getElementById('job-title-input').value.trim();
   const overview = document.getElementById('field-overview').value.trim();
@@ -609,18 +487,18 @@ function saveJobRequisition(status = 'pending') {
     return false;
   }
 
-  const dept = (editingJob && editingJob.department) ? editingJob.department : 'Engineering';
+  const dept = document.getElementById('field-department').value;
   const location = document.getElementById('field-location').value.trim() || 'Remote';
   const type = document.getElementById('field-type').value;
   const experience = document.getElementById('field-experience').value;
-  const salary = (editingJob && editingJob.salary) ? editingJob.salary : '$130,000 – $160,000 / yr';
+  const salary = document.getElementById('field-salary').value.trim() || '$125,000 – $150,000 / yr';
 
   const respItems = respVal
     .split(/•|\n/)
     .map((s) => s.trim())
     .filter(Boolean);
 
-  let jobListings = loadCollection(JOBS_KEY, []);
+  let jobListings = loadCollection(JOBS_KEY, jobSeedItems);
   const nowFormatted = formatNow();
   const today = new Date();
   const submittedISO = today.toISOString().slice(0, 10);
@@ -629,9 +507,11 @@ function saveJobRequisition(status = 'pending') {
 
   if (editingJob) {
     editingJob.title = title;
+    editingJob.department = dept;
     editingJob.location = location;
     editingJob.type = type;
     editingJob.experience = experience;
+    editingJob.salary = salary;
     editingJob.overview = overview;
     editingJob.responsibilities = respItems.length ? respItems : [overview];
     editingJob.skills = currentSkills;
@@ -640,7 +520,7 @@ function saveJobRequisition(status = 'pending') {
     if (status) editingJob.status = status;
     saveCollection(JOBS_KEY, jobListings);
     savedJob = editingJob;
-    showToast(status === 'published' ? 'Job published live!' : (status === 'draft' ? 'Draft saved successfully.' : 'Job submitted for approval! Status is now pending review.'), 'success');
+    showToast(status === 'published' ? 'Job published live!' : (status === 'draft' ? 'Draft saved successfully.' : (status === 'pending' ? 'Job submitted for approval! Status is now pending review.' : 'Requisition changes saved.')), 'success');
   } else {
     const newId = jobListings.length ? Math.max(...jobListings.map((j) => j.id)) + 1 : 1;
     const newJob = {
@@ -656,8 +536,8 @@ function saveJobRequisition(status = 'pending') {
       status,
       actionTakenOn: null,
       feedback: null,
-      pdfName: uploadedPdfName || 'job-spec.pdf',
-      pdfSize: uploadedPdfSize || '1.2 MB',
+      pdfName: uploadedPdfName || 'cybersecurity-analyst-jd.pdf',
+      pdfSize: uploadedPdfSize || '1.4 MB',
       overview,
       responsibilities: respItems.length ? respItems : [overview],
       skills: currentSkills
@@ -676,13 +556,205 @@ function saveJobRequisition(status = 'pending') {
     }, 400);
   } else {
     setTimeout(() => {
-      window.location.href = 'job-listings.html';
+      window.location.href = isReviewMode ? 'approval-requests.html' : 'job-listings.html';
     }, 450);
   }
 
   return true;
 }
 
+// --------------------------------------------------------------------------
+// Moderation: Approve and Publish Live
+// --------------------------------------------------------------------------
+function handleApproveJob() {
+  const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
+  if (!job) return;
+
+  // Sync form inputs before approving
+  const title = document.getElementById('job-title-input').value.trim() || job.title;
+  const dept = document.getElementById('field-department').value || job.department;
+  const location = document.getElementById('field-location').value.trim() || job.location;
+  const type = document.getElementById('field-type').value || job.type;
+  const experience = document.getElementById('field-experience').value || job.experience;
+  const salary = document.getElementById('field-salary').value.trim() || job.salary;
+  const overview = document.getElementById('field-overview').value.trim() || job.overview;
+  const respVal = document.getElementById('field-responsibilities').value.trim();
+  const respItems = respVal ? respVal.split(/•|\n/).map((s) => s.trim()).filter(Boolean) : job.responsibilities;
+
+  let jobListings = loadCollection(JOBS_KEY, jobSeedItems);
+  const match = jobListings.find((j) => j.id === job.id);
+  if (match) {
+    match.title = title;
+    match.department = dept;
+    match.location = location;
+    match.type = type;
+    match.experience = experience;
+    match.salary = salary;
+    match.overview = overview;
+    match.responsibilities = respItems;
+    match.skills = currentSkills;
+    match.pdfName = uploadedPdfName;
+    match.pdfSize = uploadedPdfSize;
+    match.status = 'published';
+    match.actionTakenOn = formatNow();
+    match.feedback = null;
+    saveCollection(JOBS_KEY, jobListings);
+    currentJobForShare = match;
+  }
+
+  closeModal('approve-job-modal');
+  showToast(`Approved "${job.title}" — published live!`, 'success');
+  
+  // Prompt Social Share
+  setTimeout(() => {
+    openModal('social-share-channel-modal');
+  }, 350);
+}
+
+// --------------------------------------------------------------------------
+// Moderation: Reject Requisition
+// --------------------------------------------------------------------------
+function handleRejectJob() {
+  const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
+  if (!job) return;
+
+  const reasonInput = document.getElementById('rejection-job-reason');
+  const reason = reasonInput.value.trim();
+  if (!reason) {
+    document.getElementById('rejection-job-error').style.display = 'block';
+    reasonInput.focus();
+    return;
+  }
+
+  let jobListings = loadCollection(JOBS_KEY, jobSeedItems);
+  const match = jobListings.find((j) => j.id === job.id);
+  if (match) {
+    match.status = 'rejected';
+    match.actionTakenOn = formatNow();
+    match.feedback = reason;
+    saveCollection(JOBS_KEY, jobListings);
+  }
+  closeModal('reject-job-modal');
+  showToast(`Rejected "${job.title}" and sent feedback notes.`, 'error');
+  setTimeout(() => {
+    window.location.href = 'approval-requests.html';
+  }, 450);
+}
+
+// --------------------------------------------------------------------------
+// Delete Flow
+// --------------------------------------------------------------------------
+function triggerDeleteJobFlow() {
+  const title = editingJob ? editingJob.title : (document.getElementById('job-title-input').value.trim() || 'Untitled Requisition');
+  document.getElementById('delete-job-confirm-title').textContent = title;
+  openModal('delete-job-modal');
+}
+
+// --------------------------------------------------------------------------
+// Setup Pending Review Mode (Smart Edit UI with Moderation Controls)
+// --------------------------------------------------------------------------
+function setupPendingReviewMode(job) {
+  isReviewMode = true;
+  currentJobForShare = job;
+
+  document.getElementById('page-title').textContent = `Review: ${job.title} — FWC Super Admin`;
+  
+  // Breadcrumbs
+  const parentBreadcrumb = document.getElementById('breadcrumb-parent');
+  if (parentBreadcrumb) {
+    parentBreadcrumb.href = 'approval-requests.html';
+    parentBreadcrumb.textContent = 'Approval Requests';
+  }
+  const currBreadcrumb = document.getElementById('breadcrumb-current');
+  if (currBreadcrumb) {
+    currBreadcrumb.textContent = 'Review Job Requisition';
+  }
+  document.getElementById('page-heading').textContent = 'Review Job Requisition';
+
+  // Active sidebar link
+  document.getElementById('nav-link-jobs')?.classList.remove('active');
+  document.getElementById('nav-link-approvals')?.classList.add('active');
+
+  // Header toolbar
+  document.getElementById('review-back-icon-btn')?.classList.remove('hidden');
+  document.getElementById('normal-header-actions')?.classList.add('hidden');
+  document.getElementById('review-header-actions')?.classList.remove('hidden');
+
+  document.getElementById('job-header-heading').textContent = `Review: ${job.title}`;
+  document.getElementById('job-header-subtext').textContent = `Submitted by ${job.department || 'Engineering'} on ${job.submitted}`;
+
+  // Pill badge
+  const pillWrap = document.getElementById('job-status-pill-wrap');
+  if (pillWrap) {
+    pillWrap.innerHTML = '<span class="job-status-pill pending">Pending review</span>';
+  }
+
+  // Pre-fill fields for editing
+  populateFormFields(job);
+}
+
+// --------------------------------------------------------------------------
+// Setup Normal Edit Mode (Published / Draft)
+// --------------------------------------------------------------------------
+function setupEditMode(job) {
+  currentJobForShare = job;
+
+  document.getElementById('page-title').textContent = `Edit Requisition — ${job.title}`;
+  document.getElementById('page-heading').textContent = 'Edit job posting';
+  
+  const currBreadcrumb = document.getElementById('breadcrumb-current');
+  if (currBreadcrumb) currBreadcrumb.textContent = 'Edit job posting';
+
+  document.getElementById('job-header-heading').textContent = `Edit: ${job.title}`;
+  document.getElementById('job-header-subtext').textContent = 'Modify requisition details and requirements.';
+
+  // Status pill
+  const pillWrap = document.getElementById('job-status-pill-wrap');
+  if (pillWrap && job.status) {
+    const statusLabels = { published: 'Published', draft: 'Draft', rejected: 'Rejected', pending: 'Pending review' };
+    pillWrap.innerHTML = `<span class="job-status-pill ${job.status}">${statusLabels[job.status] || job.status}</span>`;
+  }
+
+  // Reveal delete button in normal actions
+  document.getElementById('delete-job-btn')?.classList.remove('hidden');
+
+  // Pre-fill fields for editing
+  populateFormFields(job);
+}
+
+function populateFormFields(job) {
+  document.getElementById('job-title-input').value = job.title || '';
+  if (job.department) document.getElementById('field-department').value = job.department;
+  document.getElementById('field-location').value = job.location || 'Remote';
+  document.getElementById('field-type').value = job.type || 'Full-time';
+  document.getElementById('field-experience').value = job.experience || 'Mid-Level (3–5 Yrs)';
+  document.getElementById('field-salary').value = job.salary || '$125,000 – $150,000 / yr';
+  document.getElementById('field-overview').value = job.overview || job.excerpt || '';
+
+  if (Array.isArray(job.responsibilities)) {
+    document.getElementById('field-responsibilities').value = job.responsibilities.map((r) => `• ${r.replace(/^[•\-]\s*/, '')}`).join('\n');
+  } else if (job.responsibilities) {
+    document.getElementById('field-responsibilities').value = job.responsibilities;
+  }
+
+  if (Array.isArray(job.skills)) {
+    currentSkills = [...job.skills];
+    renderSkills();
+  }
+
+  if (job.pdfName) {
+    uploadedPdfName = job.pdfName;
+    uploadedPdfSize = job.pdfSize || '1.4 MB';
+    const nameEl = document.getElementById('attached-pdf-name');
+    const sizeEl = document.getElementById('attached-pdf-size');
+    if (nameEl) nameEl.textContent = uploadedPdfName;
+    if (sizeEl) sizeEl.textContent = `${uploadedPdfSize} · Attached PDF specification`;
+  }
+}
+
+// --------------------------------------------------------------------------
+// Initialization
+// --------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   initSkillsTagInput();
   initPdfUploader();
@@ -700,48 +772,19 @@ document.addEventListener('DOMContentLoaded', () => {
     editingJob = jobListings.find((j) => j.id === targetId);
   }
 
-  if (mode === 'review') {
+  if (mode === 'review' || (editingJob && editingJob.status === 'pending')) {
     if (!editingJob) {
       editingJob = jobListings.find((j) => j.status === 'pending') || jobListings[0] || jobSeedItems[0];
     }
-    setupReviewMode(editingJob);
-  } else if (mode === 'edit') {
+    setupPendingReviewMode(editingJob);
+  } else if (mode === 'edit' || editingJob) {
     if (!editingJob) {
       editingJob = jobListings[0] || jobSeedItems[0];
     }
-    document.getElementById('page-title').textContent = `Edit requisition — ${editingJob.title}`;
-    document.getElementById('page-heading').textContent = 'Edit job posting';
-    document.getElementById('breadcrumb-current').textContent = 'Edit job posting';
-    document.getElementById('job-header-heading').textContent = `Edit: ${editingJob.title}`;
-    document.getElementById('job-header-subtext').textContent = 'Modify requisition details and requirements.';
-
-    // Reveal delete button in creator mode when editing existing requisition
-    document.getElementById('delete-job-btn')?.classList.remove('hidden');
-
-    document.getElementById('job-title-input').value = editingJob.title || '';
-    document.getElementById('field-location').value = editingJob.location || 'Remote';
-    document.getElementById('field-type').value = editingJob.type || 'Full-time';
-    document.getElementById('field-experience').value = editingJob.experience || 'Mid-Level (3–5 Yrs)';
-    document.getElementById('field-overview').value = editingJob.overview || editingJob.excerpt || '';
-
-    if (Array.isArray(editingJob.responsibilities)) {
-      document.getElementById('field-responsibilities').value = editingJob.responsibilities.map((r) => `• ${r}`).join('\n');
-    }
-
-    if (Array.isArray(editingJob.skills)) {
-      currentSkills = [...editingJob.skills];
-      renderSkills();
-    }
-
-    if (editingJob.pdfName) {
-      uploadedPdfName = editingJob.pdfName;
-      uploadedPdfSize = editingJob.pdfSize || '1.2 MB';
-      document.getElementById('attached-pdf-name').textContent = uploadedPdfName;
-      document.getElementById('attached-pdf-size').textContent = `${uploadedPdfSize} · Attached PDF Specification`;
-    }
+    setupEditMode(editingJob);
   }
 
-  // Save Draft
+  // Save Draft (Creation / Draft Mode)
   document.getElementById('save-draft-btn')?.addEventListener('click', () => {
     saveJobRequisition('draft');
   });
@@ -773,6 +816,35 @@ document.addEventListener('DOMContentLoaded', () => {
     saveJobRequisition('pending');
   });
 
+  // Save Changes in Review Mode
+  document.getElementById('save-changes-btn')?.addEventListener('click', () => {
+    saveJobRequisition(editingJob ? editingJob.status : 'pending');
+  });
+
+  // Review Mode: Approve Button Trigger
+  document.getElementById('review-approve-btn')?.addEventListener('click', () => {
+    const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
+    const title = document.getElementById('job-title-input').value.trim() || (job ? job.title : 'Requisition');
+    document.getElementById('approve-job-title').textContent = title;
+    openModal('approve-job-modal');
+  });
+
+  // Review Mode: Confirm Approve
+  document.getElementById('confirm-approve-job-btn')?.addEventListener('click', handleApproveJob);
+
+  // Review Mode: Reject Button Trigger
+  document.getElementById('review-reject-btn')?.addEventListener('click', () => {
+    const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
+    const title = document.getElementById('job-title-input').value.trim() || (job ? job.title : 'Requisition');
+    document.getElementById('reject-job-title').textContent = title;
+    document.getElementById('rejection-job-reason').value = '';
+    document.getElementById('rejection-job-error').style.display = 'none';
+    openModal('reject-job-modal');
+  });
+
+  // Review Mode: Confirm Reject
+  document.getElementById('confirm-reject-job-btn')?.addEventListener('click', handleRejectJob);
+
   // Delete Handlers
   document.getElementById('delete-job-btn')?.addEventListener('click', triggerDeleteJobFlow);
   document.getElementById('review-delete-btn')?.addEventListener('click', triggerDeleteJobFlow);
@@ -780,7 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Confirm Delete in Modal
   document.getElementById('confirm-delete-job-btn')?.addEventListener('click', () => {
     if (editingJob && editingJob.id) {
-      let jobListings = loadCollection(JOBS_KEY, []);
+      let jobListings = loadCollection(JOBS_KEY, jobSeedItems);
       jobListings = jobListings.filter((j) => j.id !== editingJob.id);
       saveCollection(JOBS_KEY, jobListings);
     }

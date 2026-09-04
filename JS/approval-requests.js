@@ -250,9 +250,15 @@ function renderStats() {
   const totalPending = pendingBlogs + pendingJobs;
   const totalRejected = blogItems.filter((b) => b.status === 'rejected').length + jobItems.filter((j) => j.status === 'rejected').length;
 
-  document.getElementById('stat-pending-blogs').textContent = pendingBlogs;
-  document.getElementById('stat-pending-jobs').textContent = pendingJobs;
-  document.getElementById('stat-total-pending').textContent = totalPending;
+  const pbEl = document.getElementById('stat-pending-blogs');
+  if (pbEl) pbEl.textContent = pendingBlogs;
+
+  const pjEl = document.getElementById('stat-pending-jobs');
+  if (pjEl) pjEl.textContent = pendingJobs;
+
+  const totalPendingEl = document.getElementById('stat-total-pending');
+  if (totalPendingEl) totalPendingEl.textContent = totalPending;
+
   const rejectedEl = document.getElementById('stat-total-rejected');
   if (rejectedEl) rejectedEl.textContent = totalRejected;
 }
@@ -282,12 +288,6 @@ function renderActionCell(type, item) {
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
             Review & take action
           </a>
-          ${type === 'job' ? `
-            <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="10" r="3"/></svg>
-              View full JD
-            </button>
-          ` : ''}
           <div class="table-context-menu-divider"></div>
           <button type="button" class="table-context-menu-item" data-action="quick-approve" data-type="${type}" data-id="${item.id}" style="color: var(--success);">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"/></svg>
@@ -302,14 +302,8 @@ function renderActionCell(type, item) {
         ${isPublished ? `
           <a href="${editUrl}" class="table-context-menu-item">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit content
+            Edit ${type === 'blog' ? 'story' : 'requisition'}
           </a>
-          ${type === 'job' ? `
-            <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-              View full JD
-            </button>
-          ` : ''}
         ` : ''}
 
         ${isRejected ? `
@@ -317,12 +311,6 @@ function renderActionCell(type, item) {
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Rejection notes
           </button>
-          ${type === 'job' ? `
-            <button type="button" class="table-context-menu-item" data-action="view-jd" data-id="${item.id}">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-              View full JD
-            </button>
-          ` : ''}
           <a href="${editUrl}" class="table-context-menu-item">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
             Edit & resubmit
@@ -389,82 +377,34 @@ function renderJobsTable() {
     return;
   }
 
-  tbody.innerHTML = moderationJobs.map((job, idx) => `
-    <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view job requisition details">
-      <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
-      <td class="table-id">JOB-${100 + job.id}</td>
-      <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
-        <span class="cell-truncate-title" title="${job.title}">${job.title}</span>
-      </td>
-      <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
-      <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
-      <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
-      <td style="text-align: center; white-space: nowrap;">
-        <button class="btn btn-sm btn-secondary" data-action="view-jd" data-id="${job.id}" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
-          <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
-          View JD
-        </button>
-      </td>
-      <td style="white-space: nowrap;">${job.location || 'Remote'}</td>
-      <td><span style="font-size: var(--text-2xs); color: var(--ink-secondary); font-weight: 500; white-space: nowrap;">${job.type}</span></td>
-      <td><span class="status-badge status-draft" style="white-space: nowrap;">${job.experience || '3–5 Years'}</span></td>
-      <td class="table-actions" style="text-align: right;">${renderActionCell('job', job)}</td>
-    </tr>
-  `).join('');
-}
+  tbody.innerHTML = moderationJobs.map((job, idx) => {
+    const targetUrl = job.status === 'pending'
+      ? `add-job-listing.html?mode=review&id=${job.id}`
+      : `add-job-listing.html?mode=edit&id=${job.id}`;
 
-function openViewJdModal(id) {
-  const job = jobItems.find((j) => j.id === id);
-  if (!job) return;
-
-  document.getElementById('jd-modal-role-title').textContent = `${job.title} — Job Description`;
-  document.getElementById('jd-chip-id').textContent = `JOB-${100 + job.id}`;
-  document.getElementById('jd-chip-dept').textContent = job.department || 'Engineering';
-  document.getElementById('jd-chip-loc').textContent = job.location || 'Remote';
-  document.getElementById('jd-chip-type').textContent = job.type || 'Full-time';
-  document.getElementById('jd-chip-exp').textContent = job.experience || '3–5 Years';
-  document.getElementById('jd-chip-salary').textContent = job.salary || 'Competitive';
-
-  const badgeEl = document.getElementById('jd-modal-status-badge');
-  badgeEl.className = `status-badge ${STATUS_BADGE_CLASS[job.status]}`;
-  badgeEl.textContent = STATUS_LABEL[job.status];
-
-  // Overview
-  document.getElementById('jd-modal-overview').textContent = job.overview || job.excerpt || 'No specific overview provided.';
-
-  // Responsibilities
-  const respContainer = document.getElementById('jd-modal-responsibilities');
-  if (Array.isArray(job.responsibilities) && job.responsibilities.length) {
-    respContainer.innerHTML = job.responsibilities.map((r) => `<li>${r}</li>`).join('');
-  } else {
-    respContainer.innerHTML = `<li>${job.excerpt || 'Standard role responsibilities apply.'}</li>`;
-  }
-
-  // Skills
-  const skillsContainer = document.getElementById('jd-modal-skills');
-  const skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['Problem Solving', 'Team Leadership', 'Domain Expertise'];
-  skillsContainer.innerHTML = skills.map((s) => `<span class="job-skill-tag">${s}</span>`).join('');
-
-  // PDF
-  const pdfName = job.pdfName || 'job-specification.pdf';
-  const pdfSize = job.pdfSize || '1.4 MB';
-  document.getElementById('jd-modal-pdf-text').textContent = `${pdfName} (${pdfSize})`;
-
-  // Action Button
-  const actionBtn = document.getElementById('jd-modal-action-btn');
-  if (job.status === 'pending') {
-    actionBtn.textContent = 'Review & Take Action →';
-    actionBtn.href = `add-job-listing.html?mode=review&id=${job.id}`;
-    actionBtn.className = 'btn btn-primary';
-    actionBtn.style.display = 'inline-flex';
-  } else {
-    actionBtn.textContent = 'Edit Requisition →';
-    actionBtn.href = `add-job-listing.html?mode=edit&id=${job.id}`;
-    actionBtn.className = 'btn btn-secondary';
-    actionBtn.style.display = 'inline-flex';
-  }
-
-  openModal('view-jd-modal');
+    return `
+      <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to review or edit job requisition">
+        <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+        <td class="table-id">JOB-${100 + job.id}</td>
+        <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
+          <span class="cell-truncate-title" title="${job.title}">${job.title}</span>
+        </td>
+        <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
+        <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
+        <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
+        <td style="text-align: center; white-space: nowrap;">
+          <a href="${targetUrl}" class="btn btn-sm btn-secondary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+            Review & take action
+          </a>
+        </td>
+        <td style="white-space: nowrap;">${job.location || 'Remote'}</td>
+        <td><span style="font-size: var(--text-2xs); color: var(--ink-secondary); font-weight: 500; white-space: nowrap;">${job.type}</span></td>
+        <td><span class="status-badge status-draft" style="white-space: nowrap;">${job.experience || '3–5 Years'}</span></td>
+        <td class="table-actions" style="text-align: right;">${renderActionCell('job', job)}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function updateRequestsBadge() {
@@ -571,16 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 2. View JD
-    const jdBtn = e.target.closest('[data-action="view-jd"]');
-    if (jdBtn) {
-      closeAllContextMenus();
-      const id = Number(jdBtn.dataset.id);
-      openViewJdModal(id);
-      return;
-    }
-
-    // 3. View Feedback Notes
+    // 2. View Feedback Notes
     const feedbackBtn = e.target.closest('[data-action="view-feedback"]');
     if (feedbackBtn) {
       closeAllContextMenus();
@@ -590,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 4. Quick Approve
+    // 3. Quick Approve
     const approveBtn = e.target.closest('[data-action="quick-approve"]');
     if (approveBtn) {
       closeAllContextMenus();
@@ -600,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 5. Quick Reject
+    // 4. Quick Reject
     const rejectBtn = e.target.closest('[data-action="quick-reject"]');
     if (rejectBtn) {
       closeAllContextMenus();
@@ -610,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 6. Row click navigation (smart navigation on row click)
+    // 5. Row click navigation (smart navigation on row click)
     const blogRow = e.target.closest('#blogs-table-body tr[data-id]');
     if (blogRow && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
       const id = Number(blogRow.dataset.id);
@@ -628,7 +559,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const jobRow = e.target.closest('#jobs-table-body tr[data-id]');
     if (jobRow && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
       const id = Number(jobRow.dataset.id);
-      openViewJdModal(id);
+      const job = jobItems.find((j) => j.id === id);
+      if (job) {
+        if (job.status === 'pending') {
+          window.location.href = `add-job-listing.html?mode=review&id=${id}`;
+        } else {
+          window.location.href = `add-job-listing.html?mode=edit&id=${id}`;
+        }
+      }
       return;
     }
 
