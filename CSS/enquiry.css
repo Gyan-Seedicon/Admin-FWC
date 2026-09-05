@@ -1,6 +1,71 @@
 @import url('./global.css');
 
 /* --------------------------------------------------------------------------
+   00. Sleek Underlined Tab Navigation
+   -------------------------------------------------------------------------- */
+.tab-underlined-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  border-bottom: 1px solid var(--border-card);
+  margin-bottom: var(--space-4);
+}
+
+.tab-underlined-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--space-3) 2px;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--ink-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  font-family: inherit;
+  outline: none;
+}
+
+.tab-underlined-btn:hover {
+  color: var(--ink-primary);
+}
+
+.tab-underlined-btn.active {
+  color: var(--brand-blue);
+  font-weight: var(--weight-semibold);
+  border-bottom-color: var(--brand-blue);
+}
+
+.tab-underlined-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 7.5px;
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  border-radius: var(--radius-pill);
+  background: var(--bg-hover);
+  color: var(--ink-secondary);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--duration-fast) var(--ease-smooth);
+  line-height: 1.2;
+}
+
+.tab-underlined-btn:hover .tab-underlined-badge {
+  color: var(--ink-primary);
+  border-color: var(--border-card);
+}
+
+.tab-underlined-btn.active .tab-underlined-badge {
+  background: var(--brand-blue-light);
+  color: var(--brand-blue);
+  border-color: var(--brand-blue-border);
+}
+
+/* --------------------------------------------------------------------------
    01. Minimal Surface-Level Enquiry Details (Direct on Surface, Smart Dividers)
    -------------------------------------------------------------------------- */
 .enquiry-surface-section {

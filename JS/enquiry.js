@@ -1,10 +1,12 @@
 /* ==========================================================================
-   Enquiry / Services Management
-   Columns: Name, Email, Organisation, Region, Industry, Enquiry, Submitted on
-   Structured minimal Enquiry Details Drawer (no status controls).
+   Enquiry / Service & Partnership Management
+   Underlined Tabs: Service Requests & Partnership Requests
+   Columns: S.No., Name, Email, Organisation, Region, Industry, Enquiry/Message, Submitted on
+   Structured minimal Enquiry/Partnership Details Drawer.
    ========================================================================== */
 
 const ENQUIRY_KEY = 'fwc-enquiries';
+const PARTNERSHIP_KEY = 'fwc-partnerships';
 
 const enquirySeedData = [
   {
@@ -64,48 +66,120 @@ const enquirySeedData = [
   }
 ];
 
+const partnershipSeedData = [
+  {
+    id: 101,
+    name: 'Elena Rostova',
+    email: 'e.rostova@hyperioncloud.io',
+    organisation: 'Hyperion Cloud Infrastructure',
+    region: 'North America (US)',
+    industry: 'Cloud & DevOps Solutions',
+    message: 'Proposing a strategic technology co-selling partnership for enterprise hybrid cloud migrations and joint Kubernetes engineering practice.',
+    submitted: 'Aug 27, 2026 · 04:15 PM',
+    submittedISO: '2026-08-27T16:15:00'
+  },
+  {
+    id: 102,
+    name: 'Marcus Vance',
+    email: 'm.vance@vancecap.co.uk',
+    organisation: 'Vance Capital Ventures',
+    region: 'EMEA (UK)',
+    industry: 'Venture Capital & Advisory',
+    message: 'Seeking preferred engineering partner status for our portfolio of 18 Series A/B AI and SaaS startups in London and Berlin.',
+    submitted: 'Aug 25, 2026 · 01:45 PM',
+    submittedISO: '2026-08-25T13:45:00'
+  },
+  {
+    id: 103,
+    name: 'Dr. Hiroshi Tanaka',
+    email: 'tanaka@tokyo-cyberlabs.jp',
+    organisation: 'Tokyo Cyber Security Labs',
+    region: 'APAC (Japan)',
+    industry: 'Cybersecurity & Defense',
+    message: 'Interest in establishing an APAC cross-border joint venture for autonomous threat intelligence and regulatory compliance auditing.',
+    submitted: 'Aug 22, 2026 · 10:10 AM',
+    submittedISO: '2026-08-22T10:10:00'
+  },
+  {
+    id: 104,
+    name: 'Claire Dupont',
+    email: 'c.dupont@alliance-digital.fr',
+    organisation: 'Alliance Digital Systems',
+    region: 'EMEA (France)',
+    industry: 'System Integration',
+    message: 'Exploring an official channel partnership to deliver FWC engineering pods across French and Benelux enterprise accounts.',
+    submitted: 'Aug 18, 2026 · 03:20 PM',
+    submittedISO: '2026-08-18T15:20:00'
+  }
+];
+
 let enquiries = loadCollection(ENQUIRY_KEY, enquirySeedData);
+let partnerships = loadCollection(PARTNERSHIP_KEY, partnershipSeedData);
 
 // Migrate older stored data if keys differ
 if (enquiries.length && !enquiries[0].organisation) {
   enquiries = enquirySeedData;
   saveCollection(ENQUIRY_KEY, enquiries);
 }
-
-let activeEnquiry = null;
-
-function initials(name) {
-  return (name || '').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+if (partnerships.length && !partnerships[0].organisation) {
+  partnerships = partnershipSeedData;
+  saveCollection(PARTNERSHIP_KEY, partnerships);
 }
 
-function renderStats() {
-  const total = enquiries.length;
-  const usCount = enquiries.filter((e) => (e.region || '').includes('North America')).length;
-  const apacCount = enquiries.filter((e) => (e.region || '').includes('APAC')).length;
-  const emeaCount = enquiries.filter((e) => (e.region || '').includes('EMEA')).length;
+let activeTab = 'service'; // 'service' | 'partnership'
+let activeItem = null;
 
-  const totalEl = document.getElementById('stat-total-enquiries');
-  if (totalEl) totalEl.textContent = total;
+const CONTACT_AVATARS = {
+  'Amara Chen': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'Rajesh Nair': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'Sofia Bergström': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+  'David Okafor': 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=150&auto=format&fit=crop&q=80',
+  'Mei Lin Tan': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+  'Elena Rostova': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+  'Marcus Vance': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+  'Dr. Hiroshi Tanaka': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+  'Claire Dupont': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80'
+};
 
-  const newEl = document.getElementById('stat-new-enquiries');
-  if (newEl) newEl.textContent = usCount;
+function getAvatarUrl(name, idx = 0) {
+  if (CONTACT_AVATARS[name]) return CONTACT_AVATARS[name];
+  const fallback = [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=150&auto=format&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'
+  ];
+  return fallback[idx % fallback.length];
+}
 
-  const progressEl = document.getElementById('stat-progress-enquiries');
-  if (progressEl) progressEl.textContent = apacCount;
+function updateBadges() {
+  const serviceBadge = document.getElementById('service-requests-badge');
+  if (serviceBadge) serviceBadge.textContent = enquiries.length;
 
-  const resolvedEl = document.getElementById('stat-resolved-enquiries');
-  if (resolvedEl) resolvedEl.textContent = emeaCount;
+  const partnershipBadge = document.getElementById('partnership-requests-badge');
+  if (partnershipBadge) partnershipBadge.textContent = partnerships.length;
+}
+
+function getActiveDataset() {
+  return activeTab === 'service' ? enquiries : partnerships;
 }
 
 function renderTable(items) {
   const tbody = document.getElementById('enquiries-table-body');
   if (!tbody) return;
 
+  const colHeader = document.getElementById('enquiry-col-message');
+  if (colHeader) {
+    colHeader.textContent = activeTab === 'service' ? 'Enquiry' : 'Message';
+  }
+
   if (!items.length) {
+    const emptyLabel = activeTab === 'service' ? 'service requests' : 'partnership requests';
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
         <td colspan="8" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
-          No enquiries found matching your search.
+          No ${emptyLabel} found matching your search.
         </td>
       </tr>
     `;
@@ -118,9 +192,10 @@ function renderTable(items) {
     const org = item.organisation || item.companyType || 'Enterprise Client';
     const reg = item.region || item.country || 'Global';
     const ind = item.industry || item.companyType || 'Technology';
+    const itemType = activeTab === 'service' ? 'enquiry' : 'partnership request';
 
     return `
-      <tr data-id="${item.id}" style="cursor: pointer;" title="Click to view full enquiry details">
+      <tr data-id="${item.id}" style="cursor: pointer;" title="Click to view full ${itemType} details">
         <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
         <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${item.name}</td>
         <td style="white-space: nowrap;"><a href="mailto:${item.email}" class="table-link" onclick="event.stopPropagation()">${item.email}</a></td>
@@ -134,31 +209,13 @@ function renderTable(items) {
   }).join('');
 }
 
-const ENQUIRY_AVATARS = {
-  'Amara Chen': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  'Rajesh Nair': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-  'Sofia Bergström': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-  'David Okafor': 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=150&auto=format&fit=crop&q=80',
-  'Mei Lin Tan': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'
-};
-
-function getAvatarUrl(name, idx = 0) {
-  if (ENQUIRY_AVATARS[name]) return ENQUIRY_AVATARS[name];
-  const fallback = [
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'
-  ];
-  return fallback[idx % fallback.length];
-}
-
 function openEnquiryDrawer(id) {
-  const item = enquiries.find((e) => e.id === id);
+  const currentList = getActiveDataset();
+  const item = currentList.find((e) => e.id === id);
   if (!item) return;
-  activeEnquiry = item;
+  activeItem = item;
 
+  const isService = activeTab === 'service';
   const submittedTime = item.submitted || 'Aug 26, 2026 · 02:40 PM';
   const message = item.enquiry || item.message || '';
   const org = item.organisation || item.companyType || 'Enterprise Client';
@@ -169,6 +226,16 @@ function openEnquiryDrawer(id) {
   if (avatarImg) {
     avatarImg.src = getAvatarUrl(item.name);
     avatarImg.alt = item.name;
+  }
+
+  const drawerTitle = document.getElementById('drawer-title');
+  if (drawerTitle) {
+    drawerTitle.textContent = isService ? 'Service Request Details' : 'Partnership Request Details';
+  }
+
+  const scopeTitle = document.getElementById('drawer-scope-title');
+  if (scopeTitle) {
+    scopeTitle.textContent = isService ? 'Project Scope & Enquiry' : 'Partnership Scope & Message';
   }
 
   document.getElementById('drawer-name').textContent = item.name;
@@ -182,7 +249,8 @@ function openEnquiryDrawer(id) {
 
   const emailBtn = document.getElementById('drawer-email-btn');
   if (emailBtn) {
-    emailBtn.href = `mailto:${item.email}?subject=${encodeURIComponent('FWC Follow-up: ' + org)}`;
+    const subject = isService ? `FWC Follow-up: ${org}` : `FWC Partnership Inquiry: ${org}`;
+    emailBtn.href = `mailto:${item.email}?subject=${encodeURIComponent(subject)}`;
   }
 
   document.getElementById('drawer-org').textContent = org;
@@ -193,49 +261,98 @@ function openEnquiryDrawer(id) {
   openDrawer('enquiry-drawer');
 }
 
+function applyActiveFilters() {
+  const searchInput = document.getElementById('enquiry-search');
+  const dateFilter = document.getElementById('enquiry-date-filter');
+  const q = (searchInput?.value || '').toLowerCase().trim();
+  const dateVal = dateFilter?.value || 'all';
+
+  const currentList = getActiveDataset();
+
+  const filtered = currentList.filter((item) => {
+    const org = (item.organisation || item.companyType || '').toLowerCase();
+    const reg = (item.region || item.country || '').toLowerCase();
+    const ind = (item.industry || '').toLowerCase();
+    const text = (item.enquiry || item.message || '').toLowerCase();
+
+    const matchSearch = !q ||
+      item.name.toLowerCase().includes(q) ||
+      item.email.toLowerCase().includes(q) ||
+      org.includes(q) ||
+      reg.includes(q) ||
+      ind.includes(q) ||
+      text.includes(q);
+
+    if (!matchSearch) return false;
+
+    if (dateVal !== 'all' && item.submittedISO) {
+      const itemDate = new Date(item.submittedISO);
+      const now = new Date();
+      const diffDays = (now - itemDate) / (1000 * 60 * 60 * 24);
+      if (diffDays > Number(dateVal)) return false;
+    }
+
+    return true;
+  });
+
+  renderTable(filtered);
+}
+
+function switchTab(tab) {
+  if (tab !== 'service' && tab !== 'partnership') return;
+  activeTab = tab;
+
+  const serviceTabBtn = document.getElementById('tab-service-requests');
+  const partnershipTabBtn = document.getElementById('tab-partnership-requests');
+
+  if (activeTab === 'service') {
+    serviceTabBtn?.classList.add('active');
+    serviceTabBtn?.setAttribute('aria-selected', 'true');
+    partnershipTabBtn?.classList.remove('active');
+    partnershipTabBtn?.setAttribute('aria-selected', 'false');
+  } else {
+    partnershipTabBtn?.classList.add('active');
+    partnershipTabBtn?.setAttribute('aria-selected', 'true');
+    serviceTabBtn?.classList.remove('active');
+    serviceTabBtn?.setAttribute('aria-selected', 'false');
+  }
+
+  applyActiveFilters();
+}
+
 function refreshAll() {
   enquiries = loadCollection(ENQUIRY_KEY, enquirySeedData);
-  renderTable(enquiries);
-  renderStats();
+  partnerships = loadCollection(PARTNERSHIP_KEY, partnershipSeedData);
+  updateBadges();
+  applyActiveFilters();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   refreshAll();
 
-  // Search & Filter
+  // Tab Switching Listeners
+  document.getElementById('tab-service-requests')?.addEventListener('click', () => {
+    switchTab('service');
+  });
+
+  document.getElementById('tab-partnership-requests')?.addEventListener('click', () => {
+    switchTab('partnership');
+  });
+
+  // Search & Date Filters
   const searchInput = document.getElementById('enquiry-search');
   const dateFilter = document.getElementById('enquiry-date-filter');
 
-  function applyFilters() {
-    const q = (searchInput?.value || '').toLowerCase().trim();
+  searchInput?.addEventListener('input', applyActiveFilters);
+  dateFilter?.addEventListener('change', applyActiveFilters);
 
-    const filtered = enquiries.filter((item) => {
-      const org = (item.organisation || item.companyType || '').toLowerCase();
-      const reg = (item.region || item.country || '').toLowerCase();
-      const ind = (item.industry || '').toLowerCase();
-      const enq = (item.enquiry || item.message || '').toLowerCase();
-
-      const matchSearch = !q ||
-        item.name.toLowerCase().includes(q) ||
-        item.email.toLowerCase().includes(q) ||
-        org.includes(q) ||
-        reg.includes(q) ||
-        ind.includes(q) ||
-        enq.includes(q);
-
-      return matchSearch;
-    });
-
-    renderTable(filtered);
-  }
-
-  searchInput?.addEventListener('input', applyFilters);
-  dateFilter?.addEventListener('change', applyFilters);
-
+  // CSV Export
   document.getElementById('export-csv-btn')?.addEventListener('click', () => {
-    exportTableToCSV('enquiries-table', 'fwc-enquiries.csv');
+    const filename = activeTab === 'service' ? 'fwc-service-requests.csv' : 'fwc-partnership-requests.csv';
+    exportTableToCSV('enquiries-table', filename);
   });
 
+  // Row Click for Details Drawer
   document.getElementById('enquiries-table-body')?.addEventListener('click', (e) => {
     const row = e.target.closest('tr[data-id]');
     if (!row) return;
