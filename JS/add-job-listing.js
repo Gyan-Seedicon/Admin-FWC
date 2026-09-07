@@ -14,6 +14,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$125,000 – $150,000 / yr',
+    expiryDate: '2026-10-31',
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
     status: 'pending',
@@ -38,6 +39,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '$140,000 – $170,000 / yr',
+    expiryDate: '2026-11-15',
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
     status: 'pending',
@@ -62,6 +64,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '$160,000 – $195,000 / yr',
+    expiryDate: '2026-09-30',
     submitted: 'Aug 10, 2026 · 09:00 AM',
     submittedISO: '2026-08-10T09:00:00',
     status: 'published',
@@ -85,6 +88,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$115,000 – $140,000 / yr',
+    expiryDate: '2026-10-15',
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
     status: 'published',
@@ -108,6 +112,7 @@ const jobSeedItems = [
     type: 'Contract',
     experience: 'Entry Level (1–2 Yrs)',
     salary: '$90,000 – $110,000 / yr',
+    expiryDate: '2026-08-31',
     submitted: 'Aug 02, 2026 · 11:00 AM',
     submittedISO: '2026-08-02T11:00:00',
     status: 'rejected',
@@ -226,6 +231,28 @@ const cursourcePresets = {
   }
 };
 
+const DEFAULT_JOB_EXPIRIES = {
+  1: '2026-10-31',
+  2: '2026-11-15',
+  3: '2026-09-30',
+  4: '2026-10-15',
+  5: '2026-08-31'
+};
+
+function ensureJobExpiries(jobs) {
+  let modified = false;
+  jobs.forEach((job) => {
+    if (!job.expiryDate) {
+      job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
+      modified = true;
+    }
+  });
+  if (modified) {
+    saveCollection(JOBS_KEY, jobs);
+  }
+  return jobs;
+}
+
 function getParams() {
   return new URLSearchParams(window.location.search);
 }
@@ -306,6 +333,13 @@ function applyPresetToForm(preset) {
   if (preset.type) document.getElementById('field-type').value = preset.type;
   if (preset.experience) document.getElementById('field-experience').value = preset.experience;
   if (preset.salary) document.getElementById('field-salary').value = preset.salary;
+  if (preset.expiryDate) {
+    document.getElementById('field-expiry-date').value = preset.expiryDate;
+  } else {
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 60);
+    document.getElementById('field-expiry-date').value = futureDate.toISOString().slice(0, 10);
+  }
   if (preset.overview) document.getElementById('field-overview').value = preset.overview;
 
   if (Array.isArray(preset.responsibilities)) {
@@ -492,6 +526,7 @@ function saveJobRequisition(status = 'pending') {
   const type = document.getElementById('field-type').value;
   const experience = document.getElementById('field-experience').value;
   const salary = document.getElementById('field-salary').value.trim() || '$125,000 – $150,000 / yr';
+  const expiryDate = document.getElementById('field-expiry-date').value || '';
 
   const respItems = respVal
     .split(/•|\n/)
@@ -512,6 +547,7 @@ function saveJobRequisition(status = 'pending') {
     editingJob.type = type;
     editingJob.experience = experience;
     editingJob.salary = salary;
+    editingJob.expiryDate = expiryDate;
     editingJob.overview = overview;
     editingJob.responsibilities = respItems.length ? respItems : [overview];
     editingJob.skills = currentSkills;
@@ -531,6 +567,7 @@ function saveJobRequisition(status = 'pending') {
       type,
       experience,
       salary,
+      expiryDate,
       submitted: nowFormatted,
       submittedISO,
       status,
@@ -577,6 +614,7 @@ function handleApproveJob() {
   const type = document.getElementById('field-type').value || job.type;
   const experience = document.getElementById('field-experience').value || job.experience;
   const salary = document.getElementById('field-salary').value.trim() || job.salary;
+  const expiryDate = document.getElementById('field-expiry-date').value || job.expiryDate || '';
   const overview = document.getElementById('field-overview').value.trim() || job.overview;
   const respVal = document.getElementById('field-responsibilities').value.trim();
   const respItems = respVal ? respVal.split(/•|\n/).map((s) => s.trim()).filter(Boolean) : job.responsibilities;
@@ -590,6 +628,7 @@ function handleApproveJob() {
     match.type = type;
     match.experience = experience;
     match.salary = salary;
+    match.expiryDate = expiryDate;
     match.overview = overview;
     match.responsibilities = respItems;
     match.skills = currentSkills;
@@ -729,6 +768,7 @@ function populateFormFields(job) {
   document.getElementById('field-type').value = job.type || 'Full-time';
   document.getElementById('field-experience').value = job.experience || 'Mid-Level (3–5 Yrs)';
   document.getElementById('field-salary').value = job.salary || '$125,000 – $150,000 / yr';
+  document.getElementById('field-expiry-date').value = job.expiryDate || '';
   document.getElementById('field-overview').value = job.overview || job.excerpt || '';
 
   if (Array.isArray(job.responsibilities)) {
@@ -766,7 +806,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mode = params.get('mode');
   const targetId = params.get('id') ? Number(params.get('id')) : null;
 
-  const jobListings = loadCollection(JOBS_KEY, jobSeedItems);
+  const jobListings = ensureJobExpiries(loadCollection(JOBS_KEY, jobSeedItems));
 
   if (targetId != null) {
     editingJob = jobListings.find((j) => j.id === targetId);

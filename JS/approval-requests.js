@@ -84,6 +84,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: '3–5 Years',
     salary: '$120,000 – $145,000 / yr',
+    expiryDate: '2026-10-31',
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
     status: 'pending',
@@ -107,6 +108,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: '5–8 Years',
     salary: '$135,000 – $165,000 / yr',
+    expiryDate: '2026-11-15',
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
     status: 'pending',
@@ -130,6 +132,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '$160,000 – $195,000 / yr',
+    expiryDate: '2026-09-30',
     submitted: 'Aug 10, 2026 · 09:00 AM',
     submittedISO: '2026-08-10T09:00:00',
     status: 'published',
@@ -153,6 +156,7 @@ const jobSeedItems = [
     type: 'Full-time',
     experience: '3–5 Years',
     salary: '$115,000 – $140,000 / yr',
+    expiryDate: '2026-10-15',
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
     status: 'published',
@@ -176,6 +180,7 @@ const jobSeedItems = [
     type: 'Contract',
     experience: 'Entry Level (1–2 Yrs)',
     salary: '$90,000 – $110,000 / yr',
+    expiryDate: '2026-08-31',
     submitted: 'Aug 02, 2026 · 11:00 AM',
     submittedISO: '2026-08-02T11:00:00',
     status: 'rejected',
@@ -359,6 +364,48 @@ function renderBlogsTable() {
   `).join('');
 }
 
+const DEFAULT_JOB_EXPIRIES = {
+  1: '2026-10-31',
+  2: '2026-11-15',
+  3: '2026-09-30',
+  4: '2026-10-15',
+  5: '2026-08-31'
+};
+
+function ensureJobExpiries(jobs) {
+  let modified = false;
+  jobs.forEach((job) => {
+    if (!job.expiryDate) {
+      job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
+      modified = true;
+    }
+  });
+  if (modified) {
+    saveCollection(JOBS_KEY, jobs);
+  }
+  return jobs;
+}
+
+function formatExpiryDate(dateStr) {
+  if (!dateStr) return '—';
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const date = new Date(year, monthIndex, day);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+      }
+    }
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+  } catch (e) {
+    return dateStr;
+  }
+}
+
 function renderJobsTable() {
   const tbody = document.getElementById('jobs-table-body');
   if (!tbody) return;
@@ -369,7 +416,7 @@ function renderJobsTable() {
   if (!moderationJobs.length) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="11" style="text-align: center; color: var(--ink-muted); padding: var(--space-8);">
+        <td colspan="12" style="text-align: center; color: var(--ink-muted); padding: var(--space-8);">
           No pending or rejected job requisitions in moderation queue.
         </td>
       </tr>
@@ -390,6 +437,7 @@ function renderJobsTable() {
           <span class="cell-truncate-title" title="${job.title}">${job.title}</span>
         </td>
         <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
+        <td style="color: var(--ink-secondary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${formatExpiryDate(job.expiryDate)}</td>
         <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
         <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
         <td style="text-align: center; white-space: nowrap;">
@@ -481,7 +529,7 @@ function initTabs() {
 
 function refreshAll() {
   blogItems = loadCollection(BLOG_KEY, blogSeedItems);
-  jobItems = loadCollection(JOBS_KEY, jobSeedItems);
+  jobItems = ensureJobExpiries(loadCollection(JOBS_KEY, jobSeedItems));
   renderBlogsTable();
   renderJobsTable();
   renderStats();

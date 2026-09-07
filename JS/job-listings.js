@@ -14,6 +14,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$120,000 – $145,000 / yr',
+    expiryDate: '2026-10-31',
     applicantsCount: 14,
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
@@ -38,6 +39,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '$135,000 – $165,000 / yr',
+    expiryDate: '2026-11-15',
     applicantsCount: 8,
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
@@ -62,6 +64,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '$160,000 – $195,000 / yr',
+    expiryDate: '2026-09-30',
     applicantsCount: 22,
     submitted: 'Aug 10, 2026 · 09:00 AM',
     submittedISO: '2026-08-10T09:00:00',
@@ -86,6 +89,7 @@ const jobListingsSeed = [
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$115,000 – $140,000 / yr',
+    expiryDate: '2026-10-15',
     applicantsCount: 16,
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
@@ -110,6 +114,7 @@ const jobListingsSeed = [
     type: 'Contract',
     experience: 'Entry Level (1–2 Yrs)',
     salary: '$90,000 – $110,000 / yr',
+    expiryDate: '2026-08-31',
     applicantsCount: 6,
     submitted: 'Aug 02, 2026 · 11:00 AM',
     submittedISO: '2026-08-02T11:00:00',
@@ -182,6 +187,48 @@ function renderActionCell(job) {
   `;
 }
 
+const DEFAULT_JOB_EXPIRIES = {
+  1: '2026-10-31',
+  2: '2026-11-15',
+  3: '2026-09-30',
+  4: '2026-10-15',
+  5: '2026-08-31'
+};
+
+function ensureJobExpiries(jobs) {
+  let modified = false;
+  jobs.forEach((job) => {
+    if (!job.expiryDate) {
+      job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
+      modified = true;
+    }
+  });
+  if (modified) {
+    saveCollection(JOBS_KEY, jobs);
+  }
+  return jobs;
+}
+
+function formatExpiryDate(dateStr) {
+  if (!dateStr) return '—';
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const date = new Date(year, monthIndex, day);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+      }
+    }
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+  } catch (e) {
+    return dateStr;
+  }
+}
+
 function renderTable(items) {
   const tbody = document.getElementById('job-listings-table-body');
   if (!tbody) return;
@@ -189,7 +236,7 @@ function renderTable(items) {
   if (!items.length) {
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
-        <td colspan="12" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
+        <td colspan="13" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
           No published or draft job requisitions found.
         </td>
       </tr>
@@ -200,13 +247,14 @@ function renderTable(items) {
   tbody.innerHTML = items.map((job, idx) => {
     const editUrl = `add-job-listing.html?mode=edit&id=${job.id}`;
     return `
-    <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view and edit job requisition">
+    <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view candidates applied for ${job.title}">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">JOB-${100 + job.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
         <span class="cell-truncate-title" title="${job.title}">${job.title}</span>
       </td>
       <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
+      <td style="color: var(--ink-secondary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${formatExpiryDate(job.expiryDate)}</td>
       <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
       <td style="text-align: center; white-space: nowrap;">
         <a href="job-applicants.html?jobId=${job.id}" class="applicant-pill-badge" title="View candidates applied for ${job.title}">
@@ -251,7 +299,7 @@ function closeAllContextMenus() {
 }
 
 function refreshAll() {
-  jobListings = loadCollection(JOBS_KEY, jobListingsSeed);
+  jobListings = ensureJobExpiries(loadCollection(JOBS_KEY, jobListingsSeed));
   // Only show published and draft jobs in the job listings directory
   const liveJobs = jobListings.filter((j) => j.status === 'published' || j.status === 'draft');
   renderTable(liveJobs);
@@ -329,11 +377,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 4. Row click navigation -> Open Edit Requisition UI
+    // 4. Row click navigation -> Redirect to Applicants UI
     const row = e.target.closest('#job-listings-table-body tr[data-id]');
     if (row && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
       const id = Number(row.dataset.id);
-      window.location.href = `add-job-listing.html?mode=edit&id=${id}`;
+      window.location.href = `job-applicants.html?jobId=${id}`;
       return;
     }
 

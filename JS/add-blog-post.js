@@ -1,7 +1,8 @@
 /* ==========================================================================
    Add / Edit / Review Blog Post — Medium Style Writing & Review Canvas
    Review mode workflow, approve confirmation modal, reject feedback modal,
-   floating (+) inserter, selection bubble toolbar, and slash commands.
+   floating (+) inserter, selection bubble toolbar, slash commands,
+   and Square-Rounded Category Selection Dropdown.
    ========================================================================== */
 
 const BLOG_KEY = 'fwc-blog-posts';
@@ -100,41 +101,55 @@ const blogSeedItems = [
   }
 ];
 
-let coverImageUrl = null;
 let currentPost = null;
 let isReviewMode = false;
+let coverImageUrl = null;
 
 function getParams() {
   return new URLSearchParams(window.location.search);
 }
 
 function stripHtml(html) {
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  return (div.textContent || '').replace(/\s+/g, ' ').trim();
+  const tmp = document.createElement('DIV');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
 }
 
-function formatNow() {
-  const now = new Date();
-  const datePart = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
-  const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-  return `${datePart} · ${timePart}`;
+function extractSectionsFromHtml(html) {
+  const container = document.createElement('div');
+  container.innerHTML = html;
+  const sections = [];
+  const headings = container.querySelectorAll('h2, h3');
+  headings.forEach((h) => {
+    let content = '';
+    let sibling = h.nextElementSibling;
+    while (sibling && !['H2', 'H3'].includes(sibling.tagName)) {
+      content += sibling.outerHTML;
+      sibling = sibling.nextElementSibling;
+    }
+    sections.push({
+      heading: h.textContent.trim(),
+      content: content.trim()
+    });
+  });
+  return sections;
 }
 
 function updateWordStats() {
-  const title = document.getElementById('story-title-input').value;
-  const bodyText = stripHtml(document.getElementById('story-editor-body').innerHTML);
-  const totalWords = `${title} ${bodyText}`.trim().split(/\s+/).filter(Boolean).length;
-  const readTime = Math.max(1, Math.ceil(totalWords / 200));
+  const title = document.getElementById('story-title-input').value.trim();
+  const bodyText = stripHtml(document.getElementById('story-editor-body').innerHTML).trim();
+  const allWords = (title + ' ' + bodyText).split(/\s+/).filter(Boolean);
+  const wordCount = allWords.length;
+  const readMins = Math.max(1, Math.ceil(wordCount / 220));
 
-  const statsEl = document.getElementById('meta-stats-text');
+  const statsEl = document.getElementById('word-count-stat');
   if (statsEl) {
-    statsEl.textContent = `${totalWords} words · ${readTime} min read`;
+    statsEl.textContent = `${wordCount} words · ${readMins} min read`;
   }
 }
 
 // --------------------------------------------------------------------------
-// Cover Banner Handler
+// Cover Image Uploader
 // --------------------------------------------------------------------------
 function setCoverImage(url) {
   coverImageUrl = url;
@@ -142,15 +157,24 @@ function setCoverImage(url) {
   const previewBox = document.getElementById('cover-preview-box');
   const previewImg = document.getElementById('cover-preview-img');
 
-  if (url) {
-    previewImg.src = url;
-    previewBox.classList.remove('hidden');
-    emptyPrompt.classList.add('hidden');
-  } else {
-    previewImg.src = '';
-    previewBox.classList.add('hidden');
-    emptyPrompt.classList.remove('hidden');
-  }
+  if (emptyPrompt) emptyPrompt.classList.add('hidden');
+  if (previewBox) previewBox.classList.remove('hidden');
+  if (previewImg) previewImg.src = url;
+
+  updateWordStats();
+}
+
+function removeCoverImage() {
+  coverImageUrl = null;
+  const emptyPrompt = document.getElementById('cover-empty-prompt');
+  const previewBox = document.getElementById('cover-preview-box');
+  const previewImg = document.getElementById('cover-preview-img');
+
+  if (previewBox) previewBox.classList.add('hidden');
+  if (emptyPrompt) emptyPrompt.classList.remove('hidden');
+  if (previewImg) previewImg.src = '';
+
+  updateWordStats();
 }
 
 function initCoverUploader() {
@@ -159,336 +183,259 @@ function initCoverUploader() {
   const changeBtn = document.getElementById('change-cover-btn');
   const removeBtn = document.getElementById('remove-cover-btn');
 
-  emptyPrompt.addEventListener('click', () => fileInput.click());
-  changeBtn.addEventListener('click', () => fileInput.click());
-  removeBtn.addEventListener('click', () => setCoverImage(null));
+  emptyPrompt?.addEventListener('click', () => {
+    fileInput?.click();
+  });
 
-  fileInput.addEventListener('change', (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => setCoverImage(event.target.result);
-      reader.readAsDataURL(file);
-    }
+  changeBtn?.addEventListener('click', () => {
+    fileInput?.click();
+  });
+
+  removeBtn?.addEventListener('click', () => {
+    removeCoverImage();
+  });
+
+  fileInput?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      setCoverImage(evt.target?.result);
+    };
+    reader.readAsDataURL(file);
   });
 }
 
 // --------------------------------------------------------------------------
-// Medium-style Floating Inserter (+) — (Image, Unsplash, Section Break)
+// Floating (+) Adder Menu
 // --------------------------------------------------------------------------
 function initFloatingAdder() {
-  const adder = document.getElementById('floating-adder');
   const trigger = document.getElementById('floating-adder-trigger');
   const menu = document.getElementById('floating-adder-menu');
-  const editor = document.getElementById('story-editor-body');
 
-  function updateAdderPosition() {
-    if (isReviewMode) {
-      adder.style.opacity = '0';
-      adder.style.pointerEvents = 'none';
-      return;
-    }
-
-    const selection = window.getSelection();
-    if (!selection || !selection.anchorNode) {
-      adder.style.opacity = '0';
-      adder.style.pointerEvents = 'none';
-      return;
-    }
-
-    let node = selection.anchorNode;
-    if (node.nodeType === Node.TEXT_NODE) node = node.parentNode;
-    const block = node.closest('#story-editor-body > *') || node.closest('#story-editor-body');
-
-    if (block && editor.contains(block)) {
-      const isBlank = !block.textContent.trim() || block.innerHTML === '<br>';
-      if (isBlank) {
-        const blockRect = block.getBoundingClientRect();
-        const editorRect = editor.getBoundingClientRect();
-        adder.style.top = `${blockRect.top - editorRect.top + 2}px`;
-        adder.style.opacity = '1';
-        adder.style.pointerEvents = 'auto';
-        return;
-      }
-    }
-
-    adder.style.opacity = '0';
-    adder.style.pointerEvents = 'none';
-    closeAdderMenu();
-  }
-
-  function closeAdderMenu() {
-    trigger.classList.remove('is-open');
-    menu.classList.remove('is-open');
-  }
-
-  function toggleAdderMenu() {
-    const isOpen = menu.classList.contains('is-open');
-    if (isOpen) {
-      closeAdderMenu();
-    } else {
-      trigger.classList.add('is-open');
-      menu.classList.add('is-open');
-    }
-  }
-
-  trigger.addEventListener('click', (e) => {
+  trigger?.addEventListener('click', (e) => {
     e.stopPropagation();
-    toggleAdderMenu();
+    menu?.classList.toggle('is-open');
+    trigger?.classList.toggle('is-open');
   });
 
   document.addEventListener('click', (e) => {
-    if (!adder.contains(e.target)) closeAdderMenu();
+    if (!e.target.closest('#floating-adder')) {
+      menu?.classList.remove('is-open');
+      trigger?.classList.remove('is-open');
+    }
   });
 
-  editor.addEventListener('keyup', updateAdderPosition);
-  editor.addEventListener('mouseup', updateAdderPosition);
-  editor.addEventListener('focus', updateAdderPosition);
-
-  // Inserter actions
-  menu.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-insert]');
-    if (!btn) return;
-    const type = btn.dataset.insert;
-
-    if (type === 'image') {
-      const url = prompt('Enter image URL (or press OK for demo image):', 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80');
-      if (url) {
-        document.execCommand('insertHTML', false, `<figure style="margin: 1.8em 0;"><img src="${url}" alt="Article figure" style="width: 100%; border-radius: 8px; display: block;"><figcaption style="font-size: 13px; color: #64748B; text-align: center; margin-top: 6px;" contenteditable="true">Type caption for image (optional)</figcaption></figure><p><br></p>`);
-      }
-    } else if (type === 'stock') {
-      const stockPhotos = [
-        'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80',
-        'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&auto=format&fit=crop&q=80'
-      ];
-      const randomPhoto = stockPhotos[Math.floor(Math.random() * stockPhotos.length)];
-      document.execCommand('insertHTML', false, `<figure style="margin: 1.8em 0;"><img src="${randomPhoto}" alt="Technology & Engineering" style="width: 100%; border-radius: 8px; display: block;"><figcaption style="font-size: 13px; color: #64748B; text-align: center; margin-top: 6px;" contenteditable="true">Photo by Unsplash / FWC Enterprise</figcaption></figure><p><br></p>`);
-    } else if (type === 'divider') {
-      document.execCommand('insertHTML', false, `<hr><p><br></p>`);
-    }
-
-    closeAdderMenu();
-    updateAdderPosition();
-    updateWordStats();
+  menu?.querySelectorAll('.adder-item-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.insert;
+      insertContentElement(type);
+      menu?.classList.remove('is-open');
+      trigger?.classList.remove('is-open');
+    });
   });
 }
 
+function insertContentElement(type) {
+  const editor = document.getElementById('story-editor-body');
+  editor.focus();
+
+  if (type === 'image') {
+    const url = prompt('Enter image URL or press OK for sample engineering photo:', 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80');
+    if (url) {
+      document.execCommand('insertHTML', false, `
+        <figure style="margin: 1.8em 0;">
+          <img src="${url}" alt="Article figure" style="width: 100%; border-radius: 8px; display: block;">
+          <figcaption style="font-size: 13px; color: #64748B; text-align: center; margin-top: 6px;" contenteditable="true">Type caption for image (optional)</figcaption>
+        </figure>
+        <p><br></p>
+      `);
+    }
+  } else if (type === 'stock') {
+    const stockPhotos = [
+      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&auto=format&fit=crop&q=80'
+    ];
+    const randomPhoto = stockPhotos[Math.floor(Math.random() * stockPhotos.length)];
+    document.execCommand('insertHTML', false, `
+      <figure style="margin: 1.8em 0;">
+        <img src="${randomPhoto}" alt="Technology & Engineering" style="width: 100%; border-radius: 8px; display: block;">
+        <figcaption style="font-size: 13px; color: #64748B; text-align: center; margin-top: 6px;" contenteditable="true">Photo by Unsplash / FWC Enterprise</figcaption>
+      </figure>
+      <p><br></p>
+    `);
+  } else if (type === 'divider') {
+    document.execCommand('insertHTML', false, '<hr style="border: none; border-top: 1px solid #E2E8F0; margin: 2.2em 0;"><p><br></p>');
+  }
+
+  updateWordStats();
+}
+
 // --------------------------------------------------------------------------
-// Sleek Selection Bubble Toolbar
+// Selection Bubble Toolbar
 // --------------------------------------------------------------------------
 function initSelectionBubble() {
   const bubble = document.getElementById('selection-bubble');
   const editor = document.getElementById('story-editor-body');
 
-  function updateButtonActiveStates() {
-    try {
-      const isBold = document.queryCommandState('bold');
-      const isItalic = document.queryCommandState('italic');
-      const isUnderline = document.queryCommandState('underline');
-      const isUL = document.queryCommandState('insertUnorderedList');
-      const isOL = document.queryCommandState('insertOrderedList');
-      const block = document.queryCommandValue('formatBlock').toLowerCase();
-
-      bubble.querySelector('[data-cmd="bold"]')?.classList.toggle('is-active', isBold);
-      bubble.querySelector('[data-cmd="italic"]')?.classList.toggle('is-active', isItalic);
-      bubble.querySelector('[data-cmd="underline"]')?.classList.toggle('is-active', isUnderline);
-      bubble.querySelector('[data-cmd="insertUnorderedList"]')?.classList.toggle('is-active', isUL);
-      bubble.querySelector('[data-cmd="insertOrderedList"]')?.classList.toggle('is-active', isOL);
-      bubble.querySelector('[data-cmd="formatH2"]')?.classList.toggle('is-active', block === 'h2');
-      bubble.querySelector('[data-cmd="formatH3"]')?.classList.toggle('is-active', block === 'h3');
-      bubble.querySelector('[data-cmd="formatQuote"]')?.classList.toggle('is-active', block === 'blockquote');
-    } catch (e) {}
-  }
-
-  function checkSelection() {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed || !selection.rangeCount) {
-      bubble.classList.remove('is-visible');
+  function handleSelection() {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !editor.contains(sel.anchorNode)) {
+      bubble?.classList.remove('is-visible');
       return;
     }
 
-    const range = selection.getRangeAt(0);
-    const container = range.commonAncestorContainer;
-    if (!editor.contains(container)) {
-      bubble.classList.remove('is-visible');
-      return;
-    }
-
-    const text = selection.toString().trim();
+    const text = sel.toString().trim();
     if (!text) {
-      bubble.classList.remove('is-visible');
+      bubble?.classList.remove('is-visible');
       return;
     }
 
+    const range = sel.getRangeAt(0);
     const rect = range.getBoundingClientRect();
-    const topPos = window.scrollY + rect.top - 48;
-    const leftPos = window.scrollX + rect.left + (rect.width / 2) - (bubble.offsetWidth / 2);
-
-    bubble.style.top = `${Math.max(64, topPos)}px`;
-    bubble.style.left = `${Math.max(16, leftPos)}px`;
-    bubble.classList.add('is-visible');
-    updateButtonActiveStates();
+    if (bubble) {
+      bubble.style.top = `${window.scrollY + rect.top - 48}px`;
+      bubble.style.left = `${window.scrollX + rect.left + rect.width / 2}px`;
+      bubble.classList.add('is-visible');
+    }
   }
 
-  document.addEventListener('selectionchange', () => {
-    setTimeout(checkSelection, 10);
-  });
+  document.addEventListener('selectionchange', handleSelection);
+  editor?.addEventListener('keyup', handleSelection);
+  editor?.addEventListener('mouseup', handleSelection);
 
-  bubble.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-cmd]');
-    if (!btn) return;
-    const cmd = btn.dataset.cmd;
+  bubble?.querySelectorAll('.bubble-btn').forEach((btn) => {
+    btn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const cmd = btn.dataset.cmd;
 
-    if (cmd === 'createLink') {
-      const url = prompt('Enter link URL:', 'https://');
-      if (url) document.execCommand('createLink', false, url);
-    } else if (cmd === 'formatH2') {
-      const block = document.queryCommandValue('formatBlock').toLowerCase();
-      document.execCommand('formatBlock', false, block === 'h2' ? '<p>' : '<h2>');
-    } else if (cmd === 'formatH3') {
-      const block = document.queryCommandValue('formatBlock').toLowerCase();
-      document.execCommand('formatBlock', false, block === 'h3' ? '<p>' : '<h3>');
-    } else if (cmd === 'formatQuote') {
-      const block = document.queryCommandValue('formatBlock').toLowerCase();
-      document.execCommand('formatBlock', false, block === 'blockquote' ? '<p>' : '<blockquote>');
-    } else {
-      document.execCommand(cmd, false, null);
-    }
+      if (cmd === 'formatH2') {
+        document.execCommand('formatBlock', false, '<h2>');
+      } else if (cmd === 'formatH3') {
+        document.execCommand('formatBlock', false, '<h3>');
+      } else if (cmd === 'formatQuote') {
+        document.execCommand('formatBlock', false, '<blockquote>');
+      } else if (cmd === 'createLink') {
+        const url = prompt('Enter link URL:');
+        if (url) document.execCommand('createLink', false, url);
+      } else {
+        document.execCommand(cmd, false, null);
+      }
 
-    updateButtonActiveStates();
-    checkSelection();
-    updateWordStats();
+      handleSelection();
+      updateWordStats();
+    });
   });
 }
 
 // --------------------------------------------------------------------------
-// Slash Commands Popup
+// Slash Commands Popup Menu
 // --------------------------------------------------------------------------
 function initSlashCommands() {
   const popup = document.getElementById('slash-popup');
   const editor = document.getElementById('story-editor-body');
 
-  editor.addEventListener('input', () => {
-    if (isReviewMode) return;
-    const selection = window.getSelection();
-    if (!selection || !selection.anchorNode) {
-      popup.classList.remove('is-open');
-      return;
-    }
-
-    const text = selection.anchorNode.textContent || '';
-    if (text.startsWith('/')) {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      popup.style.top = `${window.scrollY + rect.bottom + 6}px`;
-      popup.style.left = `${window.scrollX + rect.left}px`;
-      popup.classList.add('is-open');
-    } else {
-      popup.classList.remove('is-open');
+  editor?.addEventListener('keydown', (e) => {
+    if (e.key === '/') {
+      setTimeout(() => {
+        const sel = window.getSelection();
+        if (!sel || !sel.rangeCount) return;
+        const rect = sel.getRangeAt(0).getBoundingClientRect();
+        if (popup) {
+          popup.style.top = `${window.scrollY + rect.bottom + 6}px`;
+          popup.style.left = `${window.scrollX + rect.left}px`;
+          popup.classList.add('is-open');
+        }
+      }, 10);
+    } else if (['Escape', 'ArrowUp', 'ArrowDown', 'Enter'].includes(e.key) && popup?.classList.contains('is-open')) {
+      if (e.key === 'Escape') {
+        popup?.classList.remove('is-open');
+      }
     }
   });
 
-  popup.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-slash]');
-    if (!item) return;
-    const type = item.dataset.slash;
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#slash-popup')) {
+      popup?.classList.remove('is-open');
+    }
+  });
 
-    // Clear slash command text
-    document.execCommand('selectAll', false, null);
-    document.execCommand('delete', false, null);
+  popup?.querySelectorAll('.slash-cmd-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      const type = item.dataset.slash;
+      popup?.classList.remove('is-open');
+      editor.focus();
 
-    if (type === 'h2') document.execCommand('formatBlock', false, '<h2>');
-    else if (type === 'h3') document.execCommand('formatBlock', false, '<h3>');
-    else if (type === 'quote') document.execCommand('formatBlock', false, '<blockquote>');
-    else if (type === 'bullet') document.execCommand('insertUnorderedList', false, null);
-    else if (type === 'divider') document.execCommand('insertHTML', false, '<hr><p><br></p>');
+      // Remove the typed slash
+      document.execCommand('delete', false, null);
 
-    popup.classList.remove('is-open');
-    updateWordStats();
+      if (type === 'h2') {
+        document.execCommand('formatBlock', false, '<h2>');
+      } else if (type === 'h3') {
+        document.execCommand('formatBlock', false, '<h3>');
+      } else if (type === 'bullet') {
+        document.execCommand('insertUnorderedList', false, null);
+      } else if (type === 'quote') {
+        document.execCommand('formatBlock', false, '<blockquote>');
+      } else if (type === 'divider') {
+        insertContentElement('divider');
+      }
+
+      updateWordStats();
+    });
   });
 }
 
 // --------------------------------------------------------------------------
-// Title Auto-Grow & Formatting
+// Title Auto-Grow
 // --------------------------------------------------------------------------
 function initTitleAutogrow() {
   const titleInput = document.getElementById('story-title-input');
-  function adjust() {
+  function adjustHeight() {
+    if (!titleInput) return;
     titleInput.style.height = 'auto';
     titleInput.style.height = `${titleInput.scrollHeight}px`;
+  }
+  titleInput?.addEventListener('input', () => {
+    adjustHeight();
     updateWordStats();
-  }
-  titleInput.addEventListener('input', adjust);
-  titleInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      const editor = document.getElementById('story-editor-body');
-      editor.focus();
-    }
   });
+  adjustHeight();
 }
 
 // --------------------------------------------------------------------------
+// Autofill Sample Demo Story
 // --------------------------------------------------------------------------
-// Save and Submit Handlers (Draft / Creator Flow)
-// --------------------------------------------------------------------------
-function extractSectionsFromHtml(html) {
-  const div = document.createElement('div');
-  div.innerHTML = html;
-  const sections = [];
-
-  let currentHeading = 'Introduction';
-  let currentContent = [];
-
-  Array.from(div.children).forEach((child) => {
-    if (child.tagName === 'H2' || child.tagName === 'H3') {
-      if (currentContent.length) {
-        sections.push({ heading: currentHeading, content: currentContent.join('') });
-        currentContent = [];
-      }
-      currentHeading = child.textContent.trim() || 'Section';
-    } else {
-      currentContent.push(child.outerHTML);
-    }
-  });
-
-  if (currentContent.length || !sections.length) {
-    sections.push({ heading: currentHeading, content: currentContent.join('') || html });
-  }
-
-  return sections;
-}
-
 function autofillSampleStory() {
-  const sampleTitle = 'Architecting Real-Time Streaming Data Platforms with Apache Flink & AWS';
-  const sampleCover = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&auto=format&fit=crop&q=80';
-  const sampleContent = `
-    <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">In modern enterprise ecosystems, real-time data streaming architectures have shifted from an experimental competitive advantage into a baseline operational requirement.</p>
-    <h2>1. The Evolution Toward Stateful Stream Processing</h2>
-    <p>Legacy batch pipelines inherently incur significant processing latency, leading to stale telemetry and delayed fraud detection. By adopting stateful stream processing with Apache Flink and Apache Kafka on AWS, engineering teams can guarantee exactly-once semantics with sub-second end-to-end latency.</p>
-    <blockquote>"Stateful stream computation enables organizations to make authoritative operational decisions at the point of ingestion rather than hours after reconciliation."</blockquote>
-    <h2>2. Fault Tolerance and Elastic Scaling</h2>
-    <p>Leveraging distributed checkpointing to Amazon S3 ensures rapid recovery from pod terminations without state corruption. Coupled with automated partition rebalancing, the ingest layer dynamically absorbs traffic spikes during peak global market trading windows.</p>
-    <h2>3. Governance and Schema Evolution</h2>
-    <p>Enforcing strict schema validation using AWS Glue Schema Registry ensures backwards compatibility across heterogeneous event producers, preventing downstream consumers from deserialization faults.</p>
-  `.trim();
+  const sample = {
+    title: 'Architecting Scalable AI Pods for Real-Time Manufacturing Intelligence',
+    category: 'AI & Tech Staffing',
+    cover: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80',
+    content: `
+      <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">As industrial manufacturing accelerates toward autonomous production, understanding how to integrate dedicated engineering pods with real-time AI telemetry has become the primary differentiator for tier-1 supply networks.</p>
+      <h2>1. The Shift from Reactive Maintenance to Predictive Networks</h2>
+      <p>Traditional manufacturing logistics were built on static forecasting models that struggled with sudden macro volatility. By integrating generative AI, computer vision, and real-time telemetry from connected warehouse floors, enterprise leaders can now predict inventory bottlenecks up to 72 hours before they ripple into downstream assembly lines.</p>
+      <blockquote>"Autonomous supply chains do not replace human oversight; they augment supply chain officers with high-fidelity simulations of risk before capital is committed."</blockquote>
+      <h2>2. Eliminating Vendor Data Mesh Fragmentation</h2>
+      <p>A primary failure point in supply chain AI deployments is fragmented vendor data. Modern data mesh architectures unify disparate ERP systems, providing a single operational dashboard for logistics coordinators and procurement teams.</p>
+      <h2>3. Regulatory Compliance & Carbon Footprint Optimization</h2>
+      <p>Beyond throughput efficiency, AI algorithms now optimize transport routes for minimal carbon emissions, ensuring tier-1 suppliers meet aggressive ESG reporting standards across North American and European logistics corridors.</p>
+    `
+  };
 
-  const titleInput = document.getElementById('story-title-input');
-  const editor = document.getElementById('story-editor-body');
-
-  titleInput.value = sampleTitle;
-  editor.innerHTML = sampleContent;
-  setCoverImage(sampleCover);
-
-  titleInput.style.height = 'auto';
-  titleInput.style.height = titleInput.scrollHeight + 'px';
-
+  document.getElementById('story-title-input').value = sample.title;
+  setCoverImage(sample.cover);
+  document.getElementById('story-editor-body').innerHTML = sample.content;
+  const catSelect = document.getElementById('story-category-select');
+  if (catSelect) catSelect.value = sample.category;
   updateWordStats();
-  showToast('Sample article content autofilled successfully.', 'success');
+  showToast('Autofilled sample article with AI & Tech Staffing category!', 'success');
 }
 
+// --------------------------------------------------------------------------
+// Save Draft & Submit Workflow
+// --------------------------------------------------------------------------
 function saveStory(status = 'pending') {
   const title = document.getElementById('story-title-input').value.trim();
   const htmlContent = document.getElementById('story-editor-body').innerHTML;
@@ -506,7 +453,7 @@ function saveStory(status = 'pending') {
     return false;
   }
 
-  const category = currentPost?.category || 'AI & Tech Staffing';
+  const category = document.getElementById('story-category-select')?.value || currentPost?.category || 'AI & Tech Staffing';
   const author = currentPost?.author || 'Taylor Brooks';
   const excerpt = textContent.slice(0, 240);
   const sections = extractSectionsFromHtml(htmlContent);
@@ -591,6 +538,11 @@ function setupReviewMode(post) {
 
   document.getElementById('review-meta-text').textContent = `Submitted by ${post.author || 'Author'} on ${post.submitted}`;
 
+  const catSelect = document.getElementById('story-category-select');
+  if (catSelect && post.category) {
+    catSelect.value = post.category;
+  }
+
   // Populate Editor Fields (Keep editable so super admin can review and fix typos)
   document.getElementById('story-title-input').value = post.title || 'Untitled Story';
   document.getElementById('story-title-input').removeAttribute('readonly');
@@ -630,6 +582,7 @@ function handleApproveStory() {
   const title = document.getElementById('story-title-input').value.trim() || post.title;
   const htmlContent = document.getElementById('story-editor-body').innerHTML;
   const textContent = stripHtml(htmlContent);
+  const category = document.getElementById('story-category-select')?.value || post.category || 'AI & Tech Staffing';
 
   let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
   const match = blogPosts.find((p) => p.id === post.id);
@@ -639,6 +592,7 @@ function handleApproveStory() {
     match.excerpt = textContent.slice(0, 240);
     match.sections = extractSectionsFromHtml(htmlContent);
     if (coverImageUrl) match.coverImage = coverImageUrl;
+    match.category = category;
     match.status = 'published';
     match.actionTakenOn = formatNow();
     match.feedback = null;
@@ -722,6 +676,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reveal delete button in creator mode when editing existing post
     document.getElementById('delete-story-btn')?.classList.remove('hidden');
 
+    const catSelect = document.getElementById('story-category-select');
+    if (catSelect && currentPost.category) {
+      catSelect.value = currentPost.category;
+    }
+
     if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
     if (currentPost.content) editor.innerHTML = currentPost.content;
     else if (currentPost.sections && currentPost.sections.length) {
@@ -776,10 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('review-approve-btn')?.addEventListener('click', () => {
     const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
     const title = document.getElementById('story-title-input').value.trim() || (post ? post.title : 'Story');
-    const author = post?.author || 'Author';
     document.getElementById('approve-story-title').textContent = title;
-    const authorEl = document.getElementById('approve-story-author');
-    if (authorEl) authorEl.textContent = author;
     openModal('approve-confirm-modal');
   });
 

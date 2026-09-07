@@ -576,3 +576,43 @@
     margin-bottom: var(--space-2);
   }
 }
+
+/* --------------------------------------------------------------------------
+   08. Story Category Selection Dropdown (Square Rounded)
+   -------------------------------------------------------------------------- */
+.story-category-select-wrap {
+  display: inline-flex;
+  margin-top: 4px;
+  margin-bottom: var(--space-6);
+  position: relative;
+}
+
+.story-category-select {
+  height: 36px;
+  min-width: 220px;
+  padding: 0 34px 0 12px;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--ink-secondary);
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md); /* square rounded */
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  font-family: inherit;
+  outline: none;
+}
+
+.story-category-select:hover {
+  background-color: var(--bg-card);
+  border-color: #94A3B8;
+  color: var(--ink-primary);
+}
+
+.story-category-select:focus {
+  background-color: var(--bg-card);
+  border-color: var(--brand-blue);
+  color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
