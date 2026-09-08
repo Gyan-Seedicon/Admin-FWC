@@ -15,6 +15,8 @@ const jobSeedItems = [
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$125,000 – $150,000 / yr',
     expiryDate: '2026-10-31',
+    pocName: 'Sarah Jenkins',
+    pocEmail: 's.jenkins@fwc.com',
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
     status: 'pending',
@@ -40,6 +42,8 @@ const jobSeedItems = [
     experience: 'Senior (5–8 Yrs)',
     salary: '$140,000 – $170,000 / yr',
     expiryDate: '2026-11-15',
+    pocName: 'Michael Chen',
+    pocEmail: 'm.chen@fwc.com',
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
     status: 'pending',
@@ -65,6 +69,8 @@ const jobSeedItems = [
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '$160,000 – $195,000 / yr',
     expiryDate: '2026-09-30',
+    pocName: 'Aarav Sharma',
+    pocEmail: 'a.sharma@fwc.com',
     submitted: 'Aug 10, 2026 · 09:00 AM',
     submittedISO: '2026-08-10T09:00:00',
     status: 'published',
@@ -89,6 +95,8 @@ const jobSeedItems = [
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$115,000 – $140,000 / yr',
     expiryDate: '2026-10-15',
+    pocName: 'Elena Rostova',
+    pocEmail: 'e.rostova@fwc.com',
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
     status: 'published',
@@ -113,6 +121,8 @@ const jobSeedItems = [
     experience: 'Entry Level (1–2 Yrs)',
     salary: '$90,000 – $110,000 / yr',
     expiryDate: '2026-08-31',
+    pocName: 'David Vance',
+    pocEmail: 'd.vance@fwc.com',
     submitted: 'Aug 02, 2026 · 11:00 AM',
     submittedISO: '2026-08-02T11:00:00',
     status: 'rejected',
@@ -137,6 +147,8 @@ const jobSeedItems = [
     experience: 'Senior (5–8 Yrs)',
     salary: '$140,000 – $170,000 / yr',
     expiryDate: '2026-11-30',
+    pocName: 'Priya Nair',
+    pocEmail: 'p.nair@fwc.com',
     submitted: 'Aug 27, 2026 · 09:15 AM',
     submittedISO: '2026-08-27T09:15:00',
     status: 'pending',
@@ -169,6 +181,8 @@ const sampleAutoFillPresets = [
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '₹18,00,000 – ₹24,00,000 / yr',
+    pocName: 'Sarah Jenkins',
+    pocEmail: 's.jenkins@fwc.com',
     overview: 'We are looking for a Senior Cybersecurity Analyst to safeguard client cloud infrastructure, lead proactive threat hunting, and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.',
     responsibilities: [
       'Lead continuous monitoring, threat intelligence analysis, and proactive vulnerability management across AWS environments.',
@@ -186,6 +200,8 @@ const sampleAutoFillPresets = [
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '₹25,00,000 – ₹35,00,000 / yr',
+    pocName: 'Aarav Sharma',
+    pocEmail: 'a.sharma@fwc.com',
     overview: 'Drive enterprise generative AI and Retrieval-Augmented Generation (RAG) system deployments for Fortune 500 manufacturing and financial intelligence pipelines.',
     responsibilities: [
       'Design high-throughput vector database pipelines using pgvector, Pinecone, and LangChain/LlamaIndex.',
@@ -203,6 +219,8 @@ const sampleAutoFillPresets = [
     type: 'Full-time',
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '₹35,00,000 – ₹45,00,000 / yr',
+    pocName: 'Michael Chen',
+    pocEmail: 'm.chen@fwc.com',
     overview: 'Lead the architecture and design of high-throughput multi-region AWS and Azure cloud environments for enterprise clients undergoing modernization.',
     responsibilities: [
       'Architect enterprise-scale AWS/Azure landing zones utilizing Terraform and Terragrunt.',
@@ -226,6 +244,8 @@ const cursourcePresets = {
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '₹22,00,000 – ₹30,00,000 / yr',
+    pocName: 'Elena Rostova',
+    pocEmail: 'e.rostova@fwc.com',
     overview: 'Drive full-stack microfrontend and backend service development across high-velocity agile pods building real-time client analytics dashboards.',
     responsibilities: [
       'Engineer robust React TypeScript web applications with microfrontend architectures and SSR.',
@@ -243,6 +263,8 @@ const cursourcePresets = {
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '₹28,00,000 – ₹38,00,000 / yr',
+    pocName: 'Sarah Jenkins',
+    pocEmail: 's.jenkins@fwc.com',
     overview: 'Direct enterprise data privacy, regulatory compliance (SOC2, HIPAA, GDPR, DORA), and data lineage framework implementations across multi-cloud environments.',
     responsibilities: [
       'Establish enterprise data governance catalogs and classification taxonomy across AWS and Snowflake.',
@@ -260,7 +282,17 @@ const DEFAULT_JOB_EXPIRIES = {
   2: '2026-11-15',
   3: '2026-09-30',
   4: '2026-10-15',
-  5: '2026-08-31'
+  5: '2026-08-31',
+  6: '2026-11-30'
+};
+
+const DEFAULT_JOB_POCS = {
+  1: { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' },
+  2: { name: 'Michael Chen', email: 'm.chen@fwc.com' },
+  3: { name: 'Aarav Sharma', email: 'a.sharma@fwc.com' },
+  4: { name: 'Elena Rostova', email: 'e.rostova@fwc.com' },
+  5: { name: 'David Vance', email: 'd.vance@fwc.com' },
+  6: { name: 'Priya Nair', email: 'p.nair@fwc.com' }
 };
 
 function ensureJobExpiries(jobs) {
@@ -268,6 +300,12 @@ function ensureJobExpiries(jobs) {
   jobs.forEach((job) => {
     if (!job.expiryDate) {
       job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
+      modified = true;
+    }
+    if (!job.pocName || !job.pocEmail) {
+      const def = DEFAULT_JOB_POCS[job.id] || { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' };
+      if (!job.pocName) job.pocName = def.name;
+      if (!job.pocEmail) job.pocEmail = def.email;
       modified = true;
     }
   });
@@ -439,6 +477,14 @@ function applyPresetToForm(preset) {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 60);
     document.getElementById('field-expiry-date').value = futureDate.toISOString().slice(0, 10);
+  }
+  if (preset.pocName) {
+    const pocNameEl = document.getElementById('field-poc-name');
+    if (pocNameEl) pocNameEl.value = preset.pocName;
+  }
+  if (preset.pocEmail) {
+    const pocEmailEl = document.getElementById('field-poc-email');
+    if (pocEmailEl) pocEmailEl.value = preset.pocEmail;
   }
   if (preset.overview) document.getElementById('field-overview').value = preset.overview;
 
@@ -627,6 +673,8 @@ function saveJobRequisition(status = 'pending') {
   const experience = document.getElementById('field-experience').value;
   const salary = getCompensationValue();
   const expiryDate = document.getElementById('field-expiry-date').value || '';
+  const pocName = document.getElementById('field-poc-name')?.value.trim() || '';
+  const pocEmail = document.getElementById('field-poc-email')?.value.trim() || '';
 
   const respItems = respVal
     .split(/•|\n/)
@@ -648,6 +696,8 @@ function saveJobRequisition(status = 'pending') {
     editingJob.experience = experience;
     editingJob.salary = salary;
     editingJob.expiryDate = expiryDate;
+    editingJob.pocName = pocName;
+    editingJob.pocEmail = pocEmail;
     editingJob.overview = overview;
     editingJob.responsibilities = respItems.length ? respItems : [overview];
     editingJob.skills = currentSkills;
@@ -668,6 +718,8 @@ function saveJobRequisition(status = 'pending') {
       experience,
       salary,
       expiryDate,
+      pocName,
+      pocEmail,
       submitted: nowFormatted,
       submittedISO,
       status,
@@ -733,6 +785,9 @@ function handleApproveJob() {
   const respVal = document.getElementById('field-responsibilities')?.value.trim() || '';
   const respItems = respVal ? respVal.split(/•|\n/).map((s) => s.trim()).filter(Boolean) : (job ? job.responsibilities : []);
 
+  const pocName = document.getElementById('field-poc-name')?.value.trim() || (job ? job.pocName : 'Sarah Jenkins');
+  const pocEmail = document.getElementById('field-poc-email')?.value.trim() || (job ? job.pocEmail : 's.jenkins@fwc.com');
+
   let jobListings = loadCollection(JOBS_KEY, jobSeedItems);
   let match = job ? jobListings.find((j) => Number(j.id) === Number(job.id) || String(j.id) === String(job.id)) : null;
   if (!match && jobListings.length > 0) {
@@ -747,6 +802,8 @@ function handleApproveJob() {
     match.experience = experience;
     match.salary = salary;
     match.expiryDate = expiryDate;
+    match.pocName = pocName;
+    match.pocEmail = pocEmail;
     match.overview = overview;
     match.responsibilities = respItems;
     match.skills = currentSkills;
@@ -957,6 +1014,15 @@ function setupPreviewMode(job) {
   const postedEl = document.getElementById('preview-val-submitted');
   if (postedEl) postedEl.textContent = job.submitted || '—';
 
+  const pocEl = document.getElementById('preview-val-poc');
+  if (pocEl) {
+    if (job.pocName) {
+      pocEl.innerHTML = `<span style="font-weight: 600;">${job.pocName}</span>${job.pocEmail ? ` <span style="font-size: 11px; color: var(--ink-muted); font-weight: normal;">(${job.pocEmail})</span>` : ''}`;
+    } else {
+      pocEl.textContent = '—';
+    }
+  }
+
   // Overview
   const overviewEl = document.getElementById('preview-overview-text');
   if (overviewEl) overviewEl.textContent = job.overview || 'No overview provided.';
@@ -1052,6 +1118,12 @@ function populateFormFields(job) {
   document.getElementById('field-experience').value = job.experience || 'Mid-Level (3–5 Yrs)';
   populateCompensationFields(job.salary || '₹12,00,000 – ₹18,00,000 / yr');
   document.getElementById('field-expiry-date').value = job.expiryDate || '';
+  
+  const pocNameEl = document.getElementById('field-poc-name');
+  if (pocNameEl) pocNameEl.value = job.pocName || '';
+  const pocEmailEl = document.getElementById('field-poc-email');
+  if (pocEmailEl) pocEmailEl.value = job.pocEmail || '';
+
   document.getElementById('field-overview').value = job.overview || job.excerpt || '';
 
   if (Array.isArray(job.responsibilities)) {

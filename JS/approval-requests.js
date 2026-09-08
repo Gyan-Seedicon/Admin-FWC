@@ -98,6 +98,8 @@ const jobSeedItems = [
     experience: '3–5 Years',
     salary: '$120,000 – $145,000 / yr',
     expiryDate: '2026-10-31',
+    pocName: 'Sarah Jenkins',
+    pocEmail: 's.jenkins@fwc.com',
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
     status: 'pending',
@@ -122,6 +124,8 @@ const jobSeedItems = [
     experience: '5–8 Years',
     salary: '$135,000 – $165,000 / yr',
     expiryDate: '2026-11-15',
+    pocName: 'Michael Chen',
+    pocEmail: 'm.chen@fwc.com',
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
     status: 'pending',
@@ -146,6 +150,8 @@ const jobSeedItems = [
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '$160,000 – $195,000 / yr',
     expiryDate: '2026-09-30',
+    pocName: 'Aarav Sharma',
+    pocEmail: 'a.sharma@fwc.com',
     submitted: 'Aug 10, 2026 · 09:00 AM',
     submittedISO: '2026-08-10T09:00:00',
     status: 'published',
@@ -170,6 +176,8 @@ const jobSeedItems = [
     experience: '3–5 Years',
     salary: '$115,000 – $140,000 / yr',
     expiryDate: '2026-10-15',
+    pocName: 'Elena Rostova',
+    pocEmail: 'e.rostova@fwc.com',
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
     status: 'published',
@@ -191,9 +199,11 @@ const jobSeedItems = [
     department: 'Blockchain',
     location: 'Remote',
     type: 'Contract',
-    experience: 'Entry Level (1–2 Yrs)',
+    experience: '1–2 Years',
     salary: '$90,000 – $110,000 / yr',
     expiryDate: '2026-08-31',
+    pocName: 'David Vance',
+    pocEmail: 'd.vance@fwc.com',
     submitted: 'Aug 02, 2026 · 11:00 AM',
     submittedISO: '2026-08-02T11:00:00',
     status: 'rejected',
@@ -215,9 +225,11 @@ const jobSeedItems = [
     department: 'Cloud Services',
     location: 'Remote',
     type: 'Full-time',
-    experience: 'Senior (5–8 Yrs)',
+    experience: '5–8 Years',
     salary: '$140,000 – $170,000 / yr',
     expiryDate: '2026-11-30',
+    pocName: 'Priya Nair',
+    pocEmail: 'p.nair@fwc.com',
     submitted: 'Aug 27, 2026 · 09:15 AM',
     submittedISO: '2026-08-27T09:15:00',
     status: 'pending',
@@ -277,11 +289,26 @@ const DEFAULT_JOB_EXPIRIES = {
   6: '2026-11-30'
 };
 
+const DEFAULT_JOB_POCS = {
+  1: { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' },
+  2: { name: 'Michael Chen', email: 'm.chen@fwc.com' },
+  3: { name: 'Aarav Sharma', email: 'a.sharma@fwc.com' },
+  4: { name: 'Elena Rostova', email: 'e.rostova@fwc.com' },
+  5: { name: 'David Vance', email: 'd.vance@fwc.com' },
+  6: { name: 'Priya Nair', email: 'p.nair@fwc.com' }
+};
+
 function ensureJobExpiries(jobs) {
   let modified = false;
   jobs.forEach((job) => {
     if (!job.expiryDate) {
       job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
+      modified = true;
+    }
+    if (!job.pocName || !job.pocEmail) {
+      const def = DEFAULT_JOB_POCS[job.id] || { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' };
+      if (!job.pocName) job.pocName = def.name;
+      if (!job.pocEmail) job.pocEmail = def.email;
       modified = true;
     }
   });

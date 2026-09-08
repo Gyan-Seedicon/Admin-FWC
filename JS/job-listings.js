@@ -15,6 +15,8 @@ const jobListingsSeed = [
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$120,000 – $145,000 / yr',
     expiryDate: '2026-10-31',
+    pocName: 'Sarah Jenkins',
+    pocEmail: 's.jenkins@fwc.com',
     applicantsCount: 14,
     submitted: 'Aug 26, 2026 · 10:30 AM',
     submittedISO: '2026-08-26T10:30:00',
@@ -40,6 +42,8 @@ const jobListingsSeed = [
     experience: 'Senior (5–8 Yrs)',
     salary: '$135,000 – $165,000 / yr',
     expiryDate: '2026-11-15',
+    pocName: 'Michael Chen',
+    pocEmail: 'm.chen@fwc.com',
     applicantsCount: 8,
     submitted: 'Aug 23, 2026 · 03:15 PM',
     submittedISO: '2026-08-23T15:15:00',
@@ -65,6 +69,8 @@ const jobListingsSeed = [
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '$160,000 – $195,000 / yr',
     expiryDate: '2026-09-30',
+    pocName: 'Aarav Sharma',
+    pocEmail: 'a.sharma@fwc.com',
     applicantsCount: 22,
     submitted: 'Aug 10, 2026 · 09:00 AM',
     submittedISO: '2026-08-10T09:00:00',
@@ -90,6 +96,8 @@ const jobListingsSeed = [
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '$115,000 – $140,000 / yr',
     expiryDate: '2026-10-15',
+    pocName: 'Elena Rostova',
+    pocEmail: 'e.rostova@fwc.com',
     applicantsCount: 16,
     submitted: 'Aug 08, 2026 · 02:20 PM',
     submittedISO: '2026-08-08T14:20:00',
@@ -115,6 +123,8 @@ const jobListingsSeed = [
     experience: 'Entry Level (1–2 Yrs)',
     salary: '$90,000 – $110,000 / yr',
     expiryDate: '2026-08-31',
+    pocName: 'David Vance',
+    pocEmail: 'd.vance@fwc.com',
     applicantsCount: 6,
     submitted: 'Aug 02, 2026 · 11:00 AM',
     submittedISO: '2026-08-02T11:00:00',
@@ -140,6 +150,8 @@ const jobListingsSeed = [
     experience: 'Senior (5–8 Yrs)',
     salary: '$140,000 – $170,000 / yr',
     expiryDate: '2026-11-30',
+    pocName: 'Priya Nair',
+    pocEmail: 'p.nair@fwc.com',
     applicantsCount: 4,
     submitted: 'Aug 27, 2026 · 09:15 AM',
     submittedISO: '2026-08-27T09:15:00',
@@ -167,11 +179,26 @@ const DEFAULT_JOB_EXPIRIES = {
   6: '2026-11-30'
 };
 
+const DEFAULT_JOB_POCS = {
+  1: { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' },
+  2: { name: 'Michael Chen', email: 'm.chen@fwc.com' },
+  3: { name: 'Aarav Sharma', email: 'a.sharma@fwc.com' },
+  4: { name: 'Elena Rostova', email: 'e.rostova@fwc.com' },
+  5: { name: 'David Vance', email: 'd.vance@fwc.com' },
+  6: { name: 'Priya Nair', email: 'p.nair@fwc.com' }
+};
+
 function ensureJobExpiries(jobs) {
   let modified = false;
   jobs.forEach((job) => {
     if (!job.expiryDate) {
       job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
+      modified = true;
+    }
+    if (!job.pocName || !job.pocEmail) {
+      const def = DEFAULT_JOB_POCS[job.id] || { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' };
+      if (!job.pocName) job.pocName = def.name;
+      if (!job.pocEmail) job.pocEmail = def.email;
       modified = true;
     }
   });
@@ -302,7 +329,7 @@ function renderTable(items) {
   if (!items.length) {
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
-        <td colspan="13" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
+        <td colspan="14" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
           No published or draft job requisitions found.
         </td>
       </tr>
@@ -329,6 +356,20 @@ function renderTable(items) {
         </a>
       </td>
       <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
+      <td style="white-space: nowrap;">
+        ${job.pocName ? `
+          <div class="poc-cell-wrap">
+            <span class="poc-name" title="${job.pocName}">${job.pocName}</span>
+            ${job.pocEmail ? `
+              <button type="button" class="poc-email-copy-btn" data-copy-email="${job.pocEmail}" data-poc-name="${job.pocName}" title="Copy email: ${job.pocEmail}" aria-label="Copy ${job.pocName}'s email address">
+                <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13">
+                  <path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/>
+                </svg>
+              </button>
+            ` : ''}
+          </div>
+        ` : '<span style="color: var(--ink-muted);">—</span>'}
+      </td>
       <td style="text-align: center; white-space: nowrap;">
         <a href="${jdUrl}" class="btn btn-sm btn-secondary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; text-decoration: none;">
           <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
@@ -391,7 +432,9 @@ document.addEventListener('DOMContentLoaded', () => {
         job.title.toLowerCase().includes(q) ||
         (job.department && job.department.toLowerCase().includes(q)) ||
         (job.location && job.location.toLowerCase().includes(q)) ||
-        (job.experience && job.experience.toLowerCase().includes(q));
+        (job.experience && job.experience.toLowerCase().includes(q)) ||
+        (job.pocName && job.pocName.toLowerCase().includes(q)) ||
+        (job.pocEmail && job.pocEmail.toLowerCase().includes(q));
       const matchStatus = st === 'all' || job.status === st;
       return matchSearch && matchStatus;
     });
@@ -408,6 +451,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Table row click & kebab context menu
   document.addEventListener('click', (e) => {
+    // 0. Copy POC Email Button
+    const copyBtn = e.target.closest('.poc-email-copy-btn');
+    if (copyBtn) {
+      e.stopPropagation();
+      e.preventDefault();
+      const email = copyBtn.dataset.copyEmail;
+      const name = copyBtn.dataset.pocName || 'POC';
+      if (email) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(email).then(() => {
+            showToast(`Copied ${name}'s email (${email}) to clipboard!`, 'success');
+          }).catch(() => {
+            fallbackCopyText(email, name);
+          });
+        } else {
+          fallbackCopyText(email, name);
+        }
+        copyBtn.classList.add('is-copied');
+        copyBtn.innerHTML = `<svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>`;
+        setTimeout(() => {
+          copyBtn.classList.remove('is-copied');
+          copyBtn.innerHTML = `<svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg>`;
+        }, 1800);
+      }
+      return;
+    }
+
+    function fallbackCopyText(text, name) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast(`Copied ${name}'s email (${text}) to clipboard!`, 'success');
+    }
+
     // 1. Kebab button toggle
     const kebabBtn = e.target.closest('[data-action="toggle-kebab"]');
     if (kebabBtn) {

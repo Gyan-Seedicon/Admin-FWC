@@ -32,3 +32,52 @@
   color: #2563EB;
   flex-shrink: 0;
 }
+
+/* ==========================================================================
+   POC (Point of Contact) Table Cell & Copy Email Button
+   ========================================================================== */
+
+.poc-cell-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.poc-name {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--ink-primary);
+  white-space: nowrap;
+}
+
+.poc-email-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: #F8FAFC;
+  border: 1px solid var(--border-card);
+  color: var(--ink-secondary);
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.poc-email-copy-btn:hover {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+  color: var(--brand-blue);
+  transform: scale(1.08);
+}
+
+.poc-email-copy-btn:active {
+  transform: scale(0.96);
+}
+
+.poc-email-copy-btn.is-copied {
+  background: #D1FAE5;
+  border-color: #A7F3D0;
+  color: #059669;
+}

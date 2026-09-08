@@ -686,15 +686,18 @@ function renderTable(items) {
 
     const statusVal = candidate.status || 'Under Review';
     const statusClass = getStatusClass(statusVal);
+    const profileUrl = `candidate-profile.html?id=${candidate.id}&jobId=${currentJob ? currentJob.id : 3}`;
 
     return `
       <tr>
         <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
         <td>
-          <div class="candidate-cell">
-            ${avatarHtml}
-            <span class="candidate-name">${candidate.name}</span>
-          </div>
+          <a href="${profileUrl}" class="candidate-cell-link" style="display: inline-flex; text-decoration: none;" title="View candidate profile details">
+            <div class="candidate-cell">
+              ${avatarHtml}
+              <span class="candidate-name candidate-name-clickable">${candidate.name}</span>
+            </div>
+          </a>
         </td>
         <td>
           <a href="mailto:${candidate.email}" class="contact-link" title="Email ${candidate.name}">
@@ -719,10 +722,16 @@ function renderTable(items) {
           </div>
         </td>
         <td style="text-align: center; white-space: nowrap;">
-          <a href="../../assets/resume.png" target="_blank" rel="noopener noreferrer" class="btn-resume-view" title="Open resume for ${candidate.name} in new tab">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
-            <span>View resume</span>
-          </a>
+          <div style="display: inline-flex; align-items: center; gap: 6px;">
+            <a href="${profileUrl}" class="btn-resume-view" title="Open full candidate profile for ${candidate.name}">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24ZM74.08,197.5a64,64,0,0,1,107.84,0,87.83,87.83,0,0,1-107.84,0ZM96,120a32,32,0,1,1,32,32A32,32,0,0,1,96,120Zm97.76,66.41a79.66,79.66,0,0,0-36.06-28.75,48,48,0,1,0-59.4,0,79.66,79.66,0,0,0-36.06,28.75,88,88,0,1,1,131.52,0Z"/></svg>
+              <span>View profile</span>
+            </a>
+            <a href="../../assets/resume.png" target="_blank" rel="noopener noreferrer" class="btn-resume-view" style="background: #F8FAFC; color: var(--ink-secondary); border-color: var(--border-card);" title="Open resume for ${candidate.name} in new tab">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
+              <span>Resume</span>
+            </a>
+          </div>
         </td>
       </tr>
     `;

@@ -1354,7 +1354,7 @@ function getGlobalSearchDataset() {
         category: 'Candidates & Applicants',
         type: 'Candidate',
         meta: `${cand.email} · ${(cand.skills || []).slice(0, 3).join(', ')}`,
-        url: `job-applicants.html?jobId=${cand.jobId || 1}`,
+        url: `candidate-profile.html?id=${cand.id}&jobId=${cand.jobId || 1}`,
         iconClass: 'icon-applicant'
       });
     });
@@ -1366,7 +1366,7 @@ function getGlobalSearchDataset() {
         category: 'Candidates & Applicants',
         type: 'Candidate',
         meta: 'elena.rostova@techdefense.io · SIEM & Splunk, AWS Security Hub, Threat Hunting',
-        url: 'job-applicants.html?jobId=1',
+        url: 'candidate-profile.html?id=101&jobId=1',
         iconClass: 'icon-applicant'
       },
       {

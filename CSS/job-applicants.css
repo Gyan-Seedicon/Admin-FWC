@@ -176,11 +176,25 @@
   flex-shrink: 0;
 }
 
+.candidate-cell-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
 .candidate-name {
   font-weight: var(--weight-semibold);
   color: var(--ink-primary);
   font-size: var(--text-xs);
   white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-smooth);
+}
+
+.candidate-cell-link:hover .candidate-name,
+.candidate-name-clickable:hover {
+  color: var(--brand-blue);
+  text-decoration: underline;
 }
 
 .contact-link {
