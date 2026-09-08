@@ -158,6 +158,49 @@ const jobListingsSeed = [
   }
 ];
 
+const DEFAULT_JOB_EXPIRIES = {
+  1: '2026-10-31',
+  2: '2026-11-15',
+  3: '2026-09-30',
+  4: '2026-10-15',
+  5: '2026-08-31',
+  6: '2026-11-30'
+};
+
+function ensureJobExpiries(jobs) {
+  let modified = false;
+  jobs.forEach((job) => {
+    if (!job.expiryDate) {
+      job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
+      modified = true;
+    }
+  });
+  if (modified) {
+    saveCollection(JOBS_KEY, jobs);
+  }
+  return jobs;
+}
+
+function formatExpiryDate(dateStr) {
+  if (!dateStr) return '—';
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const date = new Date(year, monthIndex, day);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+      }
+    }
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+  } catch (e) {
+    return dateStr;
+  }
+}
+
 function ensureJobSeeds(jobs) {
   let modified = false;
   jobListingsSeed.forEach((seed) => {
@@ -250,48 +293,6 @@ function renderActionCell(job) {
       </div>
     </div>
   `;
-}
-
-const DEFAULT_JOB_EXPIRIES = {
-  1: '2026-10-31',
-  2: '2026-11-15',
-  3: '2026-09-30',
-  4: '2026-10-15',
-  5: '2026-08-31'
-};
-
-function ensureJobExpiries(jobs) {
-  let modified = false;
-  jobs.forEach((job) => {
-    if (!job.expiryDate) {
-      job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
-      modified = true;
-    }
-  });
-  if (modified) {
-    saveCollection(JOBS_KEY, jobs);
-  }
-  return jobs;
-}
-
-function formatExpiryDate(dateStr) {
-  if (!dateStr) return '—';
-  try {
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-      const year = parseInt(parts[0], 10);
-      const monthIndex = parseInt(parts[1], 10) - 1;
-      const day = parseInt(parts[2], 10);
-      const date = new Date(year, monthIndex, day);
-      if (!isNaN(date.getTime())) {
-        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
-      }
-    }
-    const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
-  } catch (e) {
-    return dateStr;
-  }
 }
 
 function renderTable(items) {

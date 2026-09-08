@@ -195,6 +195,240 @@ function initKebabMenus(container = document) {
 // 01c. Mock Persistence Layer (localStorage)
 // --------------------------------------------------------------------------
 
+const GLOBAL_DEFAULT_BLOGS = [
+  {
+    id: 1,
+    title: 'The Future of AI in Manufacturing Supply Chains',
+    author: 'Alex Kim',
+    category: 'AI',
+    submitted: 'Aug 25, 2026 · 02:30 PM',
+    submittedISO: '2026-08-25T14:30:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'As manufacturers increasingly turn to artificial intelligence to streamline operations, understanding how to integrate AI responsibly into supply chain management has never been more critical.'
+  },
+  {
+    id: 2,
+    title: '5 Ways Predictive Maintenance Cuts Downtime',
+    author: 'Sam Patel',
+    category: 'Manufacturing',
+    submitted: 'Aug 24, 2026 · 11:15 AM',
+    submittedISO: '2026-08-24T11:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Unplanned downtime costs manufacturers millions each year. Predictive maintenance strategies powered by IoT sensors and machine learning are changing the equation.'
+  },
+  {
+    id: 3,
+    title: 'Why Digital Twins Are the Next Big Thing',
+    author: 'Jordan Lee',
+    category: 'AI',
+    submitted: 'Aug 22, 2026 · 04:45 PM',
+    submittedISO: '2026-08-22T16:45:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Digital twin technology allows manufacturers to simulate, predict, and optimize physical processes before committing real-world resources.'
+  },
+  {
+    id: 4,
+    title: '5 Signs Your Enterprise Is Ready for AI Staffing',
+    author: 'Priya Nair',
+    category: 'AI & Tech Staffing',
+    submitted: 'Aug 18, 2026 · 09:20 AM',
+    submittedISO: '2026-08-18T09:20:00',
+    status: 'published',
+    actionTakenOn: 'Aug 19, 2026 · 10:05 AM',
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'AI-augmented staffing models are moving from pilot programs to core hiring strategy.'
+  },
+  {
+    id: 5,
+    title: 'Building Zero-Trust Teams for Engineering',
+    author: 'Marcus Vance',
+    category: 'Governance & Compliance',
+    submitted: 'Aug 12, 2026 · 01:10 PM',
+    submittedISO: '2026-08-12T13:10:00',
+    status: 'rejected',
+    actionTakenOn: 'Aug 13, 2026 · 03:25 PM',
+    feedback: 'Please include verified benchmark figures and engineering team citations before submitting for final review.',
+    coverImage: null,
+    excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.'
+  },
+  {
+    id: 6,
+    title: 'Scaling Distributed Kubernetes for Enterprise Microservices',
+    author: 'David Chen',
+    category: 'Cloud & Infrastructure',
+    submitted: 'Aug 26, 2026 · 04:15 PM',
+    submittedISO: '2026-08-26T16:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Best practices for managing multi-tenant Kubernetes clusters, automated service mesh deployments, and observability across hybrid cloud environments.'
+  }
+];
+
+const GLOBAL_DEFAULT_JOBS = [
+  {
+    id: 1,
+    title: 'Cybersecurity Analyst',
+    department: 'Cybersecurity',
+    location: 'Remote',
+    type: 'Full-time',
+    experience: 'Mid-Level (3–5 Yrs)',
+    salary: '$120,000 – $145,000 / yr',
+    expiryDate: '2026-10-31',
+    applicantsCount: 14,
+    submitted: 'Aug 26, 2026 · 10:30 AM',
+    submittedISO: '2026-08-26T10:30:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'cybersecurity-analyst-jd.pdf',
+    pdfSize: '1.4 MB',
+    overview: 'We are looking for a Cybersecurity Analyst to safeguard client infrastructure and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.',
+    responsibilities: [
+      'Perform continuous threat monitoring, log telemetry analysis, and vulnerability triage across multi-cloud environments.',
+      'Collaborate with DevSecOps engineers to integrate automated security scanning into CI/CD pipelines.',
+      'Lead incident response simulations and prepare audit-ready compliance documentation for enterprise clients.'
+    ],
+    skills: ['SIEM & Splunk', 'AWS Security Hub', 'SOC2 / HIPAA Compliance', 'Threat Hunting', 'Zero-Trust Architecture']
+  },
+  {
+    id: 2,
+    title: 'Technology Consultant',
+    department: 'Technology Consulting',
+    location: 'Alhambra, CA',
+    type: 'Full-time',
+    experience: 'Senior (5–8 Yrs)',
+    salary: '$135,000 – $165,000 / yr',
+    expiryDate: '2026-11-15',
+    applicantsCount: 8,
+    submitted: 'Aug 23, 2026 · 03:15 PM',
+    submittedISO: '2026-08-23T15:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'technology-consultant-jd.pdf',
+    pdfSize: '1.1 MB',
+    overview: 'Join our consulting practice to advise enterprise manufacturing and fintech clients on legacy technology modernization, architecture roadmaps, and digital transformation.',
+    responsibilities: [
+      'Conduct comprehensive technical discovery workshops with client CTO and engineering leadership.',
+      'Formulate multi-year digital transformation roadmaps and cost-benefit trade-off analyses.',
+      'Oversee agile pod delivery handoffs and ensure strategic architecture alignment.'
+    ],
+    skills: ['Enterprise Architecture', 'Cloud Migration Strategy', 'Client Advisory', 'Agile Pod Leadership', 'Financial Modeling']
+  },
+  {
+    id: 3,
+    title: 'Senior AI Architect',
+    department: 'AI & Advanced Tech',
+    location: 'Bangalore, India',
+    type: 'Full-time',
+    experience: 'Staff / Lead (8+ Yrs)',
+    salary: '$160,000 – $195,000 / yr',
+    expiryDate: '2026-09-30',
+    applicantsCount: 22,
+    submitted: 'Aug 10, 2026 · 09:00 AM',
+    submittedISO: '2026-08-10T09:00:00',
+    status: 'published',
+    actionTakenOn: 'Aug 11, 2026 · 11:40 AM',
+    feedback: null,
+    pdfName: 'senior-ai-architect-jd.pdf',
+    pdfSize: '2.1 MB',
+    overview: 'Lead the design of AI-augmented delivery pods for enterprise manufacturing and fintech clients, setting technical direction across a growing generative AI architecture team.',
+    responsibilities: [
+      'Design scalable LLM pipelines, Retrieval-Augmented Generation (RAG) frameworks, and vector index architectures.',
+      'Establish enterprise model governance, evaluation metrics, and responsible AI safety guardrails.',
+      'Mentor senior machine learning engineers and present architecture strategies to Fortune 500 stakeholders.'
+    ],
+    skills: ['LLM Orchestration', 'RAG Architectures', 'PyTorch / LangChain', 'Vector Databases', 'MLOps on Kubernetes']
+  },
+  {
+    id: 4,
+    title: 'Cloud Infrastructure Engineer',
+    department: 'Cloud Services',
+    location: 'Alhambra, CA',
+    type: 'Full-time',
+    experience: 'Mid-Level (3–5 Yrs)',
+    salary: '$115,000 – $140,000 / yr',
+    expiryDate: '2026-10-15',
+    applicantsCount: 16,
+    submitted: 'Aug 08, 2026 · 02:20 PM',
+    submittedISO: '2026-08-08T14:20:00',
+    status: 'published',
+    actionTakenOn: 'Aug 09, 2026 · 04:15 PM',
+    feedback: null,
+    pdfName: 'cloud-infrastructure-engineer-jd.pdf',
+    pdfSize: '1.3 MB',
+    overview: 'Design and operate scalable cloud infrastructure for enterprise clients, with a focus on reliability, cost efficiency, infrastructure-as-code, and secure-by-default deployments.',
+    responsibilities: [
+      'Author and maintain reusable Terraform / Terragrunt modules for multi-account AWS and Azure setups.',
+      'Implement automated observability dashboards and alerting systems via Prometheus, Grafana, and Datadog.',
+      'Lead infrastructure cost optimization sprints reducing cloud spend by up to 25%.'
+    ],
+    skills: ['Terraform', 'Kubernetes / EKS', 'AWS & Azure', 'CI/CD Pipelines', 'Prometheus & Grafana']
+  },
+  {
+    id: 5,
+    title: 'Blockchain Developer',
+    department: 'Blockchain',
+    location: 'Remote',
+    type: 'Contract',
+    experience: 'Entry Level (1–2 Yrs)',
+    salary: '$90,000 – $110,000 / yr',
+    expiryDate: '2026-08-31',
+    applicantsCount: 6,
+    submitted: 'Aug 02, 2026 · 11:00 AM',
+    submittedISO: '2026-08-02T11:00:00',
+    status: 'rejected',
+    actionTakenOn: 'Aug 03, 2026 · 01:30 PM',
+    feedback: 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.',
+    pdfName: 'blockchain-developer-jd.pdf',
+    pdfSize: '950 KB',
+    overview: 'Build and audit smart-contract based solutions for enterprise clients exploring blockchain-backed supply chain traceability and verifiable digital credentials.',
+    responsibilities: [
+      'Write, test, and formally verify Solidity smart contracts on EVM-compatible layer 1 and layer 2 networks.',
+      'Collaborate with security auditors to remediate gas optimization and reentrancy vulnerabilities.',
+      'Integrate Web3 RPC endpoints into client React frontends.'
+    ],
+    skills: ['Solidity', 'EVM Chains', 'Hardhat & Foundry', 'Smart Contract Auditing', 'Web3.js']
+  },
+  {
+    id: 6,
+    title: 'Site Reliability & Platform Engineer',
+    department: 'Cloud Services',
+    location: 'Remote',
+    type: 'Full-time',
+    experience: 'Senior (5–8 Yrs)',
+    salary: '$140,000 – $170,000 / yr',
+    expiryDate: '2026-11-30',
+    applicantsCount: 4,
+    submitted: 'Aug 27, 2026 · 09:15 AM',
+    submittedISO: '2026-08-27T09:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'site-reliability-engineer-jd.pdf',
+    pdfSize: '1.2 MB',
+    overview: 'Design, build, and scale automated multi-cloud observability, Chaos engineering pipelines, and 99.99% high-availability production clusters.',
+    responsibilities: [
+      'Architect resilient Kubernetes clusters with automated canary rollouts and circuit breakers.',
+      'Implement distributed tracing with OpenTelemetry and Grafana Tempo across microservices.',
+      'Conduct blameless post-mortems and automate infrastructure self-healing runbooks.'
+    ],
+    skills: ['Kubernetes & Helm', 'OpenTelemetry', 'AWS / GCP', 'Terraform', 'Chaos Engineering']
+  }
+];
+
 function loadCollection(key, seedData) {
   const raw = localStorage.getItem(key);
   if (raw) {
@@ -207,8 +441,20 @@ function loadCollection(key, seedData) {
       console.warn(`loadCollection: could not parse stored "${key}", reseeding.`);
     }
   }
-  const seeded = (seedData || []).map((item) => ({ ...item }));
-  localStorage.setItem(key, JSON.stringify(seeded));
+
+  let fallback = seedData;
+  if (!fallback || (Array.isArray(fallback) && fallback.length === 0)) {
+    if (key === 'fwc-job-listings' && typeof GLOBAL_DEFAULT_JOBS !== 'undefined') {
+      fallback = GLOBAL_DEFAULT_JOBS;
+    } else if (key === 'fwc-blog-posts' && typeof GLOBAL_DEFAULT_BLOGS !== 'undefined') {
+      fallback = GLOBAL_DEFAULT_BLOGS;
+    }
+  }
+
+  const seeded = (fallback || []).map((item) => ({ ...item }));
+  if (seeded.length > 0) {
+    localStorage.setItem(key, JSON.stringify(seeded));
+  }
   return seeded;
 }
 
@@ -365,7 +611,8 @@ function initTabs(container) {
 // --------------------------------------------------------------------------
 
 function initSidebarActiveLink() {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const pathname = (window.location && window.location.pathname) || '';
+  const currentPage = pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.sidebar-nav-link').forEach((link) => {
     const linkPage = (link.getAttribute('href') || '').split('/').pop();
     const isActive = linkPage === currentPage || (currentPage === '' && linkPage === 'index.html');

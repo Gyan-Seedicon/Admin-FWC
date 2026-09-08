@@ -12,8 +12,8 @@ const ENQUIRY_KEY = 'fwc-enquiries';
 // 01. Dynamic Platform Metrics Synchronization
 // --------------------------------------------------------------------------
 function loadDynamicStats() {
-  const blogs = typeof loadCollection === 'function' ? loadCollection(BLOG_KEY, []) : [];
-  const jobs = typeof loadCollection === 'function' ? loadCollection(JOBS_KEY, []) : [];
+  const blogs = typeof loadCollection === 'function' ? loadCollection(BLOG_KEY, typeof GLOBAL_DEFAULT_BLOGS !== 'undefined' ? GLOBAL_DEFAULT_BLOGS : []) : [];
+  const jobs = typeof loadCollection === 'function' ? loadCollection(JOBS_KEY, typeof GLOBAL_DEFAULT_JOBS !== 'undefined' ? GLOBAL_DEFAULT_JOBS : []) : [];
   const candidates = typeof loadCollection === 'function' ? loadCollection(CANDIDATES_KEY, []) : [];
   const enquiries = typeof loadCollection === 'function' ? loadCollection(ENQUIRY_KEY, []) : [];
 
@@ -277,8 +277,8 @@ function renderApprovalPreview() {
   const tbody = document.getElementById('approval-preview-body');
   if (!tbody) return;
 
-  const blogs = typeof loadCollection === 'function' ? loadCollection(BLOG_KEY, []) : [];
-  const jobs = typeof loadCollection === 'function' ? loadCollection(JOBS_KEY, []) : [];
+  const blogs = typeof loadCollection === 'function' ? loadCollection(BLOG_KEY, typeof GLOBAL_DEFAULT_BLOGS !== 'undefined' ? GLOBAL_DEFAULT_BLOGS : []) : [];
+  const jobs = typeof loadCollection === 'function' ? loadCollection(JOBS_KEY, typeof GLOBAL_DEFAULT_JOBS !== 'undefined' ? GLOBAL_DEFAULT_JOBS : []) : [];
 
   const livePending = [
     ...blogs.filter((b) => b.status === 'pending').map((b) => ({ type: 'blog', id: b.id, title: b.title, submitted: b.submitted })),
