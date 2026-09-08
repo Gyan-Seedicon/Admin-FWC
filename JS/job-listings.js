@@ -458,8 +458,12 @@ function closeAllContextMenus() {
   });
 }
 
+function ensureJobExpiries(jobs) {
+  return jobs || [];
+}
+
 function refreshAll() {
-  jobListings = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobListingsSeed)));
+  jobListings = ensureJobSeeds(loadCollection(JOBS_KEY, jobListingsSeed));
   // Only show published and draft jobs in the job listings directory
   const liveJobs = jobListings.filter((j) => j.status === 'published' || j.status === 'draft');
   renderTable(liveJobs);
@@ -472,10 +476,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Search & Filter
   const searchInput = document.getElementById('job-search');
   const statusFilter = document.getElementById('job-status-filter');
+  const dateFilter = document.getElementById('job-date-filter');
 
   function applyFilters() {
     const q = (searchInput?.value || '').toLowerCase().trim();
     const st = statusFilter?.value || 'all';
+    const df = dateFilter?.value || 'all';
 
     // Only filter among published and draft jobs
     const liveJobs = jobListings.filter((j) => j.status === 'published' || j.status === 'draft');
@@ -489,7 +495,19 @@ document.addEventListener('DOMContentLoaded', () => {
         (job.pocName && job.pocName.toLowerCase().includes(q)) ||
         (job.pocEmail && job.pocEmail.toLowerCase().includes(q));
       const matchStatus = st === 'all' || job.status === st;
-      return matchSearch && matchStatus;
+
+      let matchDate = true;
+      if (df !== 'all' && job.submittedISO) {
+        const days = parseInt(df, 10);
+        if (!isNaN(days)) {
+          const itemDate = new Date(job.submittedISO);
+          const now = new Date();
+          const diffDays = (now - itemDate) / (1000 * 60 * 60 * 24);
+          matchDate = diffDays <= days || diffDays < 0;
+        }
+      }
+
+      return matchSearch && matchStatus && matchDate;
     });
 
     renderTable(filtered);
@@ -497,6 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   searchInput?.addEventListener('input', applyFilters);
   statusFilter?.addEventListener('change', applyFilters);
+  dateFilter?.addEventListener('change', applyFilters);
 
   document.getElementById('export-csv-btn')?.addEventListener('click', () => {
     exportTableToCSV('jobs-table', 'fwc-job-listings.csv');

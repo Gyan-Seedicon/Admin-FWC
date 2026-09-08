@@ -17,6 +17,33 @@ function formatNow() {
 }
 window.formatNow = formatNow;
 
+function formatExpiryDate(dateStr) {
+  if (!dateStr) return '—';
+  if (/^[A-Za-z]{3}\s+\d{1,2},\s+\d{4}/.test(dateStr)) return dateStr;
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const date = new Date(year, monthIndex, day);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+      }
+    }
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+  } catch (e) {
+    return dateStr;
+  }
+}
+window.formatExpiryDate = formatExpiryDate;
+
+function ensureJobExpiries(jobs) {
+  return jobs || [];
+}
+window.ensureJobExpiries = ensureJobExpiries;
+
 // --------------------------------------------------------------------------
 // 01. Modal / Dialog
 // --------------------------------------------------------------------------

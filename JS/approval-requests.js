@@ -620,33 +620,98 @@ function closeAllContextMenus() {
 }
 
 function initTabs() {
-  document.querySelectorAll('.tab-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach((b) => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      document.querySelectorAll('.tabs-panel').forEach((p) => p.classList.add('hidden'));
-
-      btn.classList.add('active');
-      btn.setAttribute('aria-selected', 'true');
-      const targetPanel = document.getElementById(btn.dataset.tab);
-      if (targetPanel) targetPanel.classList.remove('hidden');
-
-      closeAllContextMenus();
-      updateRequestsBadge();
+  const tabBtns = document.querySelectorAll('.tab-btn[data-tab]');
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      switchApprovalTab(btn.dataset.tab);
     });
   });
 }
 
+function switchApprovalTab(tabId) {
+  if (!tabId) return;
+  document.querySelectorAll('.tab-btn[data-tab]').forEach((b) => {
+    const isActive = b.dataset.tab === tabId;
+    b.classList.toggle('active', isActive);
+    b.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+  document.querySelectorAll('.tabs-panel').forEach((p) => {
+    p.classList.toggle('hidden', p.id !== tabId);
+  });
+  closeAllContextMenus();
+  updateRequestsBadge();
+}
+window.switchApprovalTab = switchApprovalTab;
+
+function ensureJobExpiries(jobs) {
+  return jobs || [];
+}
+window.ensureJobExpiries = ensureJobExpiries;
+
 function refreshAll() {
   blogItems = ensureBlogSeeds(loadCollection(BLOG_KEY, blogSeedItems));
-  jobItems = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobSeedItems)));
+  jobItems = ensureJobSeeds(loadCollection(JOBS_KEY, jobSeedItems));
   renderBlogsTable();
   renderJobsTable();
   renderStats();
   updateRequestsBadge();
 }
+
+function confirmQuickApprove() {
+  if (!activePendingItem) return;
+  const { type, id } = activePendingItem;
+  const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
+  let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
+  let item = list.find((it) => Number(it.id) === Number(id) || String(it.id) === String(id));
+  if (!item && activePendingItem.item) {
+    item = activePendingItem.item;
+  }
+  if (item) {
+    item.status = 'published';
+    item.actionTakenOn = formatNow();
+    item.feedback = null;
+    saveCollection(key, list);
+  }
+  closeModal('quick-approve-modal');
+  refreshAll();
+  const title = item ? item.title : 'Item';
+  const typeLabel = type === 'blog' ? 'Blog post' : 'Job requisition';
+  showToast(`${typeLabel} "${title}" approved and published live!`, 'success');
+}
+window.confirmQuickApprove = confirmQuickApprove;
+
+function confirmQuickReject() {
+  if (!activePendingItem) return;
+  const reasonInput = document.getElementById('quick-reject-reason');
+  const reason = reasonInput ? reasonInput.value.trim() : '';
+  if (!reason) {
+    const err = document.getElementById('quick-reject-error');
+    if (err) err.style.display = 'block';
+    reasonInput?.focus();
+    return;
+  }
+
+  const { type, id } = activePendingItem;
+  const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
+  let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
+  let item = list.find((it) => Number(it.id) === Number(id) || String(it.id) === String(id));
+  if (!item && activePendingItem.item) {
+    item = activePendingItem.item;
+  }
+  if (item) {
+    item.status = 'rejected';
+    item.actionTakenOn = formatNow();
+    item.feedback = reason;
+    saveCollection(key, list);
+  }
+  closeModal('quick-reject-modal');
+  refreshAll();
+  const title = item ? item.title : 'Item';
+  const typeLabel = type === 'blog' ? 'Blog post' : 'Job requisition';
+  showToast(`${typeLabel} "${title}" has been rejected.`, 'error');
+}
+window.confirmQuickReject = confirmQuickReject;
 
 document.addEventListener('DOMContentLoaded', () => {
   refreshAll();
@@ -654,6 +719,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Document click listener for context menus and actions
   document.addEventListener('click', (e) => {
+    // 0. Tab switching delegation
+    const tabBtn = e.target.closest('.tab-btn[data-tab]');
+    if (tabBtn) {
+      e.preventDefault();
+      switchApprovalTab(tabBtn.dataset.tab);
+      return;
+    }
+
     // 1. Toggle 3-dots kebab menu
     const kebabBtn = e.target.closest('[data-action="toggle-kebab"]');
     if (kebabBtn) {
@@ -722,6 +795,18 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // 6. Direct modal confirm clicks
+    if (e.target.closest('#confirm-quick-approve-btn')) {
+      e.preventDefault();
+      confirmQuickApprove();
+      return;
+    }
+    if (e.target.closest('#confirm-quick-reject-btn')) {
+      e.preventDefault();
+      confirmQuickReject();
+      return;
+    }
+
     // Clicking anywhere else closes open context menus
     closeAllContextMenus();
   });
@@ -733,78 +818,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function confirmQuickApprove() {
-    if (!activePendingItem) return;
-    const { type, id } = activePendingItem;
-    const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
-    let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
-    let item = list.find((it) => Number(it.id) === Number(id) || String(it.id) === String(id));
-    if (!item && activePendingItem.item) {
-      item = activePendingItem.item;
-    }
-    if (item) {
-      item.status = 'published';
-      item.actionTakenOn = formatNow();
-      item.feedback = null;
-      saveCollection(key, list);
-    }
-    closeModal('quick-approve-modal');
-    refreshAll();
-    const title = item ? item.title : 'Item';
-    const typeLabel = type === 'blog' ? 'Blog post' : 'Job requisition';
-    showToast(`${typeLabel} "${title}" approved and published live!`, 'success');
-  }
-
-  function confirmQuickReject() {
-    if (!activePendingItem) return;
-    const reasonInput = document.getElementById('quick-reject-reason');
-    const reason = reasonInput ? reasonInput.value.trim() : '';
-    if (!reason) {
-      const err = document.getElementById('quick-reject-error');
-      if (err) err.style.display = 'block';
-      reasonInput?.focus();
-      return;
-    }
-
-    const { type, id } = activePendingItem;
-    const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
-    let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
-    let item = list.find((it) => Number(it.id) === Number(id) || String(it.id) === String(id));
-    if (!item && activePendingItem.item) {
-      item = activePendingItem.item;
-    }
-    if (item) {
-      item.status = 'rejected';
-      item.actionTakenOn = formatNow();
-      item.feedback = reason;
-      saveCollection(key, list);
-    }
-    closeModal('quick-reject-modal');
-    refreshAll();
-    const title = item ? item.title : 'Item';
-    const typeLabel = type === 'blog' ? 'Blog post' : 'Job requisition';
-    showToast(`${typeLabel} "${title}" has been rejected.`, 'error');
-  }
-
-  // Expose to window for inline onclick attributes
-  window.confirmQuickApprove = confirmQuickApprove;
-  window.confirmQuickReject = confirmQuickReject;
-
   // Direct element listeners
   document.getElementById('confirm-quick-approve-btn')?.addEventListener('click', confirmQuickApprove);
   document.getElementById('confirm-quick-reject-btn')?.addEventListener('click', confirmQuickReject);
-
-  // Document-level delegation fallback
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('#confirm-quick-approve-btn')) {
-      e.preventDefault();
-      confirmQuickApprove();
-      return;
-    }
-    if (e.target.closest('#confirm-quick-reject-btn')) {
-      e.preventDefault();
-      confirmQuickReject();
-      return;
-    }
-  });
 });
