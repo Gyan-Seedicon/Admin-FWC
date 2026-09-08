@@ -6,6 +6,18 @@
    ========================================================================== */
 
 // --------------------------------------------------------------------------
+// 00. Date Formatting Helper
+// --------------------------------------------------------------------------
+
+function formatNow() {
+  const now = new Date();
+  const datePart = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+  const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  return `${datePart} · ${timePart}`;
+}
+window.formatNow = formatNow;
+
+// --------------------------------------------------------------------------
 // 01. Modal / Dialog
 // --------------------------------------------------------------------------
 
@@ -70,6 +82,25 @@ function initModalTriggers(root = document) {
     trigger.addEventListener('click', () => closeModal(trigger.dataset.closeModal));
   });
 }
+
+// Global click delegation for modal close buttons
+document.addEventListener('click', (e) => {
+  const closeBtn = e.target.closest('[data-close-modal]');
+  if (closeBtn) {
+    const modalId = closeBtn.dataset.closeModal || closeBtn.closest('.modal-overlay')?.id;
+    if (modalId) {
+      closeModal(modalId);
+    }
+    return;
+  }
+  const modalClose = e.target.closest('.modal-close');
+  if (modalClose) {
+    const modal = modalClose.closest('.modal-overlay');
+    if (modal && modal.id) {
+      closeModal(modal.id);
+    }
+  }
+});
 
 // --------------------------------------------------------------------------
 // 01a. Drawer (Right-side slide sheet)
@@ -232,6 +263,31 @@ function showToast(message, type = 'info', duration = 3500) {
   setTimeout(dismiss, duration);
 
   return toast;
+}
+
+function setFlashToast(message, type = 'success') {
+  try {
+    sessionStorage.setItem('fwc-flash-toast', JSON.stringify({ message, type }));
+  } catch (e) {
+    console.warn('Could not set flash toast:', e);
+  }
+}
+
+function checkFlashToast() {
+  try {
+    const raw = sessionStorage.getItem('fwc-flash-toast');
+    if (raw) {
+      sessionStorage.removeItem('fwc-flash-toast');
+      const data = JSON.parse(raw);
+      if (data && data.message) {
+        setTimeout(() => {
+          showToast(data.message, data.type || 'success');
+        }, 150);
+      }
+    }
+  } catch (e) {
+    console.warn('Could not read flash toast:', e);
+  }
 }
 
 // --------------------------------------------------------------------------
@@ -794,6 +850,15 @@ function getGlobalSearchDataset() {
         meta: 'Blockchain · Remote · $90,000 – $110,000 / yr',
         url: 'job-listings.html',
         iconClass: 'icon-job'
+      },
+      {
+        id: 'job-6',
+        title: 'Site Reliability & Platform Engineer',
+        category: 'Job Requisitions',
+        type: 'Full-time',
+        meta: 'Cloud Services · Remote · $140,000 – $170,000 / yr',
+        url: 'job-listings.html',
+        iconClass: 'icon-job'
       }
     );
   }
@@ -856,6 +921,15 @@ function getGlobalSearchDataset() {
         category: 'Articles & Insights',
         type: 'Governance & Compliance',
         meta: 'By Marcus Vance · Governance & Compliance · Zero-Trust',
+        url: 'blog-posts.html',
+        iconClass: 'icon-blog'
+      },
+      {
+        id: 'blog-6',
+        title: 'Scaling Distributed Kubernetes for Enterprise Microservices',
+        category: 'Articles & Insights',
+        type: 'Cloud & Infrastructure',
+        meta: 'By David Chen · Cloud & Infrastructure · Kubernetes',
         url: 'blog-posts.html',
         iconClass: 'icon-blog'
       }
@@ -1355,6 +1429,7 @@ function initGlobalHeaderSearch() {
 // --------------------------------------------------------------------------
 
 document.addEventListener('DOMContentLoaded', () => {
+  checkFlashToast();
   initSidebarActiveLink();
   initSidebarCollapse();
   updateSidebarCounts();

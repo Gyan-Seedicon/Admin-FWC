@@ -127,6 +127,30 @@ const jobSeedItems = [
       'Integrate Web3 RPC endpoints into client React frontends.'
     ],
     skills: ['Solidity', 'EVM Chains', 'Hardhat & Foundry', 'Smart Contract Auditing', 'Web3.js']
+  },
+  {
+    id: 6,
+    title: 'Site Reliability & Platform Engineer',
+    department: 'Cloud Services',
+    location: 'Remote',
+    type: 'Full-time',
+    experience: 'Senior (5–8 Yrs)',
+    salary: '$140,000 – $170,000 / yr',
+    expiryDate: '2026-11-30',
+    submitted: 'Aug 27, 2026 · 09:15 AM',
+    submittedISO: '2026-08-27T09:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'site-reliability-engineer-jd.pdf',
+    pdfSize: '1.2 MB',
+    overview: 'Design, build, and scale automated multi-cloud observability, Chaos engineering pipelines, and 99.99% high-availability production clusters.',
+    responsibilities: [
+      'Architect resilient Kubernetes clusters with automated canary rollouts and circuit breakers.',
+      'Implement distributed tracing with OpenTelemetry and Grafana Tempo across microservices.',
+      'Conduct blameless post-mortems and automate infrastructure self-healing runbooks.'
+    ],
+    skills: ['Kubernetes & Helm', 'OpenTelemetry', 'AWS / GCP', 'Terraform', 'Chaos Engineering']
   }
 ];
 
@@ -263,6 +287,7 @@ function formatNow() {
   const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
   return `${datePart} · ${timePart}`;
 }
+window.formatNow = formatNow;
 
 function formatExpiryDate(dateStr) {
   if (!dateStr) return '—';
@@ -623,27 +648,45 @@ function saveJobRequisition(status = 'pending') {
   return true;
 }
 
-// --------------------------------------------------------------------------
-// Moderation: Approve and Publish Live
-// --------------------------------------------------------------------------
+function openApproveJobModal() {
+  const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
+  const title = document.getElementById('job-title-input')?.value.trim() || (job ? job.title : 'Requisition');
+  const titleEl = document.getElementById('approve-job-title');
+  if (titleEl) titleEl.textContent = title;
+  openModal('approve-job-modal');
+}
+
+function openRejectJobModal() {
+  const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
+  const title = document.getElementById('job-title-input')?.value.trim() || (job ? job.title : 'Requisition');
+  const titleEl = document.getElementById('reject-job-title');
+  if (titleEl) titleEl.textContent = title;
+  const reasonInput = document.getElementById('rejection-job-reason');
+  if (reasonInput) reasonInput.value = '';
+  const errorText = document.getElementById('rejection-job-error');
+  if (errorText) errorText.style.display = 'none';
+  openModal('reject-job-modal');
+}
+
 function handleApproveJob() {
   const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
-  if (!job) return;
-
-  // Sync form inputs before approving
-  const title = document.getElementById('job-title-input').value.trim() || job.title;
-  const dept = document.getElementById('field-department').value || job.department;
-  const location = document.getElementById('field-location').value.trim() || job.location;
-  const type = document.getElementById('field-type').value || job.type;
-  const experience = document.getElementById('field-experience').value || job.experience;
-  const salary = document.getElementById('field-salary').value.trim() || job.salary;
-  const expiryDate = document.getElementById('field-expiry-date').value || job.expiryDate || '';
-  const overview = document.getElementById('field-overview').value.trim() || job.overview;
-  const respVal = document.getElementById('field-responsibilities').value.trim();
-  const respItems = respVal ? respVal.split(/•|\n/).map((s) => s.trim()).filter(Boolean) : job.responsibilities;
+  const title = document.getElementById('job-title-input')?.value.trim() || (job ? job.title : 'Job Requisition');
+  const dept = document.getElementById('field-department')?.value || (job ? job.department : 'Engineering');
+  const location = document.getElementById('field-location')?.value.trim() || (job ? job.location : 'Remote');
+  const type = document.getElementById('field-type')?.value || (job ? job.type : 'Full-time');
+  const experience = document.getElementById('field-experience')?.value || (job ? job.experience : '3–5 Years');
+  const salary = document.getElementById('field-salary')?.value.trim() || (job ? job.salary : '$120,000 – $145,000 / yr');
+  const expiryDate = document.getElementById('field-expiry-date')?.value || (job ? job.expiryDate : '');
+  const overview = document.getElementById('field-overview')?.value.trim() || (job ? job.overview : '');
+  const respVal = document.getElementById('field-responsibilities')?.value.trim() || '';
+  const respItems = respVal ? respVal.split(/•|\n/).map((s) => s.trim()).filter(Boolean) : (job ? job.responsibilities : []);
 
   let jobListings = loadCollection(JOBS_KEY, jobSeedItems);
-  const match = jobListings.find((j) => j.id === job.id);
+  let match = job ? jobListings.find((j) => Number(j.id) === Number(job.id) || String(j.id) === String(job.id)) : null;
+  if (!match && jobListings.length > 0) {
+    match = jobListings[0];
+  }
+
   if (match) {
     match.title = title;
     match.department = dept;
@@ -665,7 +708,10 @@ function handleApproveJob() {
   }
 
   closeModal('approve-job-modal');
-  showToast(`Approved "${job.title}" — published live!`, 'success');
+  const jobTitle = (match && match.title) || title;
+  const msg = `Job requisition "${jobTitle}" approved and published live!`;
+  setFlashToast(msg, 'success');
+  showToast(msg, 'success');
   
   // Prompt Social Share
   setTimeout(() => {
@@ -678,30 +724,43 @@ function handleApproveJob() {
 // --------------------------------------------------------------------------
 function handleRejectJob() {
   const job = editingJob || (loadCollection(JOBS_KEY, jobSeedItems)[0]);
-  if (!job) return;
-
   const reasonInput = document.getElementById('rejection-job-reason');
-  const reason = reasonInput.value.trim();
+  const reason = reasonInput ? reasonInput.value.trim() : '';
   if (!reason) {
-    document.getElementById('rejection-job-error').style.display = 'block';
-    reasonInput.focus();
+    const errorText = document.getElementById('rejection-job-error');
+    if (errorText) errorText.style.display = 'block';
+    reasonInput?.focus();
     return;
   }
 
   let jobListings = loadCollection(JOBS_KEY, jobSeedItems);
-  const match = jobListings.find((j) => j.id === job.id);
+  let match = job ? jobListings.find((j) => Number(j.id) === Number(job.id) || String(j.id) === String(job.id)) : null;
+  if (!match && jobListings.length > 0) {
+    match = jobListings[0];
+  }
+
   if (match) {
     match.status = 'rejected';
     match.actionTakenOn = formatNow();
     match.feedback = reason;
     saveCollection(JOBS_KEY, jobListings);
   }
+
   closeModal('reject-job-modal');
-  showToast(`Rejected "${job.title}" and sent feedback notes.`, 'error');
+  const jobTitle = (match && match.title) || (job && job.title) || 'Requisition';
+  const msg = `Job requisition "${jobTitle}" has been rejected.`;
+  setFlashToast(msg, 'error');
+  showToast(msg, 'error');
   setTimeout(() => {
     window.location.href = 'approval-requests.html';
-  }, 450);
+  }, 350);
 }
+
+// Expose handlers to window for inline onclick attributes
+window.openApproveJobModal = openApproveJobModal;
+window.openRejectJobModal = openRejectJobModal;
+window.handleApproveJob = handleApproveJob;
+window.handleRejectJob = handleRejectJob;
 
 // --------------------------------------------------------------------------
 // Delete Flow
@@ -716,43 +775,7 @@ function triggerDeleteJobFlow() {
 // Setup Pending Review Mode (Smart Edit UI with Moderation Controls)
 // --------------------------------------------------------------------------
 function setupPendingReviewMode(job) {
-  isReviewMode = true;
-  currentJobForShare = job;
-
-  document.getElementById('page-title').textContent = `Review: ${job.title} — FWC Super Admin`;
-  
-  // Breadcrumbs
-  const parentBreadcrumb = document.getElementById('breadcrumb-parent');
-  if (parentBreadcrumb) {
-    parentBreadcrumb.href = 'approval-requests.html';
-    parentBreadcrumb.textContent = 'Approval Requests';
-  }
-  const currBreadcrumb = document.getElementById('breadcrumb-current');
-  if (currBreadcrumb) {
-    currBreadcrumb.textContent = 'Review Job Requisition';
-  }
-  document.getElementById('page-heading').textContent = 'Review Job Requisition';
-
-  // Active sidebar link
-  document.getElementById('nav-link-jobs')?.classList.remove('active');
-  document.getElementById('nav-link-approvals')?.classList.add('active');
-
-  // Header toolbar
-  document.getElementById('review-back-icon-btn')?.classList.remove('hidden');
-  document.getElementById('normal-header-actions')?.classList.add('hidden');
-  document.getElementById('review-header-actions')?.classList.remove('hidden');
-
-  document.getElementById('job-header-heading').textContent = `Review: ${job.title}`;
-  document.getElementById('job-header-subtext').textContent = `Submitted by ${job.department || 'Engineering'} on ${job.submitted}`;
-
-  // Pill badge
-  const pillWrap = document.getElementById('job-status-pill-wrap');
-  if (pillWrap) {
-    pillWrap.innerHTML = '<span class="job-status-pill pending">Pending review</span>';
-  }
-
-  // Pre-fill fields for editing
-  populateFormFields(job);
+  setupPreviewMode(job);
 }
 
 // --------------------------------------------------------------------------
@@ -760,12 +783,67 @@ function setupPendingReviewMode(job) {
 // --------------------------------------------------------------------------
 function setupPreviewMode(job) {
   currentJobForShare = job;
+  const isPendingOrRejected = job.status === 'pending' || job.status === 'rejected';
 
-  document.getElementById('page-title').textContent = `Job Description: ${job.title} — FWC Super Admin`;
-  document.getElementById('page-heading').textContent = 'Job Description Details';
+  if (isPendingOrRejected) {
+    isReviewMode = true;
+    document.getElementById('page-title').textContent = `Review: ${job.title} — FWC Super Admin`;
+    document.getElementById('page-heading').textContent = 'Review Job Requisition';
 
-  const currBreadcrumb = document.getElementById('breadcrumb-current');
-  if (currBreadcrumb) currBreadcrumb.textContent = 'View Job Description';
+    const parentBreadcrumb = document.getElementById('breadcrumb-parent');
+    if (parentBreadcrumb) {
+      parentBreadcrumb.href = 'approval-requests.html';
+      parentBreadcrumb.textContent = 'Approval Requests';
+    }
+    const currBreadcrumb = document.getElementById('breadcrumb-current');
+    if (currBreadcrumb) currBreadcrumb.textContent = 'Review Job Requisition';
+
+    document.getElementById('nav-link-jobs')?.classList.remove('active');
+    document.getElementById('nav-link-approvals')?.classList.add('active');
+
+    document.getElementById('preview-back-approvals-btn')?.classList.remove('hidden');
+    document.getElementById('preview-back-btn')?.classList.add('hidden');
+
+    // Smartly show decision action buttons only for pending review requisitions (hide when rejected)
+    if (job.status === 'rejected') {
+      document.getElementById('preview-reject-btn')?.classList.add('hidden');
+      document.getElementById('preview-approve-btn')?.classList.add('hidden');
+    } else {
+      document.getElementById('preview-reject-btn')?.classList.remove('hidden');
+      document.getElementById('preview-approve-btn')?.classList.remove('hidden');
+    }
+
+    const feedbackBanner = document.getElementById('job-preview-feedback-banner');
+    if (feedbackBanner) {
+      if (job.status === 'rejected' && job.feedback) {
+        document.getElementById('job-preview-feedback-text').textContent = job.feedback;
+        const dateEl = document.getElementById('job-preview-feedback-date');
+        if (dateEl) {
+          dateEl.textContent = job.actionTakenOn ? `Action recorded on ${job.actionTakenOn}` : '';
+        }
+        feedbackBanner.classList.remove('hidden');
+      } else {
+        feedbackBanner.classList.add('hidden');
+      }
+    }
+  } else {
+    document.getElementById('page-title').textContent = `Job Description: ${job.title} — FWC Super Admin`;
+    document.getElementById('page-heading').textContent = 'Job Description Details';
+
+    const parentBreadcrumb = document.getElementById('breadcrumb-parent');
+    if (parentBreadcrumb) {
+      parentBreadcrumb.href = 'job-listings.html';
+      parentBreadcrumb.textContent = 'Job listings';
+    }
+    const currBreadcrumb = document.getElementById('breadcrumb-current');
+    if (currBreadcrumb) currBreadcrumb.textContent = 'View Job Description';
+
+    document.getElementById('preview-back-approvals-btn')?.classList.add('hidden');
+    document.getElementById('preview-back-btn')?.classList.remove('hidden');
+    document.getElementById('preview-reject-btn')?.classList.add('hidden');
+    document.getElementById('preview-approve-btn')?.classList.add('hidden');
+    document.getElementById('job-preview-feedback-banner')?.classList.add('hidden');
+  }
 
   // Hide editable form and other header action toolbars
   document.getElementById('job-creation-canvas')?.classList.add('hidden');
@@ -779,7 +857,7 @@ function setupPreviewMode(job) {
 
   // Header Title and Subtext
   document.getElementById('job-header-heading').textContent = job.title;
-  document.getElementById('job-header-subtext').textContent = `Requisition JOB-${100 + job.id} • ${job.department || 'Technology'} • Posted on ${job.submitted || '—'}`;
+  document.getElementById('job-header-subtext').textContent = `Requisition JOB-${100 + job.id} • ${job.department || 'Technology'} • Submitted on ${job.submitted || '—'}`;
 
   // Fill in Preview Surface Details
   const titleEl = document.getElementById('preview-job-title');
@@ -851,11 +929,11 @@ function setupPreviewMode(job) {
   const pdfSizeEl = document.getElementById('preview-pdf-size');
   if (pdfSizeEl) pdfSizeEl.textContent = `${job.pdfSize || '1.4 MB'} · Attached PDF specification`;
 
-  // Edit Button Event Listener
+  // Edit Button Event Listener (toggles into edit mode)
   const editBtn = document.getElementById('preview-edit-btn');
   if (editBtn) {
     editBtn.onclick = () => {
-      window.location.href = `add-job-listing.html?mode=edit&id=${job.id}`;
+      setupEditMode(job);
     };
   }
 }
@@ -940,16 +1018,11 @@ document.addEventListener('DOMContentLoaded', () => {
     editingJob = jobListings.find((j) => j.id === targetId);
   }
 
-  if (mode === 'preview') {
-    if (!editingJob) {
-      editingJob = jobListings[0] || jobSeedItems[0];
-    }
-    setupPreviewMode(editingJob);
-  } else if (mode === 'review' || (editingJob && editingJob.status === 'pending' && mode !== 'edit')) {
+  if (mode === 'preview' || mode === 'review' || (editingJob && (editingJob.status === 'pending' || editingJob.status === 'rejected') && mode !== 'edit')) {
     if (!editingJob) {
       editingJob = jobListings.find((j) => j.status === 'pending') || jobListings[0] || jobSeedItems[0];
     }
-    setupPendingReviewMode(editingJob);
+    setupPreviewMode(editingJob);
   } else if (mode === 'edit' || editingJob) {
     if (!editingJob) {
       editingJob = jobListings[0] || jobSeedItems[0];
@@ -1034,5 +1107,29 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       window.location.href = isReviewMode ? 'approval-requests.html' : 'job-listings.html';
     }, 450);
+  });
+
+  // Document click delegation fallback for review actions
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#confirm-reject-job-btn')) {
+      e.preventDefault();
+      handleRejectJob();
+      return;
+    }
+    if (e.target.closest('#confirm-approve-job-btn')) {
+      e.preventDefault();
+      handleApproveJob();
+      return;
+    }
+    if (e.target.closest('#review-reject-btn')) {
+      e.preventDefault();
+      openRejectJobModal();
+      return;
+    }
+    if (e.target.closest('#review-approve-btn')) {
+      e.preventDefault();
+      openApproveJobModal();
+      return;
+    }
   });
 });

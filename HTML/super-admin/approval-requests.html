@@ -112,10 +112,6 @@
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v41.61A184,184,0,0,1,128,136a184.07,184.07,0,0,1-88-22.38V72Zm0,128H40V131.64A200.19,200.19,0,0,0,128,152a200.25,200.25,0,0,0,88-20.37V200ZM104,112a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H112A8,8,0,0,1,104,112Z"/></svg>
           <span class="sidebar-nav-label">Job listings (5)</span>
         </a>
-        <a href="job-applicants.html" class="sidebar-nav-link">
-          <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.29a8,8,0,0,1-11.07-2.36,79.83,79.83,0,0,0-58.49-38.31,8,8,0,1,1,2.84-15.75,95.74,95.74,0,0,1,69.08,45.35A8,8,0,0,1,250.14,206.29ZM176,144a44,44,0,0,1-22.46-6.14,8,8,0,0,1,8.24-13.72,28,28,0,1,0,0-48.28,8,8,0,0,1-8.24-13.72A44,44,0,1,1,176,144Z"/></svg>
-          <span class="sidebar-nav-label">Candidates & resumes (84)</span>
-        </a>
         <a href="enquiry.html" class="sidebar-nav-link">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80ZM66.55,137.78,40,159.25V48H168v88H71.58A8,8,0,0,0,66.55,137.78ZM216,207.25l-26.55-21.47a8,8,0,0,0-5-1.78H88V152h80a16,16,0,0,0,16-16V96h32Z"/></svg>
           <span class="sidebar-nav-label">Enquiry (5)</span>
@@ -173,17 +169,6 @@
         <div class="tabs-nav" role="tablist" aria-label="Approval categories">
           <button class="tab-btn active" role="tab" aria-selected="true" data-tab="panel-blogs">Blog posts</button>
           <button class="tab-btn" role="tab" aria-selected="false" data-tab="panel-jobs">Job postings</button>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="status-badge status-pending" id="requests-count-badge" style="padding: 4px 9px;">5 pending</span>
-          <a href="add-blog-post.html" class="btn btn-secondary">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></svg>
-            Add blog post
-          </a>
-          <a href="add-job-listing.html" class="btn btn-primary">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></svg>
-            Add job posting
-          </a>
         </div>
       </div>
 
@@ -259,7 +244,7 @@
       <div style="margin-top: var(--space-3); font-size: var(--text-2xs); color: var(--ink-muted);" id="feedback-viewer-date"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" data-close-modal="feedback-viewer-modal">Close</button>
+      <button class="btn btn-secondary" data-close-modal="feedback-viewer-modal" type="button">Close</button>
     </div>
   </div>
 </div>
@@ -269,7 +254,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Publish Live?</span>
-      <button class="modal-close" data-close-modal="quick-approve-modal" aria-label="Close">
+      <button class="modal-close" data-close-modal="quick-approve-modal" aria-label="Close" type="button">
         <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
       </button>
     </div>
@@ -277,8 +262,8 @@
       <p style="margin: 0; font-size: var(--text-xs); color: var(--ink-secondary); line-height: 1.5;">Approve and publish "<strong id="quick-approve-item-title" style="color: var(--ink-primary);"></strong>" live immediately?</p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" data-close-modal="quick-approve-modal">Cancel</button>
-      <button class="btn btn-success" id="confirm-quick-approve-btn" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">Publish Live</button>
+      <button class="btn btn-secondary" data-close-modal="quick-approve-modal" type="button">Cancel</button>
+      <button class="btn btn-success" id="confirm-quick-approve-btn" type="button" onclick="confirmQuickApprove()" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">Publish Live</button>
     </div>
   </div>
 </div>
@@ -288,7 +273,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Reject Request</span>
-      <button class="modal-close" data-close-modal="quick-reject-modal" aria-label="Close">
+      <button class="modal-close" data-close-modal="quick-reject-modal" aria-label="Close" type="button">
         <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
       </button>
     </div>
@@ -300,8 +285,8 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" data-close-modal="quick-reject-modal">Cancel</button>
-      <button class="btn btn-danger" id="confirm-quick-reject-btn">Reject</button>
+      <button class="btn btn-secondary" data-close-modal="quick-reject-modal" type="button">Cancel</button>
+      <button class="btn btn-danger" id="confirm-quick-reject-btn" type="button" onclick="confirmQuickReject()">Reject</button>
     </div>
   </div>
 </div>

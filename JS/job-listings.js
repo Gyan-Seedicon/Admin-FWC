@@ -130,10 +130,70 @@ const jobListingsSeed = [
       'Integrate Web3 RPC endpoints into client React frontends.'
     ],
     skills: ['Solidity', 'EVM Chains', 'Hardhat & Foundry', 'Smart Contract Auditing', 'Web3.js']
+  },
+  {
+    id: 6,
+    title: 'Site Reliability & Platform Engineer',
+    department: 'Cloud Services',
+    location: 'Remote',
+    type: 'Full-time',
+    experience: 'Senior (5–8 Yrs)',
+    salary: '$140,000 – $170,000 / yr',
+    expiryDate: '2026-11-30',
+    applicantsCount: 4,
+    submitted: 'Aug 27, 2026 · 09:15 AM',
+    submittedISO: '2026-08-27T09:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'site-reliability-engineer-jd.pdf',
+    pdfSize: '1.2 MB',
+    overview: 'Design, build, and scale automated multi-cloud observability, Chaos engineering pipelines, and 99.99% high-availability production clusters.',
+    responsibilities: [
+      'Architect resilient Kubernetes clusters with automated canary rollouts and circuit breakers.',
+      'Implement distributed tracing with OpenTelemetry and Grafana Tempo across microservices.',
+      'Conduct blameless post-mortems and automate infrastructure self-healing runbooks.'
+    ],
+    skills: ['Kubernetes & Helm', 'OpenTelemetry', 'AWS / GCP', 'Terraform', 'Chaos Engineering']
   }
 ];
 
-let jobListings = loadCollection(JOBS_KEY, jobListingsSeed);
+function ensureJobSeeds(jobs) {
+  let modified = false;
+  jobListingsSeed.forEach((seed) => {
+    const existing = jobs.find((j) => j.id === seed.id);
+    if (!existing) {
+      jobs.push({ ...seed });
+      modified = true;
+    }
+  });
+
+  const hasPending = jobs.some((j) => j.status === 'pending');
+  if (!hasPending) {
+    const j1 = jobs.find((j) => j.id === 1);
+    if (j1) { j1.status = 'pending'; j1.actionTakenOn = null; j1.feedback = null; modified = true; }
+    const j2 = jobs.find((j) => j.id === 2);
+    if (j2) { j2.status = 'pending'; j2.actionTakenOn = null; j2.feedback = null; modified = true; }
+  }
+
+  const hasRejected = jobs.some((j) => j.status === 'rejected');
+  if (!hasRejected) {
+    const j5 = jobs.find((j) => j.id === 5);
+    if (j5) {
+      j5.status = 'rejected';
+      j5.actionTakenOn = 'Aug 03, 2026 · 01:30 PM';
+      j5.feedback = 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.';
+      modified = true;
+    }
+  }
+
+  if (modified) {
+    saveCollection(JOBS_KEY, jobs);
+  }
+  return jobs;
+}
+
+let jobListings = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobListingsSeed)));
 
 const STATUS_BADGE_CLASS = {
   published: 'status-approved',
@@ -304,7 +364,7 @@ function closeAllContextMenus() {
 }
 
 function refreshAll() {
-  jobListings = ensureJobExpiries(loadCollection(JOBS_KEY, jobListingsSeed));
+  jobListings = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobListingsSeed)));
   // Only show published and draft jobs in the job listings directory
   const liveJobs = jobListings.filter((j) => j.status === 'published' || j.status === 'draft');
   renderTable(liveJobs);

@@ -70,10 +70,37 @@ const blogPostsSeed = [
     feedback: 'Please include verified benchmark figures and engineering team citations before submitting for final review.',
     coverImage: null,
     excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.'
+  },
+  {
+    id: 6,
+    title: 'Scaling Distributed Kubernetes for Enterprise Microservices',
+    author: 'David Chen',
+    category: 'Cloud & Infrastructure',
+    submitted: 'Aug 26, 2026 · 04:15 PM',
+    submittedISO: '2026-08-26T16:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Best practices for managing multi-tenant Kubernetes clusters, automated service mesh deployments, and observability across hybrid cloud environments.'
   }
 ];
 
-let blogPosts = loadCollection(BLOG_KEY, blogPostsSeed);
+function ensureBlogSeeds(blogs) {
+  let modified = false;
+  blogPostsSeed.forEach((seed) => {
+    if (!blogs.some((b) => b.id === seed.id)) {
+      blogs.push({ ...seed });
+      modified = true;
+    }
+  });
+  if (modified) {
+    saveCollection(BLOG_KEY, blogs);
+  }
+  return blogs;
+}
+
+let blogPosts = ensureBlogSeeds(loadCollection(BLOG_KEY, blogPostsSeed));
 
 const AVATAR_COLORS = ['avatar-color-1', 'avatar-color-2', 'avatar-color-3', 'avatar-color-4', 'avatar-color-5'];
 
@@ -96,7 +123,8 @@ const AUTHOR_AVATARS = {
   'Sam Patel': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
   'Jordan Lee': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
   'Priya Nair': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-  'Marcus Vance': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80'
+  'Marcus Vance': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+  'David Chen': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
 };
 
 function getAvatarUrl(name, idx = 0) {

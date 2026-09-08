@@ -119,10 +119,6 @@
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v41.61A184,184,0,0,1,128,136a184.07,184.07,0,0,1-88-22.38V72Zm0,128H40V131.64A200.19,200.19,0,0,0,128,152a200.25,200.25,0,0,0,88-20.37V200ZM104,112a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H112A8,8,0,0,1,104,112Z"/></svg>
           <span class="sidebar-nav-label">Job listings (5)</span>
         </a>
-        <a href="job-applicants.html" class="sidebar-nav-link">
-          <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Zm210.14,98.29a8,8,0,0,1-11.07-2.36,79.83,79.83,0,0,0-58.49-38.31,8,8,0,1,1,2.84-15.75,95.74,95.74,0,0,1,69.08,45.35A8,8,0,0,1,250.14,206.29ZM176,144a44,44,0,0,1-22.46-6.14,8,8,0,0,1,8.24-13.72,28,28,0,1,0,0-48.28,8,8,0,0,1-8.24-13.72A44,44,0,1,1,176,144Z"/></svg>
-          <span class="sidebar-nav-label">Candidates & resumes (84)</span>
-        </a>
         <a href="enquiry.html" class="sidebar-nav-link">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80ZM66.55,137.78,40,159.25V48H168v88H71.58A8,8,0,0,0,66.55,137.78ZM216,207.25l-26.55-21.47a8,8,0,0,0-5-1.78H88V152h80a16,16,0,0,0,16-16V96h32Z"/></svg>
           <span class="sidebar-nav-label">Enquiry (5)</span>
@@ -197,13 +193,25 @@
 
         <!-- Preview / Read-Only Action Buttons -->
         <div class="flex items-center gap-2 hidden" id="preview-header-actions">
+          <a href="approval-requests.html" class="btn btn-secondary hidden" id="preview-back-approvals-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
+            Approval requests
+          </a>
           <a href="job-listings.html" class="btn btn-secondary" id="preview-back-btn" style="text-decoration: none;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
             Back to listings
           </a>
-          <button class="btn btn-primary" id="preview-edit-btn" type="button">
+          <button class="btn btn-secondary" id="preview-edit-btn" type="button">
             <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg>
-            Edit Job Posting
+            Edit Requisition
+          </button>
+          <button class="btn btn-danger hidden" id="preview-reject-btn" type="button" onclick="openRejectJobModal()" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+            Reject requisition
+          </button>
+          <button class="btn btn-success hidden" id="preview-approve-btn" type="button" onclick="openApproveJobModal()" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15" style="margin-right: 4px;"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+            Approve & publish live
           </button>
         </div>
       </div>
@@ -245,6 +253,18 @@
               <span class="job-preview-stat-val" id="preview-val-submitted"></span>
             </div>
           </div>
+        </div>
+
+        <!-- Rejection Feedback Banner for Rejected Requisitions -->
+        <div class="job-preview-section rejection-feedback-banner hidden" id="job-preview-feedback-banner" style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius-md); padding: 14px 16px; margin: 16px 24px 0 24px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16" style="color: var(--danger);"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
+              <span style="font-size: var(--text-xs); font-weight: 700; color: #991B1B; text-transform: uppercase; letter-spacing: 0.5px;">Rejection Reason & Required Changes</span>
+            </div>
+            <span style="font-size: var(--text-2xs); color: #991B1B; font-weight: 500;" id="job-preview-feedback-date"></span>
+          </div>
+          <p style="font-size: var(--text-xs); color: #7F1D1D; line-height: 1.5; margin: 0;" id="job-preview-feedback-text"></p>
         </div>
 
         <div class="job-preview-section">
@@ -411,7 +431,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" data-close-modal="approve-job-modal" type="button">Cancel</button>
-      <button class="btn btn-success" id="confirm-approve-job-btn" type="button" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">Approve & publish live</button>
+      <button class="btn btn-success" id="confirm-approve-job-btn" type="button" onclick="handleApproveJob()" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">Approve & publish live</button>
     </div>
   </div>
 </div>
@@ -421,7 +441,7 @@
   <div class="modal">
     <div class="modal-header">
       <span class="modal-title">Reject job requisition</span>
-      <button class="modal-close" data-close-modal="reject-job-modal" aria-label="Close">
+      <button class="modal-close" data-close-modal="reject-job-modal" aria-label="Close" type="button">
         <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
       </button>
     </div>
@@ -434,7 +454,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" data-close-modal="reject-job-modal" type="button">Cancel</button>
-      <button class="btn btn-danger" id="confirm-reject-job-btn" type="button">Reject requisition</button>
+      <button class="btn btn-danger" id="confirm-reject-job-btn" type="button" onclick="handleRejectJob()">Reject requisition</button>
     </div>
   </div>
 </div>

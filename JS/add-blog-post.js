@@ -98,12 +98,43 @@ const blogSeedItems = [
     feedback: 'Please include verified benchmark figures and engineering team citations before submitting for final review.',
     coverImage: null,
     excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.'
+  },
+  {
+    id: 6,
+    title: 'Scaling Distributed Kubernetes for Enterprise Microservices',
+    author: 'David Chen',
+    category: 'Cloud & Infrastructure',
+    submitted: 'Aug 26, 2026 · 04:15 PM',
+    submittedISO: '2026-08-26T16:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Best practices for managing multi-tenant Kubernetes clusters, automated service mesh deployments, and observability across hybrid cloud environments.',
+    content: `
+      <p style="font-size: 1.15em; line-height: 1.7; color: var(--ink-secondary); margin-bottom: 1.5em;">Best practices for managing multi-tenant Kubernetes clusters, automated service mesh deployments, and observability across hybrid cloud environments.</p>
+      <h2>1. Multi-Cluster Orchestration at Scale</h2>
+      <p>Modern enterprise platforms require continuous zero-downtime deployment pipelines across globally distributed Kubernetes clusters. Leveraging GitOps workflows ensures configuration parity and drift detection across multi-cloud regions.</p>
+      <blockquote>"Resilient cloud architectures decouple control planes from tenant workloads to maximize availability."</blockquote>
+      <h2>2. Automated Service Mesh & Telemetry</h2>
+      <p>By implementing eBPF-powered network observability and mTLS encryption between microservices, platform engineering teams maintain end-to-end security compliance while keeping request latency under 5ms.</p>
+      <h2>3. Cluster Autoscaling & Cost Governance</h2>
+      <p>Integrating Karpenter and intelligent pod scheduling allows workloads to scale on demand, slashing idle infrastructure spend by up to 35%.</p>
+    `
   }
 ];
 
 let currentPost = null;
 let isReviewMode = false;
 let coverImageUrl = null;
+
+function formatNow() {
+  const now = new Date();
+  const datePart = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+  const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  return `${datePart} · ${timePart}`;
+}
+window.formatNow = formatNow;
 
 function getParams() {
   return new URLSearchParams(window.location.search);
@@ -534,9 +565,53 @@ function setupReviewMode(post) {
   document.getElementById('normal-status-bar')?.classList.add('hidden');
   document.getElementById('normal-nav-actions')?.classList.add('hidden');
   document.getElementById('review-status-bar')?.classList.remove('hidden');
-  document.getElementById('review-nav-actions')?.classList.remove('hidden');
 
-  document.getElementById('review-meta-text').textContent = `Submitted by ${post.author || 'Author'} on ${post.submitted}`;
+  const isRejected = post.status === 'rejected';
+
+  // Smartly show action buttons only for pending review submissions (hide on rejected)
+  if (isRejected) {
+    document.getElementById('review-nav-actions')?.classList.add('hidden');
+  } else {
+    document.getElementById('review-nav-actions')?.classList.remove('hidden');
+  }
+
+  const reviewStatusBar = document.getElementById('review-status-bar');
+  if (reviewStatusBar) {
+    if (isRejected) {
+      reviewStatusBar.style.background = '#FEF2F2';
+      reviewStatusBar.style.borderColor = '#FECACA';
+      reviewStatusBar.style.color = '#991B1B';
+      reviewStatusBar.innerHTML = `
+        <span style="font-weight: 700; font-size: 11px;">Rejected</span>
+        <span>·</span>
+        <span id="review-meta-text">Submitted by ${post.author || 'Author'} on ${post.submitted}</span>
+      `;
+    } else {
+      reviewStatusBar.style.background = '#FEF3C7';
+      reviewStatusBar.style.borderColor = '#FDE68A';
+      reviewStatusBar.style.color = '#92400E';
+      reviewStatusBar.innerHTML = `
+        <span style="font-weight: 700; font-size: 11px;">Pending review</span>
+        <span>·</span>
+        <span id="review-meta-text">Submitted by ${post.author || 'Author'} on ${post.submitted}</span>
+      `;
+    }
+  }
+
+  // Rejection Comment Callout Banner
+  const feedbackBanner = document.getElementById('rejection-feedback-banner');
+  if (feedbackBanner) {
+    if (isRejected && post.feedback) {
+      document.getElementById('rejection-feedback-text').textContent = post.feedback;
+      const dateEl = document.getElementById('rejection-feedback-date');
+      if (dateEl) {
+        dateEl.textContent = post.actionTakenOn ? `Action recorded on ${post.actionTakenOn}` : '';
+      }
+      feedbackBanner.classList.remove('hidden');
+    } else {
+      feedbackBanner.classList.add('hidden');
+    }
+  }
 
   const catSelect = document.getElementById('story-category-select');
   if (catSelect && post.category) {
@@ -575,17 +650,40 @@ function setupReviewMode(post) {
   updateWordStats();
 }
 
+function openApproveModal() {
+  const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
+  const title = document.getElementById('story-title-input')?.value.trim() || (post ? post.title : 'Story');
+  const titleEl = document.getElementById('approve-story-title');
+  if (titleEl) titleEl.textContent = title;
+  openModal('approve-confirm-modal');
+}
+
+function openRejectModal() {
+  const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
+  const title = document.getElementById('story-title-input')?.value.trim() || (post ? post.title : 'Story');
+  const titleEl = document.getElementById('reject-story-title');
+  if (titleEl) titleEl.textContent = title;
+  const reasonInput = document.getElementById('rejection-reason-input');
+  if (reasonInput) reasonInput.value = '';
+  const errorText = document.getElementById('rejection-error-text');
+  if (errorText) errorText.style.display = 'none';
+  openModal('reject-feedback-modal');
+}
+
 function handleApproveStory() {
   const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
-  if (!post) return;
-
-  const title = document.getElementById('story-title-input').value.trim() || post.title;
-  const htmlContent = document.getElementById('story-editor-body').innerHTML;
+  const title = document.getElementById('story-title-input')?.value.trim() || (post ? post.title : 'Untitled Story');
+  const editorBody = document.getElementById('story-editor-body');
+  const htmlContent = editorBody ? editorBody.innerHTML : (post ? post.content : '');
   const textContent = stripHtml(htmlContent);
-  const category = document.getElementById('story-category-select')?.value || post.category || 'AI & Tech Staffing';
+  const category = document.getElementById('story-category-select')?.value || (post ? post.category : 'AI & Tech Staffing');
 
   let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
-  const match = blogPosts.find((p) => p.id === post.id);
+  let match = post ? blogPosts.find((p) => Number(p.id) === Number(post.id) || String(p.id) === String(post.id)) : null;
+  if (!match && blogPosts.length > 0) {
+    match = blogPosts[0];
+  }
+
   if (match) {
     match.title = title;
     match.content = htmlContent;
@@ -600,38 +698,53 @@ function handleApproveStory() {
   }
 
   closeModal('approve-confirm-modal');
-  showToast('Article approved and published live to the website!', 'success');
+  const msg = `Blog post "${title}" has been approved and published live!`;
+  setFlashToast(msg, 'success');
+  showToast(msg, 'success');
   setTimeout(() => {
     window.location.href = isReviewMode ? 'approval-requests.html' : 'blog-posts.html';
-  }, 450);
+  }, 350);
 }
 
 function handleRejectStory() {
   const post = currentPost || (loadCollection(BLOG_KEY, blogSeedItems)[0]);
-  if (!post) return;
-
   const reasonInput = document.getElementById('rejection-reason-input');
-  const reason = reasonInput.value.trim();
+  const reason = reasonInput ? reasonInput.value.trim() : '';
   if (!reason) {
-    document.getElementById('rejection-error-text').style.display = 'block';
-    reasonInput.focus();
+    const errorText = document.getElementById('rejection-error-text');
+    if (errorText) errorText.style.display = 'block';
+    reasonInput?.focus();
     return;
   }
 
   let blogPosts = loadCollection(BLOG_KEY, blogSeedItems);
-  const match = blogPosts.find((p) => p.id === post.id);
+  let match = post ? blogPosts.find((p) => Number(p.id) === Number(post.id) || String(p.id) === String(post.id)) : null;
+  if (!match && blogPosts.length > 0) {
+    match = blogPosts[0];
+  }
+
   if (match) {
     match.status = 'rejected';
     match.actionTakenOn = formatNow();
     match.feedback = reason;
     saveCollection(BLOG_KEY, blogPosts);
   }
+
   closeModal('reject-feedback-modal');
-  showToast(`Rejected "${post.title}" and sent feedback notes.`, 'error');
+  const postTitle = (match && match.title) || (post && post.title) || 'Story';
+  const msg = `Blog post "${postTitle}" has been rejected.`;
+  setFlashToast(msg, 'error');
+  showToast(msg, 'error');
   setTimeout(() => {
     window.location.href = 'approval-requests.html';
-  }, 450);
+  }, 350);
 }
+
+// Expose handlers to window for inline onclick attributes
+window.openApproveModal = openApproveModal;
+window.openRejectModal = openRejectModal;
+window.handleApproveStory = handleApproveStory;
+window.handleRejectStory = handleRejectStory;
 
 // --------------------------------------------------------------------------
 // Initialization
@@ -771,5 +884,29 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       window.location.href = isReviewMode ? 'approval-requests.html' : 'blog-posts.html';
     }, 450);
+  });
+
+  // Document click delegation fallback for review actions
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#confirm-reject-btn')) {
+      e.preventDefault();
+      handleRejectStory();
+      return;
+    }
+    if (e.target.closest('#confirm-approve-btn')) {
+      e.preventDefault();
+      handleApproveStory();
+      return;
+    }
+    if (e.target.closest('#review-reject-btn')) {
+      e.preventDefault();
+      openRejectModal();
+      return;
+    }
+    if (e.target.closest('#review-approve-btn')) {
+      e.preventDefault();
+      openApproveModal();
+      return;
+    }
   });
 });

@@ -18,6 +18,7 @@ const defaultCandidateSeeds = [
     location: 'San Francisco, CA',
     appliedOn: 'Aug 28, 2026 · 10:15 AM',
     appliedISO: '2026-08-28T10:15:00',
+    status: 'Under Review',
     resumeFileName: 'elena-rostova-cybersecurity-resume.pdf',
     resumeFileSize: '1.2 MB',
     summary: 'Senior Cybersecurity Engineer with 5+ years of experience in enterprise SIEM threat hunting, Splunk query optimization, SOC2 compliance governance, and automated incident triage across AWS multi-cloud environments.',
@@ -55,6 +56,7 @@ const defaultCandidateSeeds = [
     location: 'Los Angeles, CA',
     appliedOn: 'Aug 27, 2026 · 02:40 PM',
     appliedISO: '2026-08-27T14:40:00',
+    status: 'Shortlisted',
     resumeFileName: 'david-chen-security-analyst.pdf',
     resumeFileSize: '980 KB',
     summary: 'Cybersecurity Analyst specializing in vulnerability management, automated SAST/DAST pipeline integration, and DevSecOps compliance automation.',
@@ -82,6 +84,7 @@ const defaultCandidateSeeds = [
     location: 'Chicago, IL',
     appliedOn: 'Aug 26, 2026 · 11:20 AM',
     appliedISO: '2026-08-26T11:20:00',
+    status: 'Screening',
     resumeFileName: 'marcus-holloway-lead-analyst.pdf',
     resumeFileSize: '1.4 MB',
     summary: '6+ years in zero-trust architecture, cloud telemetry analysis, and enterprise identity security.',
@@ -109,6 +112,7 @@ const defaultCandidateSeeds = [
     location: 'New York, NY',
     appliedOn: 'Aug 25, 2026 · 04:10 PM',
     appliedISO: '2026-08-25T16:10:00',
+    status: 'Interviewing',
     resumeFileName: 'aisha-mansoor-threat-hunter.pdf',
     resumeFileSize: '1.1 MB',
     summary: 'Threat Hunter and Penetration Tester with OSCP and CISSP certifications.',
@@ -138,6 +142,7 @@ const defaultCandidateSeeds = [
     location: 'Pasadena, CA',
     appliedOn: 'Aug 25, 2026 · 01:20 PM',
     appliedISO: '2026-08-25T13:20:00',
+    status: 'Screening',
     resumeFileName: 'siddharth-rao-tech-consultant.pdf',
     resumeFileSize: '1.5 MB',
     summary: '7+ years leading enterprise cloud migrations, modernizing legacy monolithic architectures, and structuring digital transformation roadmaps for Fortune 500 manufacturing clients.',
@@ -165,6 +170,7 @@ const defaultCandidateSeeds = [
     location: 'Los Angeles, CA',
     appliedOn: 'Aug 24, 2026 · 09:45 AM',
     appliedISO: '2026-08-24T09:45:00',
+    status: 'Shortlisted',
     resumeFileName: 'claire-dupont-senior-consultant.pdf',
     resumeFileSize: '1.3 MB',
     summary: 'Technology Consultant with deep specialization in legacy system modernization, microservices migration, and client stakeholder management.',
@@ -194,6 +200,7 @@ const defaultCandidateSeeds = [
     location: 'Bangalore, India',
     appliedOn: 'Aug 22, 2026 · 11:30 AM',
     appliedISO: '2026-08-22T11:30:00',
+    status: 'Interviewing',
     resumeFileName: 'dr-vikram-malhotra-ai-architect.pdf',
     resumeFileSize: '1.8 MB',
     summary: 'Ph.D. in Machine Learning with 9+ years architecting enterprise RAG systems, LLM orchestration frameworks, and vector index clusters on Kubernetes.',
@@ -221,6 +228,7 @@ const defaultCandidateSeeds = [
     location: 'Bangalore, India',
     appliedOn: 'Aug 20, 2026 · 03:15 PM',
     appliedISO: '2026-08-20T15:15:00',
+    status: 'Shortlisted',
     resumeFileName: 'ananya-deshmukh-staff-ai-engineer.pdf',
     resumeFileSize: '1.4 MB',
     summary: 'Staff AI Engineer with expertise in model fine-tuning, latency optimization on NVIDIA H100 clusters, and agentic workflows.',
@@ -248,6 +256,7 @@ const defaultCandidateSeeds = [
     location: 'San Francisco, CA',
     appliedOn: 'Aug 19, 2026 · 09:20 AM',
     appliedISO: '2026-08-19T09:20:00',
+    status: 'Under Review',
     resumeFileName: 'robert-vance-ai-lead.pdf',
     resumeFileSize: '1.6 MB',
     summary: 'AI Systems Architect with 8+ years building high-throughput inference engines and deep learning deployment frameworks.',
@@ -275,6 +284,7 @@ const defaultCandidateSeeds = [
     location: 'Seattle, WA',
     appliedOn: 'Aug 18, 2026 · 04:30 PM',
     appliedISO: '2026-08-18T16:30:00',
+    status: 'Hired',
     resumeFileName: 'maya-lin-ai-architect.pdf',
     resumeFileSize: '1.3 MB',
     summary: 'Senior Machine Learning Architect with specialized background in NLP and responsible AI guardrails.',
@@ -303,6 +313,7 @@ const defaultCandidateSeeds = [
     location: 'Alhambra, CA',
     appliedOn: 'Aug 18, 2026 · 02:00 PM',
     appliedISO: '2026-08-18T14:00:00',
+    status: 'Screening',
     resumeFileName: 'liam-oconnor-cloud-infra.pdf',
     resumeFileSize: '1.2 MB',
     summary: 'DevOps & Cloud Engineer with 4+ years authoring reusable Terraform modules, managing Kubernetes clusters on AWS EKS, and building Datadog observability dashboards.',
@@ -330,6 +341,7 @@ const defaultCandidateSeeds = [
     location: 'Pasadena, CA',
     appliedOn: 'Aug 16, 2026 · 11:15 AM',
     appliedISO: '2026-08-16T11:15:00',
+    status: 'Rejected',
     resumeFileName: 'sofia-ramirez-devops.pdf',
     resumeFileSize: '1.1 MB',
     summary: 'Infrastructure Automation Engineer focused on zero-downtime CI/CD and multi-cloud Kubernetes deployment.',
@@ -358,6 +370,7 @@ const defaultCandidateSeeds = [
     location: 'Austin, TX',
     appliedOn: 'Aug 14, 2026 · 10:45 AM',
     appliedISO: '2026-08-14T10:45:00',
+    status: 'Interviewing',
     resumeFileName: 'mateo-morales-solidity-developer.pdf',
     resumeFileSize: '1.0 MB',
     summary: 'Smart Contract Engineer with extensive experience in Solidity, Foundry test suites, and gas optimization for EVM Layer 2 protocols.',
@@ -377,12 +390,74 @@ const defaultCandidateSeeds = [
   }
 ];
 
-let allCandidates = loadCollection(CANDIDATES_KEY, defaultCandidateSeeds);
+const APPLICANT_STATUSES = [
+  { value: 'Under Review', label: 'Under Review', class: 'status-under-review', desc: 'Application just came in, not yet screened.' },
+  { value: 'Shortlisted', label: 'Shortlisted', class: 'status-shortlisted', desc: 'Passed the initial screen, worth contacting.' },
+  { value: 'Screening', label: 'Screening', class: 'status-screening', desc: 'Covers reached out, responded, and phone/intro screen stage in one bucket.' },
+  { value: 'Interviewing', label: 'Interviewing', class: 'status-interviewing', desc: 'Candidate is actively participating in interview rounds.' },
+  { value: 'Hired', label: 'Hired', class: 'status-hired', desc: 'Candidate selected, offer accepted, and joined the organization.' },
+  { value: 'Rejected', label: 'Rejected', class: 'status-rejected', desc: 'Application archived / rejected at this stage.' }
+];
+
+function getStatusMeta(statusName) {
+  return APPLICANT_STATUSES.find((s) => s.value === statusName) || APPLICANT_STATUSES[0];
+}
+
+function getStatusClass(statusName) {
+  const meta = getStatusMeta(statusName);
+  return meta ? meta.class : 'status-under-review';
+}
+
+function ensureCandidateStatuses(candidates) {
+  let modified = false;
+  const defaultStatusMap = {
+    101: 'Under Review',
+    102: 'Shortlisted',
+    103: 'Screening',
+    104: 'Interviewing',
+    201: 'Screening',
+    202: 'Shortlisted',
+    301: 'Interviewing',
+    302: 'Shortlisted',
+    303: 'Under Review',
+    304: 'Hired',
+    401: 'Screening',
+    402: 'Rejected',
+    501: 'Interviewing'
+  };
+
+  candidates.forEach((c) => {
+    if (!c.status || !APPLICANT_STATUSES.some((s) => s.value === c.status)) {
+      c.status = defaultStatusMap[c.id] || 'Under Review';
+      modified = true;
+    }
+  });
+
+  if (modified) {
+    saveCollection(CANDIDATES_KEY, candidates);
+  }
+  return candidates;
+}
+
+let allCandidates = ensureCandidateStatuses(loadCollection(CANDIDATES_KEY, defaultCandidateSeeds));
 let currentJob = null;
 let currentJobCandidates = [];
 
 function getQueryParam(key) {
   return new URLSearchParams(window.location.search).get(key);
+}
+
+function formatExpiryDate(dateStr) {
+  if (!dateStr) return 'Sep 30, 2026';
+  if (/^[A-Za-z]{3}\s+\d{1,2},\s+\d{4}/.test(dateStr)) return dateStr;
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[d.getMonth()]} ${String(d.getDate()).padStart(2, '0')}, ${d.getFullYear()}`;
+  } catch (e) {
+    return dateStr;
+  }
 }
 
 function initJobContext() {
@@ -396,7 +471,20 @@ function initJobContext() {
     department: 'AI & Advanced Tech',
     location: 'Bangalore, India',
     type: 'Full-time',
-    status: 'published'
+    experience: 'Staff / Lead (8+ Yrs)',
+    salary: '$160,000 – $195,000 / yr',
+    expiryDate: '2026-09-30',
+    submitted: 'Aug 10, 2026 · 09:00 AM',
+    status: 'published',
+    pdfName: 'senior-ai-architect-jd.pdf',
+    pdfSize: '2.1 MB',
+    overview: 'Lead the design of AI-augmented delivery pods for enterprise manufacturing and fintech clients, setting technical direction across a growing generative AI architecture team.',
+    responsibilities: [
+      'Design scalable LLM pipelines, Retrieval-Augmented Generation (RAG) frameworks, and vector index architectures.',
+      'Establish enterprise model governance, evaluation metrics, and responsible AI safety guardrails.',
+      'Mentor senior machine learning engineers and present architecture strategies to Fortune 500 stakeholders.'
+    ],
+    skills: ['LLM Orchestration', 'RAG Architectures', 'PyTorch / LangChain', 'Vector Databases', 'MLOps on Kubernetes']
   };
 
   // Update Breadcrumb & Header
@@ -409,8 +497,11 @@ function initJobContext() {
   
   const statusEl = document.getElementById('context-job-status');
   if (statusEl) {
-    statusEl.className = `status-badge ${currentJob.status === 'published' ? 'status-approved' : 'status-pending'}`;
-    statusEl.textContent = currentJob.status === 'published' ? 'Published' : (currentJob.status === 'draft' ? 'Draft' : 'Pending review');
+    const isPub = currentJob.status === 'published';
+    const isRej = currentJob.status === 'rejected';
+    const isDraft = currentJob.status === 'draft';
+    statusEl.className = `status-badge ${isPub ? 'status-approved' : (isRej ? 'status-rejected' : 'status-pending')}`;
+    statusEl.textContent = isPub ? 'Published' : (isRej ? 'Rejected' : (isDraft ? 'Draft' : 'Pending review'));
   }
 
   // Filter candidates for this job
@@ -423,6 +514,141 @@ function initJobContext() {
       id: 900 + i,
       jobId: currentJob.id
     }));
+  }
+
+  // Update Candidates Tab Count Badge
+  const tabCandidatesCountEl = document.getElementById('tab-candidates-count');
+  if (tabCandidatesCountEl) {
+    tabCandidatesCountEl.textContent = currentJobCandidates.length;
+  }
+
+  // Populate Job Description View Panel
+  const jdTitleEl = document.getElementById('jd-preview-title');
+  if (jdTitleEl) jdTitleEl.textContent = currentJob.title;
+
+  const jdDeptEl = document.getElementById('jd-preview-dept');
+  if (jdDeptEl) jdDeptEl.textContent = currentJob.department || 'Engineering';
+
+  const jdLocEl = document.getElementById('jd-preview-location');
+  if (jdLocEl) jdLocEl.textContent = currentJob.location || 'Remote';
+
+  const jdTypeEl = document.getElementById('jd-preview-type');
+  if (jdTypeEl) jdTypeEl.textContent = currentJob.type || 'Full-time';
+
+  const jdExpEl = document.getElementById('jd-preview-exp');
+  if (jdExpEl) jdExpEl.textContent = currentJob.experience || 'Mid-Level (3–5 Yrs)';
+
+  const jdStatusPill = document.getElementById('jd-preview-status-pill');
+  if (jdStatusPill) {
+    const isPub = currentJob.status === 'published';
+    const isRej = currentJob.status === 'rejected';
+    const isDraft = currentJob.status === 'draft';
+    const badgeClass = isPub ? 'status-approved' : (isRej ? 'status-rejected' : 'status-pending');
+    const badgeLabel = isPub ? 'Published' : (isRej ? 'Rejected' : (isDraft ? 'Draft' : 'Pending review'));
+    jdStatusPill.innerHTML = `<span class="status-badge ${badgeClass}">${badgeLabel}</span>`;
+  }
+
+  const jdEditLink = document.getElementById('jd-preview-edit-link');
+  if (jdEditLink) {
+    jdEditLink.href = `add-job-listing.html?id=${currentJob.id}`;
+  }
+
+  const jdSalaryEl = document.getElementById('jd-preview-salary');
+  if (jdSalaryEl) jdSalaryEl.textContent = currentJob.salary || 'Competitive / DOE';
+
+  const jdExpiryEl = document.getElementById('jd-preview-expiry');
+  if (jdExpiryEl) jdExpiryEl.textContent = formatExpiryDate(currentJob.expiryDate);
+
+  const jdIdEl = document.getElementById('jd-preview-id');
+  if (jdIdEl) jdIdEl.textContent = `JOB-${100 + currentJob.id}`;
+
+  const jdPostedEl = document.getElementById('jd-preview-posted');
+  if (jdPostedEl) jdPostedEl.textContent = currentJob.submitted || 'Aug 10, 2026 · 09:00 AM';
+
+  const jdOverviewEl = document.getElementById('jd-preview-overview');
+  if (jdOverviewEl) {
+    jdOverviewEl.textContent = currentJob.overview || 'Join our engineering team to design, architect, and deploy mission-critical software solutions.';
+  }
+
+  const jdRespEl = document.getElementById('jd-preview-responsibilities');
+  if (jdRespEl) {
+    let items = [];
+    if (Array.isArray(currentJob.responsibilities)) {
+      items = currentJob.responsibilities;
+    } else if (typeof currentJob.responsibilities === 'string') {
+      items = currentJob.responsibilities.split('\n').map((s) => s.replace(/^[-•*]\s*/, '').trim()).filter(Boolean);
+    }
+    if (!items.length) {
+      items = [
+        'Lead architectural strategy and technical implementation across cross-functional engineering pods.',
+        'Collaborate with product and executive teams to define milestone roadmaps and delivery metrics.',
+        'Champion code quality, automated test coverage, and documentation standards.'
+      ];
+    }
+    jdRespEl.innerHTML = items.map((item) => `
+      <li class="job-preview-list-item">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+        <span>${item}</span>
+      </li>
+    `).join('');
+  }
+
+  const jdSkillsEl = document.getElementById('jd-preview-skills');
+  if (jdSkillsEl) {
+    let skillsList = [];
+    if (Array.isArray(currentJob.skills)) {
+      skillsList = currentJob.skills;
+    } else if (typeof currentJob.skills === 'string') {
+      skillsList = currentJob.skills.split(',').map((s) => s.trim()).filter(Boolean);
+    }
+    if (!skillsList.length) {
+      skillsList = ['Technical Architecture', 'Cross-Functional Leadership', 'Cloud Infrastructure', 'Agile Delivery'];
+    }
+    jdSkillsEl.innerHTML = skillsList.map((skill) => `<span class="preview-skill-pill">${skill}</span>`).join('');
+  }
+
+  const jdPdfNameEl = document.getElementById('jd-preview-pdf-name');
+  if (jdPdfNameEl) {
+    jdPdfNameEl.textContent = currentJob.pdfName || `${currentJob.title.toLowerCase().replace(/\s+/g, '-')}-spec.pdf`;
+  }
+  const jdPdfSizeEl = document.getElementById('jd-preview-pdf-size');
+  if (jdPdfSizeEl) {
+    jdPdfSizeEl.textContent = currentJob.pdfSize || '1.4 MB';
+  }
+}
+
+function initApplicantTabs() {
+  const tabs = document.querySelectorAll('.applicant-tab-btn');
+  const panels = document.querySelectorAll('.tabs-panel');
+
+  function switchTab(targetPanelId) {
+    tabs.forEach((tab) => {
+      const isTarget = tab.dataset.tab === targetPanelId;
+      tab.classList.toggle('active', isTarget);
+      tab.setAttribute('aria-selected', isTarget ? 'true' : 'false');
+    });
+
+    panels.forEach((panel) => {
+      if (panel.id === targetPanelId) {
+        panel.classList.remove('hidden');
+      } else {
+        panel.classList.add('hidden');
+      }
+    });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const targetPanelId = tab.dataset.tab;
+      if (targetPanelId) {
+        switchTab(targetPanelId);
+      }
+    });
+  });
+
+  const tabParam = getQueryParam('tab');
+  if (tabParam === 'jd' || tabParam === 'description' || tabParam === 'job-description') {
+    switchTab('panel-job-description');
   }
 }
 
@@ -450,7 +676,7 @@ function renderTable(items) {
   if (!items.length) {
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
-        <td colspan="6" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
+        <td colspan="7" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
           No candidate applications found matching your search.
         </td>
       </tr>
@@ -462,6 +688,9 @@ function renderTable(items) {
     const avatarHtml = candidate.avatar
       ? `<img src="${candidate.avatar}" alt="${candidate.name}" class="candidate-avatar">`
       : `<div class="candidate-avatar-fallback">${candidate.name.split(' ').map((n) => n[0]).join('')}</div>`;
+
+    const statusVal = candidate.status || 'Under Review';
+    const statusClass = getStatusClass(statusVal);
 
     return `
       <tr>
@@ -485,6 +714,15 @@ function renderTable(items) {
           </a>
         </td>
         <td style="color: var(--ink-secondary); font-size: var(--text-2xs); white-space: nowrap;">${candidate.appliedOn}</td>
+        <td>
+          <div class="applicant-status-select-wrap">
+            <select class="applicant-status-select ${statusClass}" data-candidate-id="${candidate.id}" data-current-status="${statusVal}" aria-label="Recruitment status for ${candidate.name}">
+              ${APPLICANT_STATUSES.map((s) => `
+                <option value="${s.value}" ${s.value === statusVal ? 'selected' : ''}>${s.label}</option>
+              `).join('')}
+            </select>
+          </div>
+        </td>
         <td style="text-align: center; white-space: nowrap;">
           <a href="../../assets/resume.png" target="_blank" rel="noopener noreferrer" class="btn-resume-view" title="Open resume for ${candidate.name} in new tab">
             <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>
@@ -496,19 +734,119 @@ function renderTable(items) {
   }).join('');
 }
 
+let pendingStatusChange = null;
+
+function initStatusChangeHandlers(applyFiltersFn) {
+  const table = document.getElementById('applicants-table');
+  const modal = document.getElementById('status-confirm-modal');
+  const closeBtn = document.getElementById('status-modal-close-btn');
+  const cancelBtn = document.getElementById('confirm-status-cancel-btn');
+  const submitBtn = document.getElementById('confirm-status-submit-btn');
+
+  table?.addEventListener('change', (e) => {
+    const select = e.target.closest('.applicant-status-select');
+    if (!select) return;
+
+    const candidateId = Number(select.dataset.candidateId);
+    const oldStatus = select.dataset.currentStatus || 'Under Review';
+    const newStatus = select.value;
+
+    if (oldStatus === newStatus) return;
+
+    const candidate = allCandidates.find((c) => c.id === candidateId) || currentJobCandidates.find((c) => c.id === candidateId);
+    if (!candidate) return;
+
+    pendingStatusChange = {
+      candidateId,
+      candidateName: candidate.name,
+      oldStatus,
+      newStatus,
+      selectElement: select
+    };
+
+    // Populate confirmation modal details
+    document.getElementById('confirm-candidate-name').textContent = candidate.name;
+
+    const oldMeta = getStatusMeta(oldStatus);
+    const newMeta = getStatusMeta(newStatus);
+
+    const oldBadgeClass = oldMeta.class.replace('status-', 'status-pill-');
+    const newBadgeClass = newMeta.class.replace('status-', 'status-pill-');
+
+    document.getElementById('confirm-old-status-badge').innerHTML = `
+      <span class="status-modal-badge ${oldBadgeClass}">${oldStatus}</span>
+    `;
+    document.getElementById('confirm-new-status-badge').innerHTML = `
+      <span class="status-modal-badge ${newBadgeClass}">${newStatus}</span>
+    `;
+
+    openModal('status-confirm-modal');
+  });
+
+  function cancelStatusChange() {
+    if (pendingStatusChange && pendingStatusChange.selectElement) {
+      pendingStatusChange.selectElement.value = pendingStatusChange.oldStatus;
+    }
+    pendingStatusChange = null;
+    closeModal('status-confirm-modal');
+  }
+
+  function confirmStatusChange() {
+    if (!pendingStatusChange) return;
+
+    const { candidateId, candidateName, oldStatus, newStatus, selectElement } = pendingStatusChange;
+
+    // Update in memory & storage
+    const match = allCandidates.find((c) => c.id === candidateId);
+    if (match) {
+      match.status = newStatus;
+      saveCollection(CANDIDATES_KEY, allCandidates);
+    }
+    const currentMatch = currentJobCandidates.find((c) => c.id === candidateId);
+    if (currentMatch) {
+      currentMatch.status = newStatus;
+    }
+
+    if (selectElement) {
+      selectElement.dataset.currentStatus = newStatus;
+      APPLICANT_STATUSES.forEach((s) => selectElement.classList.remove(s.class));
+      selectElement.classList.add(getStatusClass(newStatus));
+    }
+
+    closeModal('status-confirm-modal');
+    showToast(`Recruitment status for "${candidateName}" updated to "${newStatus}"!`, 'success');
+    pendingStatusChange = null;
+
+    if (typeof applyFiltersFn === 'function') {
+      applyFiltersFn();
+    }
+  }
+
+  closeBtn?.addEventListener('click', cancelStatusChange);
+  cancelBtn?.addEventListener('click', cancelStatusChange);
+  submitBtn?.addEventListener('click', confirmStatusChange);
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      cancelStatusChange();
+    }
+  });
+}
+
 function exportApplicantsCSV(items) {
   if (!items.length) {
     showToast('No applicants to export.', 'error');
     return;
   }
 
-  const headers = ['S.No.', 'Candidate Name', 'Email ID', 'Phone No.', 'Applied On', 'Resume File'];
+  const headers = ['S.No.', 'Candidate Name', 'Email ID', 'Phone No.', 'Applied On', 'Status', 'Resume File'];
   const rows = items.map((c, idx) => [
     idx + 1,
     `"${c.name}"`,
     `"${c.email}"`,
     `"${c.phone}"`,
     `"${c.appliedOn}"`,
+    `"${c.status || 'Under Review'}"`,
     `"${c.resumeFileName || 'resume.pdf'}"`
   ]);
 
@@ -525,21 +863,26 @@ function exportApplicantsCSV(items) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initJobContext();
+  initApplicantTabs();
   renderStats(currentJobCandidates);
   renderTable(currentJobCandidates);
 
   const searchInput = document.getElementById('applicant-search');
+  const statusFilter = document.getElementById('applicant-status-filter');
   const dateFilter = document.getElementById('applicant-date-filter');
 
-  function applyFilters() {
+  function getFilteredCandidates() {
     const q = (searchInput?.value || '').toLowerCase().trim();
+    const statusVal = statusFilter?.value || 'all';
     const days = dateFilter?.value || 'all';
 
-    const filtered = currentJobCandidates.filter((c) => {
+    return currentJobCandidates.filter((c) => {
       const matchSearch = !q ||
         c.name.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q) ||
         c.phone.toLowerCase().includes(q);
+
+      const matchStatus = statusVal === 'all' || c.status === statusVal;
 
       let matchDate = true;
       if (days !== 'all' && c.appliedISO) {
@@ -549,38 +892,25 @@ document.addEventListener('DOMContentLoaded', () => {
         matchDate = itemDate >= cutoff;
       }
 
-      return matchSearch && matchDate;
+      return matchSearch && matchStatus && matchDate;
     });
+  }
 
+  function applyFilters() {
+    const filtered = getFilteredCandidates();
     renderStats(filtered);
     renderTable(filtered);
   }
 
+  initStatusChangeHandlers(applyFilters);
+
   searchInput?.addEventListener('input', applyFilters);
+  statusFilter?.addEventListener('change', applyFilters);
   dateFilter?.addEventListener('change', applyFilters);
 
   // Export CSV
   document.getElementById('export-applicants-csv-btn')?.addEventListener('click', () => {
-    const q = (searchInput?.value || '').toLowerCase().trim();
-    const days = dateFilter?.value || 'all';
-
-    const filtered = currentJobCandidates.filter((c) => {
-      const matchSearch = !q ||
-        c.name.toLowerCase().includes(q) ||
-        c.email.toLowerCase().includes(q) ||
-        c.phone.toLowerCase().includes(q);
-
-      let matchDate = true;
-      if (days !== 'all' && c.appliedISO) {
-        const itemDate = new Date(c.appliedISO);
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - Number(days));
-        matchDate = itemDate >= cutoff;
-      }
-
-      return matchSearch && matchDate;
-    });
-
+    const filtered = getFilteredCandidates();
     exportApplicantsCSV(filtered);
   });
 });

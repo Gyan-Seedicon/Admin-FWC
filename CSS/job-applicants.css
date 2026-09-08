@@ -6,7 +6,6 @@
    ========================================================================== */
 
 .applicant-context-surface {
-  margin-bottom: var(--space-6);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -62,6 +61,82 @@
   border: 1px solid var(--border-card);
   border-radius: var(--radius-pill);
   color: var(--ink-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Underlined Navigation Tabs (Job Description & Candidates)
+   -------------------------------------------------------------------------- */
+.applicant-tabs-bar {
+  border-bottom: 1px solid var(--border-card);
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.applicant-tabs-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.applicant-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 4px 12px 4px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  position: relative;
+  bottom: -1px;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.applicant-tab-btn svg {
+  color: var(--ink-muted);
+  transition: color var(--duration-fast) var(--ease-smooth);
+}
+
+.applicant-tab-btn:hover {
+  color: var(--ink-primary);
+}
+
+.applicant-tab-btn:hover svg {
+  color: var(--ink-secondary);
+}
+
+.applicant-tab-btn.active {
+  color: var(--brand-blue);
+  border-bottom-color: var(--brand-blue);
+  font-weight: 600;
+}
+
+.applicant-tab-btn.active svg {
+  color: var(--brand-blue);
+}
+
+.applicant-tab-btn .tab-count-badge {
+  background: var(--bg-hover);
+  color: var(--ink-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-card);
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.applicant-tab-btn.active .tab-count-badge {
+  background: #EFF6FF;
+  color: var(--brand-blue);
+  border-color: #BFDBFE;
+}
+
+.tabs-panel.hidden {
+  display: none !important;
 }
 
 /* Candidate Table Cell Elements */
@@ -155,3 +230,101 @@
 .btn-resume-view svg {
   color: #2563EB;
 }
+
+/* ==========================================================================
+   Candidate Status Dropdown & Badges
+   ========================================================================== */
+.applicant-status-select-wrap {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+
+.applicant-status-select {
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: var(--font-primary);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 26px 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%23475569'%3E%3Cpath d='M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z'/%3E%3C/svg%3E");
+  transition: all var(--duration-fast) var(--ease-smooth);
+  outline: none;
+  white-space: nowrap;
+}
+
+.applicant-status-select:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+
+.applicant-status-select:focus {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+/* 1. Under Review: Slate / Gray */
+.applicant-status-select.status-under-review,
+.status-pill-under-review {
+  background-color: #F1F5F9;
+  color: #475569;
+  border-color: #CBD5E1;
+}
+
+/* 2. Shortlisted: Indigo / Violet */
+.applicant-status-select.status-shortlisted,
+.status-pill-shortlisted {
+  background-color: #EEF2FF;
+  color: #4F46E5;
+  border-color: #C7D2FE;
+}
+
+/* 3. Screening: Sky Blue / Cyan */
+.applicant-status-select.status-screening,
+.status-pill-screening {
+  background-color: #E0F2FE;
+  color: #0284C7;
+  border-color: #BAE6FD;
+}
+
+/* 4. Interviewing: Amber / Warm Gold */
+.applicant-status-select.status-interviewing,
+.status-pill-interviewing {
+  background-color: #FEF3C7;
+  color: #B45309;
+  border-color: #FDE68A;
+}
+
+/* 5. Hired: Emerald / Green */
+.applicant-status-select.status-hired,
+.status-pill-hired {
+  background-color: #ECFDF5;
+  color: #059669;
+  border-color: #A7F3D0;
+}
+
+/* 6. Rejected: Rose / Red */
+.applicant-status-select.status-rejected,
+.status-pill-rejected {
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border-color: #FECACA;
+}
+
+.status-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  border: 1px solid;
+  white-space: nowrap;
+}
+

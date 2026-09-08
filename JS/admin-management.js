@@ -278,11 +278,31 @@ document.addEventListener('DOMContentLoaded', () => {
     pendingRevoke = null;
   });
 
-  // Add Admin form submission
+  // Add Admin form submission & modal dismiss handlers
   const addForm = document.getElementById('add-admin-form');
   if (addForm) {
     initLiveFieldValidation(addForm);
   }
+
+  function resetAndCloseAddAdminModal() {
+    closeModal('add-admin-modal');
+    if (addForm) {
+      addForm.reset();
+      addForm.querySelectorAll('.form-group').forEach((g) => g.classList.remove('has-error'));
+      const defaultRadio = document.getElementById('role-content-admin');
+      if (defaultRadio) defaultRadio.checked = true;
+    }
+  }
+
+  document.getElementById('add-admin-cancel-btn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    resetAndCloseAddAdminModal();
+  });
+
+  document.getElementById('add-admin-close-btn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    resetAndCloseAddAdminModal();
+  });
 
   document.getElementById('add-admin-submit-btn')?.addEventListener('click', (e) => {
     e.preventDefault();

@@ -72,6 +72,19 @@ const blogSeedItems = [
     feedback: 'Please include verified benchmark figures and engineering team citations before submitting for final review.',
     coverImage: null,
     excerpt: 'A practical framework for extending zero-trust principles beyond infrastructure and into how distributed engineering teams are staffed.'
+  },
+  {
+    id: 6,
+    title: 'Scaling Distributed Kubernetes for Enterprise Microservices',
+    author: 'David Chen',
+    category: 'Cloud & Infrastructure',
+    submitted: 'Aug 26, 2026 · 04:15 PM',
+    submittedISO: '2026-08-26T16:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Best practices for managing multi-tenant Kubernetes clusters, automated service mesh deployments, and observability across hybrid cloud environments.'
   }
 ];
 
@@ -195,11 +208,104 @@ const jobSeedItems = [
       'Integrate Web3 RPC endpoints into client React frontends.'
     ],
     skills: ['Solidity', 'EVM Chains', 'Hardhat & Foundry', 'Smart Contract Auditing', 'Web3.js']
+  },
+  {
+    id: 6,
+    title: 'Site Reliability & Platform Engineer',
+    department: 'Cloud Services',
+    location: 'Remote',
+    type: 'Full-time',
+    experience: 'Senior (5–8 Yrs)',
+    salary: '$140,000 – $170,000 / yr',
+    expiryDate: '2026-11-30',
+    submitted: 'Aug 27, 2026 · 09:15 AM',
+    submittedISO: '2026-08-27T09:15:00',
+    status: 'pending',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'site-reliability-engineer-jd.pdf',
+    pdfSize: '1.2 MB',
+    overview: 'Design, build, and scale automated multi-cloud observability, Chaos engineering pipelines, and 99.99% high-availability production clusters.',
+    responsibilities: [
+      'Architect resilient Kubernetes clusters with automated canary rollouts and circuit breakers.',
+      'Implement distributed tracing with OpenTelemetry and Grafana Tempo across microservices.',
+      'Conduct blameless post-mortems and automate infrastructure self-healing runbooks.'
+    ],
+    skills: ['Kubernetes & Helm', 'OpenTelemetry', 'AWS / GCP', 'Terraform', 'Chaos Engineering']
   }
 ];
 
-let blogItems = loadCollection(BLOG_KEY, blogSeedItems);
-let jobItems = loadCollection(JOBS_KEY, jobSeedItems);
+const AUTHOR_AVATARS = {
+  'Alex Kim': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'Sam Patel': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+  'Jordan Lee': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+  'Priya Nair': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+  'Marcus Vance': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+  'David Chen': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+};
+
+function ensureBlogSeeds(blogs) {
+  let modified = false;
+  blogSeedItems.forEach((seed) => {
+    const existing = blogs.find((b) => b.id === seed.id);
+    if (!existing) {
+      blogs.push({ ...seed });
+      modified = true;
+    }
+  });
+
+  const hasPending = blogs.some((b) => b.status === 'pending');
+  if (!hasPending) {
+    const b1 = blogs.find((b) => b.id === 1);
+    if (b1) { b1.status = 'pending'; b1.actionTakenOn = null; b1.feedback = null; modified = true; }
+    const b2 = blogs.find((b) => b.id === 2);
+    if (b2) { b2.status = 'pending'; b2.actionTakenOn = null; b2.feedback = null; modified = true; }
+  }
+
+  if (modified) {
+    saveCollection(BLOG_KEY, blogs);
+  }
+  return blogs;
+}
+
+function ensureJobSeeds(jobs) {
+  let modified = false;
+  jobSeedItems.forEach((seed) => {
+    const existing = jobs.find((j) => j.id === seed.id);
+    if (!existing) {
+      jobs.push({ ...seed });
+      modified = true;
+    }
+  });
+
+  // Ensure pending review jobs exist in moderation queue
+  const hasPending = jobs.some((j) => j.status === 'pending');
+  if (!hasPending) {
+    const j1 = jobs.find((j) => j.id === 1);
+    if (j1) { j1.status = 'pending'; j1.actionTakenOn = null; j1.feedback = null; modified = true; }
+    const j2 = jobs.find((j) => j.id === 2);
+    if (j2) { j2.status = 'pending'; j2.actionTakenOn = null; j2.feedback = null; modified = true; }
+  }
+
+  const hasRejected = jobs.some((j) => j.status === 'rejected');
+  if (!hasRejected) {
+    const j5 = jobs.find((j) => j.id === 5);
+    if (j5) {
+      j5.status = 'rejected';
+      j5.actionTakenOn = 'Aug 03, 2026 · 01:30 PM';
+      j5.feedback = 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.';
+      modified = true;
+    }
+  }
+
+  if (modified) {
+    saveCollection(JOBS_KEY, jobs);
+  }
+  return jobs;
+}
+
+let blogItems = ensureBlogSeeds(loadCollection(BLOG_KEY, blogSeedItems));
+let jobItems = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobSeedItems)));
 let activePendingItem = null; // for quick approve / reject dialogs
 
 const AVATAR_COLORS = ['avatar-color-1', 'avatar-color-2', 'avatar-color-3', 'avatar-color-4', 'avatar-color-5'];
@@ -216,14 +322,6 @@ const STATUS_LABEL = {
   pending: 'Pending Review',
   draft: 'Draft',
   rejected: 'Rejected'
-};
-
-const AUTHOR_AVATARS = {
-  'Alex Kim': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  'Sam Patel': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-  'Jordan Lee': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-  'Priya Nair': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-  'Marcus Vance': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80'
 };
 
 function getAvatarUrl(name, idx = 0) {
@@ -248,6 +346,7 @@ function formatNow() {
   const timePart = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
   return `${datePart} · ${timePart}`;
 }
+window.formatNow = formatNow;
 
 function renderStats() {
   const pendingBlogs = blogItems.filter((b) => b.status === 'pending').length;
@@ -271,15 +370,10 @@ function renderStats() {
 function renderActionCell(type, item) {
   const isPending = item.status === 'pending';
   const isRejected = item.status === 'rejected';
-  const isPublished = item.status === 'published';
 
   const reviewUrl = type === 'blog' 
     ? `add-blog-post.html?mode=review&id=${item.id}`
-    : `add-job-listing.html?mode=review&id=${item.id}`;
-
-  const editUrl = type === 'blog' 
-    ? `add-blog-post.html?mode=edit&id=${item.id}`
-    : `add-job-listing.html?mode=edit&id=${item.id}`;
+    : `add-job-listing.html?mode=preview&id=${item.id}`;
 
   return `
     <div class="table-kebab-wrap">
@@ -304,22 +398,19 @@ function renderActionCell(type, item) {
           </button>
         ` : ''}
 
-        ${isPublished ? `
-          <a href="${editUrl}" class="table-context-menu-item">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit ${type === 'blog' ? 'story' : 'requisition'}
-          </a>
-        ` : ''}
-
         ${isRejected ? `
           <button type="button" class="table-context-menu-item" data-action="view-feedback" data-type="${type}" data-id="${item.id}">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             Rejection notes
           </button>
-          <a href="${editUrl}" class="table-context-menu-item">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-            Edit & resubmit
+          <a href="${reviewUrl}" class="table-context-menu-item item-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Review & take action
           </a>
+          <button type="button" class="table-context-menu-item" data-action="quick-approve" data-type="${type}" data-id="${item.id}" style="color: var(--success);">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><polyline points="20 6 9 17 4 12"/></svg>
+            Approve & publish live
+          </button>
         ` : ''}
       </div>
     </div>
@@ -330,38 +421,55 @@ function renderBlogsTable() {
   const tbody = document.getElementById('blogs-table-body');
   if (!tbody) return;
 
-  // Only show blog items that are pending or rejected in approval requests
-  const moderationBlogs = blogItems.filter((b) => b.status === 'pending' || b.status === 'rejected');
+  // Render only pending review and rejected submissions in moderation queue (approved/published items are not shown here)
+  const moderationBlogs = blogItems
+    .filter((b) => b.status === 'pending' || b.status === 'rejected')
+    .sort((a, b) => {
+      const order = { pending: 1, rejected: 2 };
+      return (order[a.status] || 99) - (order[b.status] || 99);
+    });
 
   if (!moderationBlogs.length) {
     tbody.innerHTML = `
       <tr>
         <td colspan="9" style="text-align: center; color: var(--ink-muted); padding: var(--space-8);">
-          No pending or rejected blog posts in moderation queue.
+          No pending review or rejected blog posts in moderation queue.
         </td>
       </tr>
     `;
     return;
   }
 
-  tbody.innerHTML = moderationBlogs.map((blog, idx) => `
-    <tr data-status="${blog.status}" data-id="${blog.id}" style="cursor: pointer;" title="Click to review or edit story">
-      <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
-      <td class="table-id">POST-${100 + blog.id}</td>
-      <td style="font-weight: 600; color: var(--ink-primary); max-width: 280px;"><span class="cell-truncate-title" title="${blog.title}">${blog.title}</span></td>
-      <td>
-        <div class="table-avatar-cell" style="white-space: nowrap;">
-          <img class="table-avatar-img" src="${getAvatarUrl(blog.author, idx)}" alt="${blog.author}" width="26" height="26">
-          <span style="font-weight: 500; color: var(--ink-primary);">${blog.author}</span>
-        </div>
-      </td>
-      <td><span class="status-badge status-draft" style="white-space: nowrap;">${blog.category}</span></td>
-      <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${blog.submitted}</td>
-      <td><span class="status-badge ${STATUS_BADGE_CLASS[blog.status]}" style="white-space: nowrap;">${STATUS_LABEL[blog.status]}</span></td>
-      <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${blog.actionTakenOn || '—'}</td>
-      <td class="table-actions" style="text-align: right;">${renderActionCell('blog', blog)}</td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = moderationBlogs.map((blog, idx) => {
+    let statusBadgeHtml = `<span class="status-badge ${STATUS_BADGE_CLASS[blog.status] || 'status-pending'}" style="white-space: nowrap;">${STATUS_LABEL[blog.status] || blog.status}</span>`;
+    if (blog.status === 'rejected') {
+      statusBadgeHtml = `
+        <span class="status-badge status-rejected" data-action="view-feedback" data-type="blog" data-id="${blog.id}" title="Click to view rejection notes" style="cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+          Rejected
+          <svg viewBox="0 0 256 256" fill="currentColor" width="11" height="11"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
+        </span>
+      `;
+    }
+
+    return `
+      <tr data-status="${blog.status}" data-id="${blog.id}" style="cursor: pointer;" title="Click to review story">
+        <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+        <td class="table-id">POST-${100 + blog.id}</td>
+        <td style="font-weight: 600; color: var(--ink-primary); max-width: 280px;"><span class="cell-truncate-title" title="${blog.title}">${blog.title}</span></td>
+        <td>
+          <div class="table-avatar-cell" style="white-space: nowrap;">
+            <img class="table-avatar-img" src="${getAvatarUrl(blog.author, idx)}" alt="${blog.author}" width="26" height="26">
+            <span style="font-weight: 500; color: var(--ink-primary);">${blog.author}</span>
+          </div>
+        </td>
+        <td><span class="status-badge status-draft" style="white-space: nowrap;">${blog.category}</span></td>
+        <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${blog.submitted}</td>
+        <td>${statusBadgeHtml}</td>
+        <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${blog.actionTakenOn || '—'}</td>
+        <td class="table-actions" style="text-align: right;">${renderActionCell('blog', blog)}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 const DEFAULT_JOB_EXPIRIES = {
@@ -410,14 +518,19 @@ function renderJobsTable() {
   const tbody = document.getElementById('jobs-table-body');
   if (!tbody) return;
 
-  // Only show job items that are pending or rejected in approval requests
-  const moderationJobs = jobItems.filter((j) => j.status === 'pending' || j.status === 'rejected');
+  // Render only pending review and rejected submissions in moderation queue (approved/published items are not shown here)
+  const moderationJobs = jobItems
+    .filter((j) => j.status === 'pending' || j.status === 'rejected')
+    .sort((a, b) => {
+      const order = { pending: 1, rejected: 2 };
+      return (order[a.status] || 99) - (order[b.status] || 99);
+    });
 
   if (!moderationJobs.length) {
     tbody.innerHTML = `
       <tr>
         <td colspan="12" style="text-align: center; color: var(--ink-muted); padding: var(--space-8);">
-          No pending or rejected job requisitions in moderation queue.
+          No pending review or rejected job requisitions in moderation queue.
         </td>
       </tr>
     `;
@@ -425,12 +538,36 @@ function renderJobsTable() {
   }
 
   tbody.innerHTML = moderationJobs.map((job, idx) => {
-    const targetUrl = job.status === 'pending'
-      ? `add-job-listing.html?mode=review&id=${job.id}`
-      : `add-job-listing.html?mode=edit&id=${job.id}`;
+    const reviewUrl = `add-job-listing.html?mode=preview&id=${job.id}`;
+
+    let statusBadgeHtml = `<span class="status-badge ${STATUS_BADGE_CLASS[job.status] || 'status-pending'}" style="white-space: nowrap;">${STATUS_LABEL[job.status] || job.status}</span>`;
+    if (job.status === 'rejected') {
+      statusBadgeHtml = `
+        <span class="status-badge status-rejected" data-action="view-feedback" data-type="job" data-id="${job.id}" title="Click to view rejection notes" style="cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+          Rejected
+          <svg viewBox="0 0 256 256" fill="currentColor" width="11" height="11"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
+        </span>
+      `;
+    }
+
+    let jdButtonHtml = `
+      <a href="${reviewUrl}" class="btn btn-sm btn-secondary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
+        <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+        Review & take action
+      </a>
+    `;
+
+    if (job.status === 'rejected') {
+      jdButtonHtml = `
+        <button type="button" class="btn btn-sm btn-secondary" data-action="view-feedback" data-type="job" data-id="${job.id}" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; color: var(--danger); border-color: #FECACA;">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Rejection notes
+        </button>
+      `;
+    }
 
     return `
-      <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to review or edit job requisition">
+      <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to review job requisition">
         <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
         <td class="table-id">JOB-${100 + job.id}</td>
         <td style="font-weight: 600; color: var(--ink-primary); max-width: 240px;">
@@ -438,13 +575,10 @@ function renderJobsTable() {
         </td>
         <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${job.submitted}</td>
         <td style="color: var(--ink-secondary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${formatExpiryDate(job.expiryDate)}</td>
-        <td><span class="status-badge ${STATUS_BADGE_CLASS[job.status]}" style="white-space: nowrap;">${STATUS_LABEL[job.status]}</span></td>
+        <td>${statusBadgeHtml}</td>
         <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
         <td style="text-align: center; white-space: nowrap;">
-          <a href="${targetUrl}" class="btn btn-sm btn-secondary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px;">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
-            Review & take action
-          </a>
+          ${jdButtonHtml}
         </td>
         <td style="white-space: nowrap;">${job.location || 'Remote'}</td>
         <td><span style="font-size: var(--text-2xs); color: var(--ink-secondary); font-weight: 500; white-space: nowrap;">${job.type}</span></td>
@@ -456,10 +590,12 @@ function renderJobsTable() {
 }
 
 function updateRequestsBadge() {
+  const badge = document.getElementById('requests-count-badge');
+  if (!badge) return;
   const activePanel = document.querySelector('.tabs-panel:not(.hidden)');
   const list = activePanel && activePanel.id === 'panel-jobs' ? jobItems : blogItems;
   const pendingCount = list.filter((item) => item.status === 'pending').length;
-  document.getElementById('requests-count-badge').textContent = `${pendingCount} pending`;
+  badge.textContent = `${pendingCount} pending`;
 }
 
 function findItem(type, id) {
@@ -528,8 +664,8 @@ function initTabs() {
 }
 
 function refreshAll() {
-  blogItems = loadCollection(BLOG_KEY, blogSeedItems);
-  jobItems = ensureJobExpiries(loadCollection(JOBS_KEY, jobSeedItems));
+  blogItems = ensureBlogSeeds(loadCollection(BLOG_KEY, blogSeedItems));
+  jobItems = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobSeedItems)));
   renderBlogsTable();
   renderJobsTable();
   renderStats();
@@ -589,17 +725,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 5. Row click navigation (smart navigation on row click)
+    // 5. Row click navigation (smart navigation to review mode on row click)
     const blogRow = e.target.closest('#blogs-table-body tr[data-id]');
     if (blogRow && !e.target.closest('a, button, .table-kebab-wrap, .table-context-menu')) {
       const id = Number(blogRow.dataset.id);
       const blog = blogItems.find((b) => b.id === id);
       if (blog) {
-        if (blog.status === 'pending') {
-          window.location.href = `add-blog-post.html?mode=review&id=${id}`;
-        } else {
-          window.location.href = `add-blog-post.html?mode=edit&id=${id}`;
-        }
+        window.location.href = `add-blog-post.html?mode=review&id=${id}`;
       }
       return;
     }
@@ -609,11 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const id = Number(jobRow.dataset.id);
       const job = jobItems.find((j) => j.id === id);
       if (job) {
-        if (job.status === 'pending') {
-          window.location.href = `add-job-listing.html?mode=review&id=${id}`;
-        } else {
-          window.location.href = `add-job-listing.html?mode=edit&id=${id}`;
-        }
+        window.location.href = `add-job-listing.html?mode=preview&id=${id}`;
       }
       return;
     }
@@ -629,13 +757,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Confirm Quick Approve Modal
-  document.getElementById('confirm-quick-approve-btn')?.addEventListener('click', () => {
+  function confirmQuickApprove() {
     if (!activePendingItem) return;
     const { type, id } = activePendingItem;
     const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
     let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
-    const item = list.find((it) => it.id === id);
+    let item = list.find((it) => Number(it.id) === Number(id) || String(it.id) === String(id));
+    if (!item && activePendingItem.item) {
+      item = activePendingItem.item;
+    }
     if (item) {
       item.status = 'published';
       item.actionTakenOn = formatNow();
@@ -644,24 +774,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     closeModal('quick-approve-modal');
     refreshAll();
-    showToast(`Approved & published "${item.title}" live!`, 'success');
-  });
+    const title = item ? item.title : 'Item';
+    const typeLabel = type === 'blog' ? 'Blog post' : 'Job requisition';
+    showToast(`${typeLabel} "${title}" approved and published live!`, 'success');
+  }
 
-  // Confirm Quick Reject Modal
-  document.getElementById('confirm-quick-reject-btn')?.addEventListener('click', () => {
+  function confirmQuickReject() {
     if (!activePendingItem) return;
     const reasonInput = document.getElementById('quick-reject-reason');
-    const reason = reasonInput.value.trim();
+    const reason = reasonInput ? reasonInput.value.trim() : '';
     if (!reason) {
-      document.getElementById('quick-reject-error').style.display = 'block';
-      reasonInput.focus();
+      const err = document.getElementById('quick-reject-error');
+      if (err) err.style.display = 'block';
+      reasonInput?.focus();
       return;
     }
 
     const { type, id } = activePendingItem;
     const key = type === 'blog' ? BLOG_KEY : JOBS_KEY;
     let list = loadCollection(key, type === 'blog' ? blogSeedItems : jobSeedItems);
-    const item = list.find((it) => it.id === id);
+    let item = list.find((it) => Number(it.id) === Number(id) || String(it.id) === String(id));
+    if (!item && activePendingItem.item) {
+      item = activePendingItem.item;
+    }
     if (item) {
       item.status = 'rejected';
       item.actionTakenOn = formatNow();
@@ -670,6 +805,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     closeModal('quick-reject-modal');
     refreshAll();
-    showToast(`Rejected "${item.title}" and saved feedback notes.`, 'error');
+    const title = item ? item.title : 'Item';
+    const typeLabel = type === 'blog' ? 'Blog post' : 'Job requisition';
+    showToast(`${typeLabel} "${title}" has been rejected.`, 'error');
+  }
+
+  // Expose to window for inline onclick attributes
+  window.confirmQuickApprove = confirmQuickApprove;
+  window.confirmQuickReject = confirmQuickReject;
+
+  // Direct element listeners
+  document.getElementById('confirm-quick-approve-btn')?.addEventListener('click', confirmQuickApprove);
+  document.getElementById('confirm-quick-reject-btn')?.addEventListener('click', confirmQuickReject);
+
+  // Document-level delegation fallback
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('#confirm-quick-approve-btn')) {
+      e.preventDefault();
+      confirmQuickApprove();
+      return;
+    }
+    if (e.target.closest('#confirm-quick-reject-btn')) {
+      e.preventDefault();
+      confirmQuickReject();
+      return;
+    }
   });
 });
