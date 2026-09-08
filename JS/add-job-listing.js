@@ -165,7 +165,7 @@ const sampleAutoFillPresets = [
   {
     title: 'Senior Cybersecurity Analyst',
     department: 'Cybersecurity',
-    location: 'Remote',
+    location: 'Bangalore',
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
     salary: '₹18,00,000 – ₹24,00,000 / yr',
@@ -182,7 +182,7 @@ const sampleAutoFillPresets = [
   {
     title: 'Senior AI & LLM Systems Engineer',
     department: 'AI & Advanced Tech',
-    location: 'Alhambra, CA',
+    location: 'Bangalore',
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '₹25,00,000 – ₹35,00,000 / yr',
@@ -199,7 +199,7 @@ const sampleAutoFillPresets = [
   {
     title: 'Principal Cloud Solutions Architect',
     department: 'Cloud Services',
-    location: 'Remote',
+    location: 'Bangalore',
     type: 'Full-time',
     experience: 'Staff / Lead (8+ Yrs)',
     salary: '₹35,00,000 – ₹45,00,000 / yr',
@@ -222,7 +222,7 @@ const cursourcePresets = {
   'cs-2': {
     title: 'Lead Full-Stack React / Node Engineer',
     department: 'Engineering',
-    location: 'Alhambra, CA',
+    location: 'Bangalore',
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
     salary: '₹22,00,000 – ₹30,00,000 / yr',
@@ -622,7 +622,7 @@ function saveJobRequisition(status = 'pending') {
   }
 
   const dept = document.getElementById('field-department').value;
-  const location = document.getElementById('field-location').value.trim() || 'Remote';
+  const location = document.getElementById('field-location').value.trim() || 'Bangalore';
   const type = document.getElementById('field-type').value;
   const experience = document.getElementById('field-experience').value;
   const salary = getCompensationValue();
@@ -853,8 +853,12 @@ function setupPreviewMode(job) {
     document.getElementById('nav-link-jobs')?.classList.remove('active');
     document.getElementById('nav-link-approvals')?.classList.add('active');
 
-    document.getElementById('preview-back-approvals-btn')?.classList.remove('hidden');
-    document.getElementById('preview-back-btn')?.classList.add('hidden');
+    const backIconBtn = document.getElementById('review-back-icon-btn');
+    if (backIconBtn) {
+      backIconBtn.href = 'approval-requests.html';
+      backIconBtn.title = 'Back to approval requests';
+      backIconBtn.classList.remove('hidden');
+    }
 
     // Smartly show decision action buttons only for pending review requisitions (hide when rejected)
     if (job.status === 'rejected') {
@@ -890,22 +894,27 @@ function setupPreviewMode(job) {
     const currBreadcrumb = document.getElementById('breadcrumb-current');
     if (currBreadcrumb) currBreadcrumb.textContent = 'View Job Description';
 
-    document.getElementById('preview-back-approvals-btn')?.classList.add('hidden');
-    document.getElementById('preview-back-btn')?.classList.remove('hidden');
+    const backIconBtn = document.getElementById('review-back-icon-btn');
+    if (backIconBtn) {
+      backIconBtn.href = 'job-listings.html';
+      backIconBtn.title = 'Back to job listings';
+      backIconBtn.classList.remove('hidden');
+    }
+
     document.getElementById('preview-reject-btn')?.classList.add('hidden');
     document.getElementById('preview-approve-btn')?.classList.add('hidden');
     document.getElementById('job-preview-feedback-banner')?.classList.add('hidden');
   }
 
-  // Hide editable form and other header action toolbars
+  // Hide editable form and normal header actions
   document.getElementById('job-creation-canvas')?.classList.add('hidden');
   document.getElementById('normal-header-actions')?.classList.add('hidden');
   document.getElementById('review-header-actions')?.classList.add('hidden');
-  document.getElementById('review-back-icon-btn')?.classList.add('hidden');
 
-  // Show read-only preview surface and preview header actions
+  // Show read-only preview surface, preview header actions, and edit pencil icon
   document.getElementById('job-preview-surface')?.classList.remove('hidden');
   document.getElementById('preview-header-actions')?.classList.remove('hidden');
+  document.getElementById('preview-edit-btn')?.classList.remove('hidden');
 
   // Header Title and Subtext
   document.getElementById('job-header-heading').textContent = job.title;
@@ -1012,6 +1021,20 @@ function setupEditMode(job) {
     pillWrap.innerHTML = `<span class="job-status-pill ${job.status}">${statusLabels[job.status] || job.status}</span>`;
   }
 
+  // Ensure preview surface is hidden and edit canvas is visible
+  document.getElementById('job-preview-surface')?.classList.add('hidden');
+  document.getElementById('job-creation-canvas')?.classList.remove('hidden');
+  document.getElementById('preview-header-actions')?.classList.add('hidden');
+  document.getElementById('normal-header-actions')?.classList.remove('hidden');
+  document.getElementById('preview-edit-btn')?.classList.add('hidden');
+
+  const backIconBtn = document.getElementById('review-back-icon-btn');
+  if (backIconBtn) {
+    backIconBtn.href = (job.status === 'pending' || job.status === 'rejected') ? 'approval-requests.html' : 'job-listings.html';
+    backIconBtn.title = (job.status === 'pending' || job.status === 'rejected') ? 'Back to approval requests' : 'Back to job listings';
+    backIconBtn.classList.remove('hidden');
+  }
+
   // Reveal delete button in normal actions
   document.getElementById('delete-job-btn')?.classList.remove('hidden');
 
@@ -1021,8 +1044,10 @@ function setupEditMode(job) {
 
 function populateFormFields(job) {
   document.getElementById('job-title-input').value = job.title || '';
+  const jobIdEl = document.getElementById('job-id-input');
+  if (jobIdEl) jobIdEl.value = `JOB-${100 + job.id}`;
   if (job.department) document.getElementById('field-department').value = job.department;
-  document.getElementById('field-location').value = job.location || 'Remote';
+  document.getElementById('field-location').value = job.location || 'Bangalore';
   document.getElementById('field-type').value = job.type || 'Full-time';
   document.getElementById('field-experience').value = job.experience || 'Mid-Level (3–5 Yrs)';
   populateCompensationFields(job.salary || '₹12,00,000 – ₹18,00,000 / yr');
@@ -1068,6 +1093,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (targetId != null) {
     editingJob = jobListings.find((j) => j.id === targetId);
+  }
+
+  const nextId = jobListings.length ? Math.max(...jobListings.map((j) => j.id)) + 1 : 1;
+  const jobIdEl = document.getElementById('job-id-input');
+  if (jobIdEl && !editingJob) {
+    jobIdEl.value = `JOB-${100 + nextId}`;
   }
 
   if (mode === 'preview' || mode === 'review' || (editingJob && (editingJob.status === 'pending' || editingJob.status === 'rejected') && mode !== 'edit')) {

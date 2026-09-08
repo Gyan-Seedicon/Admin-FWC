@@ -124,9 +124,10 @@ const blogSeedItems = [
   }
 ];
 
+const DEFAULT_PRESET_COVER = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80';
 let currentPost = null;
 let isReviewMode = false;
-let coverImageUrl = null;
+let coverImageUrl = DEFAULT_PRESET_COVER;
 
 function formatNow() {
   const now = new Date();
@@ -190,7 +191,7 @@ function setCoverImage(url) {
 
   if (emptyPrompt) emptyPrompt.classList.add('hidden');
   if (previewBox) previewBox.classList.remove('hidden');
-  if (previewImg) previewImg.src = url;
+  if (previewImg && url) previewImg.src = url;
 
   updateWordStats();
 }
@@ -218,11 +219,13 @@ function initCoverUploader() {
     fileInput?.click();
   });
 
-  changeBtn?.addEventListener('click', () => {
+  changeBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
     fileInput?.click();
   });
 
-  removeBtn?.addEventListener('click', () => {
+  removeBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
     removeCoverImage();
   });
 
@@ -794,13 +797,22 @@ document.addEventListener('DOMContentLoaded', () => {
       catSelect.value = currentPost.category;
     }
 
-    if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
+    if (currentPost.coverImage !== undefined) {
+      if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
+      else removeCoverImage();
+    } else {
+      setCoverImage(DEFAULT_PRESET_COVER);
+    }
+
     if (currentPost.content) editor.innerHTML = currentPost.content;
     else if (currentPost.sections && currentPost.sections.length) {
       editor.innerHTML = currentPost.sections.map((s) => `<h2>${s.heading}</h2><p>${s.content}</p>`).join('');
     }
 
     updateWordStats();
+  } else {
+    // New blog post creation mode: initialize with preset cover banner
+    setCoverImage(DEFAULT_PRESET_COVER);
   }
 
   // Set default starting paragraph if empty

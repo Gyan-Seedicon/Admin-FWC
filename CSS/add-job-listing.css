@@ -52,6 +52,28 @@
   border-color: var(--border-hover);
 }
 
+.header-icon-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-card);
+  background: var(--bg-card);
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-smooth);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.header-icon-action-btn:hover {
+  background: #EFF6FF;
+  color: var(--brand-blue);
+  border-color: #BFDBFE;
+}
+
 .job-header-heading {
   font-size: 16px;
   font-weight: var(--weight-bold);
@@ -166,21 +188,21 @@
 }
 
 /* --------------------------------------------------------------------------
-   03. Single Unified Card Container (Google Form Clean Unified Layout)
+   03. Single Unified Card Container (Generous Enterprise Spacing)
    -------------------------------------------------------------------------- */
 .job-unified-card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  padding: 26px 30px;
+  padding: 32px 36px;
   box-shadow: var(--shadow-card);
   margin-bottom: 40px;
 }
 
 .form-section {
-  margin-bottom: 22px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 28px;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .form-section:last-child {
@@ -193,14 +215,14 @@
   font-size: 13.5px;
   font-weight: var(--weight-semibold);
   color: var(--ink-primary);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .form-label {
   font-size: 13px;
   font-weight: var(--weight-semibold);
   color: var(--ink-primary);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -224,12 +246,25 @@
   border: 1px solid var(--border-card);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: border-color var(--duration-fast) var(--ease-smooth), box-shadow var(--duration-fast) var(--ease-smooth);
 }
 
 .job-unified-card .form-input,
 .job-unified-card .form-select {
   height: 40px;
+}
+
+.job-unified-card .form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 15px 15px;
+  padding-right: 36px;
+  cursor: pointer;
 }
 
 .job-unified-card .form-input:focus,
@@ -257,12 +292,19 @@
 .job-meta-row-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 22px 18px;
+}
+
+.col-span-2 {
+  grid-column: span 2;
 }
 
 @media (max-width: 768px) {
   .job-meta-row-grid {
     grid-template-columns: 1fr;
+  }
+  .col-span-2 {
+    grid-column: span 1;
   }
 }
 
@@ -302,10 +344,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 18px;
-  background: var(--bg-hover);
+  background: #FFFFFF;
   border: 1px dashed var(--border-card);
   border-radius: var(--radius-md);
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   transition: all var(--duration-fast) var(--ease-smooth);
 }
 
@@ -602,8 +645,8 @@
 }
 
 .job-preview-header {
-  border-bottom: 1px solid var(--border-card);
-  padding-bottom: 24px;
+  border-bottom: none;
+  padding-bottom: 0;
   margin-bottom: 28px;
 }
 
@@ -688,6 +731,8 @@
 
 .job-preview-section {
   margin-bottom: 28px;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .job-preview-section:last-child {
@@ -714,31 +759,25 @@
 }
 
 .job-preview-list {
-  list-style: none;
-  padding: 0;
+  list-style: disc;
+  padding-left: 20px;
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  color: var(--ink-secondary);
 }
 
 .job-preview-list li {
-  position: relative;
-  padding-left: 24px;
+  position: static;
+  padding-left: 0;
   font-size: 13.5px;
   line-height: 1.6;
   color: var(--ink-secondary);
 }
 
 .job-preview-list li::before {
-  content: "";
-  position: absolute;
-  left: 4px;
-  top: 8px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--brand-blue);
+  display: none;
 }
 
 .job-preview-skills-wrap {

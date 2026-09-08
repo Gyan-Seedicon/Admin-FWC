@@ -203,11 +203,11 @@
           </button>
           <button class="btn btn-danger" id="review-reject-btn" type="button" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
-            Reject submission
+            Reject
           </button>
           <button class="btn btn-success" id="review-approve-btn" type="button" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
-            Approve & publish live
+            Approve
           </button>
         </div>
       </div>
@@ -226,16 +226,33 @@
 
       <!-- Banner / Cover Image Section -->
       <section class="story-cover-section" id="story-cover-section">
-        <div class="story-cover-empty" id="cover-empty-prompt">
-          <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
-          <span>Add a cover banner image</span>
-          <input type="file" id="cover-file-input" accept="image/*" style="display: none;">
-        </div>
-        <div class="story-cover-preview hidden" id="cover-preview-box">
-          <img id="cover-preview-img" src="" alt="Story Cover">
+        <input type="file" id="cover-file-input" accept="image/*" style="display: none;">
+
+        <!-- Active Cover Banner Preview Box (Preset Image Visible By Default) -->
+        <div class="story-cover-preview" id="cover-preview-box">
+          <img id="cover-preview-img" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80" alt="Blog Post Cover Banner">
           <div class="story-cover-actions">
-            <button type="button" id="change-cover-btn">Change</button>
-            <button type="button" id="remove-cover-btn">Remove</button>
+            <button type="button" class="story-cover-action-btn" id="change-cover-btn" title="Change cover image">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+              <span>Change cover</span>
+            </button>
+            <button type="button" class="story-cover-action-btn story-cover-action-danger" id="remove-cover-btn" title="Remove cover image">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+              <span>Remove</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State / Placeholder Banner Dropzone (Shown if removed) -->
+        <div class="story-cover-empty hidden" id="cover-empty-prompt" role="button" tabindex="0">
+          <div class="story-cover-empty-content">
+            <div class="story-cover-empty-icon">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="20" height="20"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+            </div>
+            <div class="story-cover-empty-text">
+              <span class="story-cover-empty-title">Add a cover banner image</span>
+              <span class="story-cover-empty-subtext">Click to upload a banner image for this story (16:9 recommended)</span>
+            </div>
           </div>
         </div>
       </section>

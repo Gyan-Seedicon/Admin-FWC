@@ -139,6 +139,12 @@
   display: none !important;
 }
 
+#panel-job-description {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 /* Candidate Table Cell Elements */
 .candidate-cell {
   display: inline-flex;

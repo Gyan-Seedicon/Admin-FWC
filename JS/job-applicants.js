@@ -585,12 +585,7 @@ function initJobContext() {
         'Champion code quality, automated test coverage, and documentation standards.'
       ];
     }
-    jdRespEl.innerHTML = items.map((item) => `
-      <li class="job-preview-list-item">
-        <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></svg>
-        <span>${item}</span>
-      </li>
-    `).join('');
+    jdRespEl.innerHTML = items.map((item) => `<li>${item.replace(/^[•\-]\s*/, '')}</li>`).join('');
   }
 
   const jdSkillsEl = document.getElementById('jd-preview-skills');

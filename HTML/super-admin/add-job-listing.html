@@ -174,13 +174,17 @@
       <!-- Top Header Title Area & Action Bar -->
       <div class="job-header-toolbar">
         <div class="job-header-titles">
-          <!-- Back button (shown in Review mode) -->
+          <!-- Back button (placed on the left of Cybersecurity Analyst) -->
           <a href="approval-requests.html" class="header-back-btn hidden" id="review-back-icon-btn" title="Back to approval requests" aria-label="Back">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
           </a>
           <div>
             <div class="flex items-center gap-2">
               <h2 class="job-header-heading" id="job-header-heading">Create new job posting</h2>
+              <!-- Pencil icon edit button placed right next to Cybersecurity analyst header -->
+              <button class="header-icon-action-btn hidden" id="preview-edit-btn" type="button" title="Edit requisition" aria-label="Edit requisition">
+                <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg>
+              </button>
               <span id="job-status-pill-wrap"></span>
             </div>
             <span class="job-header-subtext" id="job-header-subtext">Enter requisition details and requirements for approval.</span>
@@ -191,10 +195,6 @@
         <div class="flex items-center gap-2" id="normal-header-actions">
           <button class="btn btn-secondary btn-icon-only" id="auto-fill-btn" type="button" title="Autofill sample requisition" aria-label="Autofill sample requisition" style="color: var(--brand-blue); border-color: var(--border-card); width: 36px; height: 36px;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M215.79,118.17a8,8,0,0,0-7.79-6.17H152V40a8,8,0,0,0-13.66-5.66l-96,96a8,8,0,0,0,5.66,13.66H104v72a8,8,0,0,0,13.66,5.66l96-96A8,8,0,0,0,215.79,118.17ZM120,200.69V136a8,8,0,0,0-8-8H59.31l72-72V120a8,8,0,0,0,8,8h52.69Z"/></svg>
-          </button>
-          <button class="btn btn-cursource" id="import-cursource-btn" type="button" title="Import requisition from CurSource ATS">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-            Import from CurSource
           </button>
           <button class="btn btn-secondary" id="save-draft-btn" type="button">Save draft</button>
           <button class="btn btn-secondary hidden" id="delete-job-btn" type="button" style="color: var(--danger); border-color: var(--border-subtle);" title="Delete job posting">
@@ -213,37 +213,37 @@
           <button class="btn btn-secondary" id="save-changes-btn" type="button">Save changes</button>
           <button class="btn btn-danger" id="review-reject-btn" type="button" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
-            Reject requisition
+            Reject
           </button>
           <button class="btn btn-success" id="review-approve-btn" type="button" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
             <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
-            Approve & publish live
+            Approve
           </button>
         </div>
 
-        <!-- Preview / Read-Only Action Buttons -->
+        <!-- Preview / Read-Only Action Buttons (Positioned to the right in horizontal layout) -->
         <div class="flex items-center gap-2 hidden" id="preview-header-actions">
-          <a href="approval-requests.html" class="btn btn-secondary hidden" id="preview-back-approvals-btn" style="text-decoration: none;">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
-            Approval requests
-          </a>
-          <a href="job-listings.html" class="btn btn-secondary" id="preview-back-btn" style="text-decoration: none;">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
-            Back to listings
-          </a>
-          <button class="btn btn-secondary" id="preview-edit-btn" type="button">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg>
-            Edit Requisition
-          </button>
           <button class="btn btn-danger hidden" id="preview-reject-btn" type="button" onclick="openRejectJobModal()" style="color: var(--danger); border: 1px solid #FECACA; background: #FEF2F2;">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
-            Reject requisition
+            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+            Reject
           </button>
           <button class="btn btn-success hidden" id="preview-approve-btn" type="button" onclick="openApproveJobModal()" style="background: #10B981; color: #FFFFFF; border: 1px solid #10B981; font-weight: 600;">
-            <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15" style="margin-right: 4px;"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
-            Approve & publish live
+            <svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+            Approve
           </button>
         </div>
+      </div>
+
+      <!-- Rejection Feedback Banner for Rejected Requisitions (placed below Main header outside bounding box) -->
+      <div class="rejection-feedback-banner hidden" id="job-preview-feedback-banner" style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius-md); padding: 14px 16px; margin: 0 0 16px 0;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16" style="color: var(--danger);"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
+            <span style="font-size: var(--text-xs); font-weight: 700; color: #991B1B; text-transform: uppercase; letter-spacing: 0.5px;">Rejection Reason & Required Changes</span>
+          </div>
+          <span style="font-size: var(--text-2xs); color: #991B1B; font-weight: 500;" id="job-preview-feedback-date"></span>
+        </div>
+        <p style="font-size: var(--text-xs); color: #7F1D1D; line-height: 1.5; margin: 0;" id="job-preview-feedback-text"></p>
       </div>
 
       <!-- Read-Only Job Description Preview Surface -->
@@ -285,18 +285,6 @@
           </div>
         </div>
 
-        <!-- Rejection Feedback Banner for Rejected Requisitions -->
-        <div class="job-preview-section rejection-feedback-banner hidden" id="job-preview-feedback-banner" style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius-md); padding: 14px 16px; margin: 16px 24px 0 24px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16" style="color: var(--danger);"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></svg>
-              <span style="font-size: var(--text-xs); font-weight: 700; color: #991B1B; text-transform: uppercase; letter-spacing: 0.5px;">Rejection Reason & Required Changes</span>
-            </div>
-            <span style="font-size: var(--text-2xs); color: #991B1B; font-weight: 500;" id="job-preview-feedback-date"></span>
-          </div>
-          <p style="font-size: var(--text-xs); color: #7F1D1D; line-height: 1.5; margin: 0;" id="job-preview-feedback-text"></p>
-        </div>
-
         <div class="job-preview-section">
           <h3 class="job-preview-section-title">Role Overview & Mission</h3>
           <p class="job-preview-overview-text" id="preview-overview-text"></p>
@@ -329,15 +317,22 @@
       <!-- Smart Editable Requisition Form (Single Unified Container) -->
       <form id="job-creation-canvas" class="job-unified-card" novalidate>
         
-        <!-- Section 1: Role Title -->
+        <!-- Section 1: Role Title & Job ID -->
         <div class="form-section">
-          <label class="form-label" for="job-title-input">Role title <span class="form-required">*</span></label>
-          <input class="form-input" type="text" id="job-title-input" placeholder="e.g. Senior Cybersecurity Analyst" required autofocus>
+          <div class="job-meta-row-grid">
+            <div class="form-group col-span-2" style="margin-bottom: 0;">
+              <label class="form-label" for="job-title-input">Role title <span class="form-required">*</span></label>
+              <input class="form-input" type="text" id="job-title-input" placeholder="e.g. Senior Cybersecurity Analyst" required autofocus>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="job-id-input">Job ID</label>
+              <input class="form-input" type="text" id="job-id-input" placeholder="JOB-107" value="JOB-107" readonly style="background: #FFFFFF; font-family: monospace; font-weight: 600; color: var(--ink-secondary);">
+            </div>
+          </div>
         </div>
 
-        <!-- Section 2: Position Metadata Grid -->
+        <!-- Section 2: Position Details Grid -->
         <div class="form-section">
-          <div class="form-section-title">Position metadata</div>
           <div class="job-meta-row-grid">
             <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label" for="field-department">Department <span class="form-required">*</span></label>
@@ -354,7 +349,7 @@
 
             <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label" for="field-location">Location <span class="form-required">*</span></label>
-              <input class="form-input" type="text" id="field-location" placeholder="e.g. Remote or Alhambra, CA" value="Remote" required>
+              <input class="form-input" type="text" id="field-location" placeholder="e.g. Bangalore" value="Bangalore" required>
             </div>
 
             <div class="form-group" style="margin-bottom: 0;">
