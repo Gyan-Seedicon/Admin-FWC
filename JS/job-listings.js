@@ -169,6 +169,7 @@ function renderStats() {
 }
 
 function renderActionCell(job) {
+  const previewUrl = `add-job-listing.html?mode=preview&id=${job.id}`;
   const editUrl = `add-job-listing.html?mode=edit&id=${job.id}`;
 
   return `
@@ -178,6 +179,10 @@ function renderActionCell(job) {
       </button>
 
       <div class="table-context-menu">
+        <a href="${previewUrl}" class="table-context-menu-item">
+          <svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+          View JD
+        </a>
         <a href="${editUrl}" class="table-context-menu-item">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
           Edit requisition
@@ -245,7 +250,7 @@ function renderTable(items) {
   }
 
   tbody.innerHTML = items.map((job, idx) => {
-    const editUrl = `add-job-listing.html?mode=edit&id=${job.id}`;
+    const jdUrl = `add-job-listing.html?mode=preview&id=${job.id}`;
     return `
     <tr data-status="${job.status}" data-id="${job.id}" style="cursor: pointer;" title="Click to view candidates applied for ${job.title}">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
@@ -264,7 +269,7 @@ function renderTable(items) {
       </td>
       <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${job.actionTakenOn || '—'}</td>
       <td style="text-align: center; white-space: nowrap;">
-        <a href="${editUrl}" class="btn btn-sm btn-secondary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; text-decoration: none;">
+        <a href="${jdUrl}" class="btn btn-sm btn-secondary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; text-decoration: none;">
           <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13" style="color: var(--brand-blue);"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
           View JD
         </a>
@@ -359,12 +364,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 2. View JD Button -> Edit Requisition
+    // 2. View JD Button -> View Job Description Preview
     const jdBtn = e.target.closest('[data-action="view-jd"]');
     if (jdBtn) {
       closeAllContextMenus();
       const id = Number(jdBtn.dataset.id);
-      window.location.href = `add-job-listing.html?mode=edit&id=${id}`;
+      window.location.href = `add-job-listing.html?mode=preview&id=${id}`;
       return;
     }
 

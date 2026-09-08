@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Admin Management — Access Control
+   Admin Management — Access Control & Role Governance
    ========================================================================== */
 
 const ADMIN_KEY = 'fwc-admins';
@@ -7,54 +7,52 @@ const ADMIN_KEY = 'fwc-admins';
 const adminSeedData = [
   {
     id: 1,
-    name: 'Alex Kim',
-    email: 'alex.kim@fwc.com',
-    department: 'Content & Marketing',
-    directAccess: true,
+    name: 'Taylor Brooks',
+    email: 'taylor.brooks@fwc.com',
+    role: 'Super admin',
     dateAdded: 'Jan 15, 2026'
   },
   {
     id: 2,
-    name: 'Sam Patel',
-    email: 'sam.patel@fwc.com',
-    department: 'Engineering',
-    directAccess: false,
+    name: 'Alex Kim',
+    email: 'alex.kim@fwc.com',
+    role: 'Content admin',
     dateAdded: 'Feb 02, 2026'
   },
   {
     id: 3,
-    name: 'Jordan Lee',
-    email: 'jordan.lee@fwc.com',
-    department: 'People Ops',
-    directAccess: true,
+    name: 'Priya Nair',
+    email: 'priya.nair@fwc.com',
+    role: 'Content admin',
     dateAdded: 'Feb 18, 2026'
   },
   {
     id: 4,
-    name: 'Priya Nair',
-    email: 'priya.nair@fwc.com',
-    department: 'Technology Consulting',
-    directAccess: true,
+    name: 'Sam Patel',
+    email: 'sam.patel@fwc.com',
+    role: 'Analyst',
     dateAdded: 'Mar 01, 2026'
   },
   {
     id: 5,
     name: 'Marcus Vance',
     email: 'marcus.vance@fwc.com',
-    department: 'Cybersecurity',
-    directAccess: false,
+    role: 'Analyst',
     dateAdded: 'Apr 10, 2026'
   }
 ];
 
-let admins = loadCollection(ADMIN_KEY, adminSeedData);
-let pendingToggle = null;
+let admins = [];
+let pendingRevoke = null;
 
 const ADMIN_AVATARS = {
+  'Taylor Brooks': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+  'Alex Kim': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
   'Elena Rostova': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
   'David Chen': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
   'Sarah Jenkins': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
   'Priya Nair': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+  'Sam Patel': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
   'Marcus Vance': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80'
 };
 
@@ -70,19 +68,43 @@ function getAvatarUrl(name, idx = 0) {
   return fallback[idx % fallback.length];
 }
 
-function initials(name) {
-  return (name || '').split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase();
+function getRoleBadge(role) {
+  const r = (role || '').trim();
+  if (r === 'Super admin') {
+    return '<span class="badge-role badge-role-super">Super admin</span>';
+  }
+  if (r === 'Content admin') {
+    return '<span class="badge-role badge-role-content">Content admin</span>';
+  }
+  if (r === 'Analyst') {
+    return '<span class="badge-role badge-role-analyst">Analyst</span>';
+  }
+  return `<span class="badge-role badge-role-content">${escapeHtml(r || 'Content admin')}</span>`;
 }
 
 function renderStats() {
-  const grantedCount = admins.filter((a) => a.directAccess).length;
-  const deniedCount = admins.filter((a) => !a.directAccess).length;
-  const depts = new Set(admins.map((a) => a.department)).size;
+  const superCount = admins.filter((a) => a.role === 'Super admin').length;
+  const contentCount = admins.filter((a) => a.role === 'Content admin').length;
+  const analystCount = admins.filter((a) => a.role === 'Analyst').length;
 
-  document.getElementById('stat-total-admins').textContent = admins.length;
-  document.getElementById('stat-granted-admins').textContent = grantedCount;
-  document.getElementById('stat-denied-admins').textContent = deniedCount;
-  document.getElementById('stat-departments').textContent = depts;
+  const totalEl = document.getElementById('stat-total-admins');
+  const superEl = document.getElementById('stat-super-admins');
+  const contentEl = document.getElementById('stat-content-admins');
+  const analystEl = document.getElementById('stat-analysts');
+
+  if (totalEl) totalEl.textContent = admins.length;
+  if (superEl) superEl.textContent = superCount;
+  if (contentEl) contentEl.textContent = contentCount;
+  if (analystEl) analystEl.textContent = analystCount;
+}
+
+function closeAllTableContextMenus() {
+  document.querySelectorAll('.table-context-menu.is-open').forEach((menu) => {
+    menu.classList.remove('is-open');
+  });
+  document.querySelectorAll('.table-kebab-btn.is-active').forEach((btn) => {
+    btn.classList.remove('is-active');
+  });
 }
 
 function renderTable(items) {
@@ -93,7 +115,7 @@ function renderTable(items) {
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
         <td colspan="7" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
-          No administrators found matching your search.
+          No administrators found matching your filter criteria.
         </td>
       </tr>
     `;
@@ -101,27 +123,32 @@ function renderTable(items) {
   }
 
   tbody.innerHTML = items.map((admin, idx) => `
-    <tr data-status="${admin.directAccess ? 'granted' : 'denied'}" data-id="${admin.id}">
+    <tr data-role="${escapeHtml(admin.role)}" data-id="${admin.id}">
       <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
       <td class="table-id">ADM-${100 + admin.id}</td>
       <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">
         <div class="table-avatar-cell" style="white-space: nowrap;">
-          <img class="table-avatar-img" src="${getAvatarUrl(admin.name, idx)}" alt="${admin.name}" width="26" height="26">
-          <span>${admin.name}</span>
+          <img class="table-avatar-img" src="${getAvatarUrl(admin.name, idx)}" alt="${escapeHtml(admin.name)}" width="28" height="28" style="border-radius: 50%; object-fit: cover;">
+          <span>${escapeHtml(admin.name)}</span>
         </div>
       </td>
-      <td style="white-space: nowrap;"><a href="mailto:${admin.email}" class="table-link">${admin.email}</a></td>
-      <td style="white-space: nowrap;"><span class="status-badge status-draft">${admin.department}</span></td>
-      <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${admin.dateAdded}</td>
+      <td style="white-space: nowrap;"><a href="mailto:${escapeHtml(admin.email)}" class="table-link">${escapeHtml(admin.email)}</a></td>
+      <td style="white-space: nowrap;">${getRoleBadge(admin.role)}</td>
+      <td style="color: var(--ink-muted); font-size: var(--text-2xs); white-space: nowrap;">${escapeHtml(admin.dateAdded)}</td>
       <td style="text-align: right; white-space: nowrap;">
-        <button
-          class="toggle-switch ${admin.directAccess ? 'is-active' : ''}"
-          role="switch"
-          aria-checked="${admin.directAccess ? 'true' : 'false'}"
-          data-admin-id="${admin.id}"
-          type="button"
-          aria-label="Direct publish access for ${admin.name}"
-        ></button>
+        <div class="table-kebab-wrap">
+          <button class="table-kebab-btn" data-kebab-trigger type="button" aria-label="Actions for ${escapeHtml(admin.name)}">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16">
+              <path d="M128,96a24,24,0,1,0,24,24A24,24,0,0,0,128,96Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,128,128Zm0-80a24,24,0,1,0-24-24A24,24,0,0,0,128,48Zm0-32a8,8,0,1,1,8-8A8,8,0,0,1,128,16Zm0,160a24,24,0,1,0,24,24A24,24,0,0,0,128,208Zm0,32a8,8,0,1,1,8-8A8,8,0,0,1,128,240Z"/>
+            </svg>
+          </button>
+          <div class="table-context-menu">
+            <button type="button" class="table-context-menu-item text-danger" data-action="revoke-access" data-admin-id="${admin.id}">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/></svg>
+              Revoke Access
+            </button>
+          </div>
+        </div>
       </td>
     </tr>
   `).join('');
@@ -129,6 +156,17 @@ function renderTable(items) {
 
 function refreshAll() {
   admins = loadCollection(ADMIN_KEY, adminSeedData);
+  // Migrate any old seed data that had department instead of role
+  admins = admins.map((adm) => {
+    if (!adm.role) {
+      if (adm.name === 'Taylor Brooks') adm.role = 'Super admin';
+      else if (adm.name === 'Sam Patel' || adm.name === 'Marcus Vance') adm.role = 'Analyst';
+      else adm.role = 'Content admin';
+    }
+    return adm;
+  });
+  saveCollection(ADMIN_KEY, admins);
+
   renderTable(admins);
   renderStats();
 }
@@ -136,81 +174,129 @@ function refreshAll() {
 document.addEventListener('DOMContentLoaded', () => {
   refreshAll();
 
-  // Search and Filter
+  // Search and Role Filter
   const searchInput = document.getElementById('admin-search');
-  const statusFilter = document.getElementById('admin-status-filter');
+  const roleFilter = document.getElementById('admin-role-filter');
 
   function applyFilters() {
     const q = (searchInput?.value || '').toLowerCase().trim();
-    const st = statusFilter?.value || 'all';
+    const rf = roleFilter?.value || 'all';
 
     const filtered = admins.filter((admin) => {
       const matchSearch = !q ||
-        admin.name.toLowerCase().includes(q) ||
-        admin.email.toLowerCase().includes(q) ||
-        admin.department.toLowerCase().includes(q);
+        (admin.name && admin.name.toLowerCase().includes(q)) ||
+        (admin.email && admin.email.toLowerCase().includes(q)) ||
+        (admin.role && admin.role.toLowerCase().includes(q));
 
-      const matchStatus = st === 'all' ||
-        (st === 'granted' && admin.directAccess) ||
-        (st === 'denied' && !admin.directAccess);
+      const matchRole = rf === 'all' || admin.role === rf;
 
-      return matchSearch && matchStatus;
+      return matchSearch && matchRole;
     });
 
     renderTable(filtered);
   }
 
   searchInput?.addEventListener('input', applyFilters);
-  statusFilter?.addEventListener('change', applyFilters);
+  roleFilter?.addEventListener('change', applyFilters);
 
+  // Export CSV
   document.getElementById('export-csv-btn')?.addEventListener('click', () => {
     exportTableToCSV('admins-table', 'fwc-admins.csv');
   });
 
-  // Toggle switch handling with confirmation modal
-  document.getElementById('admins-table-body')?.addEventListener('click', (e) => {
-    const toggle = e.target.closest('.toggle-switch');
-    if (!toggle) return;
-
-    const id = Number(toggle.dataset.adminId);
-    const admin = admins.find((a) => a.id === id);
-    if (!admin) return;
-
-    pendingToggle = admin;
-    const nextState = !admin.directAccess;
-    const msg = nextState
-      ? `Grant <strong>${admin.name}</strong> direct publishing rights? Their posts and jobs will go live immediately without moderation.`
-      : `Revoke direct publishing rights for <strong>${admin.name}</strong>? Their content submissions will require super admin review.`;
-
-    document.getElementById('toggle-confirm-text').innerHTML = msg;
-    openModal('toggle-confirm-modal');
+  // Open Add Admin Modal trigger
+  document.getElementById('open-add-admin-btn')?.addEventListener('click', () => {
+    openModal('add-admin-modal');
   });
 
-  document.getElementById('toggle-confirm-btn')?.addEventListener('click', () => {
-    if (!pendingToggle) return;
-    pendingToggle.directAccess = !pendingToggle.directAccess;
+  // Table Kebab Menu Toggles & Revoke Access Click Delegations
+  const tableWrap = document.querySelector('.table-wrapper');
+  tableWrap?.addEventListener('click', (e) => {
+    // 1. Kebab trigger button
+    const kebabBtn = e.target.closest('[data-kebab-trigger]');
+    if (kebabBtn) {
+      e.stopPropagation();
+      const menu = kebabBtn.nextElementSibling;
+      const isOpen = menu && menu.classList.contains('is-open');
+      closeAllTableContextMenus();
+      if (menu && !isOpen) {
+        menu.classList.add('is-open');
+        kebabBtn.classList.add('is-active');
+      }
+      return;
+    }
+
+    // 2. Revoke Access Action
+    const revokeBtn = e.target.closest('[data-action="revoke-access"]');
+    if (revokeBtn) {
+      e.stopPropagation();
+      closeAllTableContextMenus();
+
+      const id = Number(revokeBtn.dataset.adminId);
+      const admin = admins.find((a) => a.id === id);
+      if (!admin) return;
+
+      pendingRevoke = admin;
+      const confirmText = document.getElementById('revoke-confirm-text');
+      if (confirmText) {
+        confirmText.innerHTML = `Do you really want to revoke access for <strong>${escapeHtml(admin.name)}</strong> (${escapeHtml(admin.email)})? This action will permanently delete their account and permissions from the platform.`;
+      }
+
+      openModal('revoke-confirm-modal');
+    }
+  });
+
+  // Close context menu on document click or escape
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.table-kebab-wrap')) {
+      closeAllTableContextMenus();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllTableContextMenus();
+    }
+  });
+
+  // Revoke confirmation handler
+  document.getElementById('revoke-confirm-btn')?.addEventListener('click', () => {
+    if (!pendingRevoke) return;
+
+    const removedName = pendingRevoke.name;
+    admins = admins.filter((a) => a.id !== pendingRevoke.id);
     saveCollection(ADMIN_KEY, admins);
     refreshAll();
-    closeModal('toggle-confirm-modal');
-    showToast(`Updated publish access for ${pendingToggle.name}.`, 'success');
-    pendingToggle = null;
+    closeModal('revoke-confirm-modal');
+
+    showToast(`Access removed successfully for ${removedName}.`, 'success');
+    pendingRevoke = null;
   });
 
-  document.getElementById('toggle-cancel-btn')?.addEventListener('click', () => {
-    closeModal('toggle-confirm-modal');
-    pendingToggle = null;
+  document.getElementById('revoke-cancel-btn')?.addEventListener('click', () => {
+    closeModal('revoke-confirm-modal');
+    pendingRevoke = null;
   });
 
-  // Add Admin form
+  // Add Admin form submission
   const addForm = document.getElementById('add-admin-form');
-  initLiveFieldValidation(addForm);
+  if (addForm) {
+    initLiveFieldValidation(addForm);
+  }
 
-  document.getElementById('add-admin-submit-btn')?.addEventListener('click', () => {
+  document.getElementById('add-admin-submit-btn')?.addEventListener('click', (e) => {
+    e.preventDefault();
     if (!validateForm(addForm)) return;
 
-    const name = document.getElementById('admin-name').value.trim();
-    const email = document.getElementById('admin-email').value.trim();
-    const department = document.getElementById('admin-department').value;
+    const nameInput = document.getElementById('admin-name');
+    const emailInput = document.getElementById('admin-email');
+    const name = (nameInput?.value || '').trim();
+    const email = (emailInput?.value || '').trim();
+
+    const selectedRoleInput = document.querySelector('input[name="admin-role"]:checked');
+    const role = selectedRoleInput ? selectedRoleInput.value : 'Content admin';
+
+    if (!name || !email) return;
 
     const newId = admins.length ? Math.max(...admins.map((a) => a.id)) + 1 : 1;
     const today = new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
@@ -219,16 +305,20 @@ document.addEventListener('DOMContentLoaded', () => {
       id: newId,
       name,
       email,
-      department,
-      directAccess: false,
+      role,
       dateAdded: today
     };
 
-    admins.push(newAdmin);
+    admins.unshift(newAdmin);
     saveCollection(ADMIN_KEY, admins);
     refreshAll();
     closeModal('add-admin-modal');
+
     addForm.reset();
-    showToast(`Added new administrator ${name}.`, 'success');
+    // Reset radio selection to Content admin default
+    const defaultRadio = document.getElementById('role-content-admin');
+    if (defaultRadio) defaultRadio.checked = true;
+
+    showToast(`Admin ${name} added successfully.`, 'success');
   });
 });

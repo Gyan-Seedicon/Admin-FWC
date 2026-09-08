@@ -194,6 +194,86 @@
             Approve & publish live
           </button>
         </div>
+
+        <!-- Preview / Read-Only Action Buttons -->
+        <div class="flex items-center gap-2 hidden" id="preview-header-actions">
+          <a href="job-listings.html" class="btn btn-secondary" id="preview-back-btn" style="text-decoration: none;">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></svg>
+            Back to listings
+          </a>
+          <button class="btn btn-primary" id="preview-edit-btn" type="button">
+            <svg viewBox="0 0 256 256" fill="currentColor" width="14" height="14" style="margin-right: 4px;"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg>
+            Edit Job Posting
+          </button>
+        </div>
+      </div>
+
+      <!-- Read-Only Job Description Preview Surface -->
+      <div id="job-preview-surface" class="job-preview-card hidden">
+        <div class="job-preview-header">
+          <div class="job-preview-title-row">
+            <div>
+              <h1 class="job-preview-title" id="preview-job-title"></h1>
+              <div class="job-preview-meta-row" id="preview-meta-row">
+                <span class="preview-meta-badge" id="preview-badge-dept"></span>
+                <span class="preview-meta-sep">•</span>
+                <span id="preview-text-location"></span>
+                <span class="preview-meta-sep">•</span>
+                <span id="preview-text-type"></span>
+                <span class="preview-meta-sep">•</span>
+                <span id="preview-text-exp"></span>
+              </div>
+            </div>
+            <span id="preview-status-pill"></span>
+          </div>
+
+          <div class="job-preview-stats-grid">
+            <div class="job-preview-stat-item">
+              <span class="job-preview-stat-label">Compensation</span>
+              <span class="job-preview-stat-val" id="preview-val-salary"></span>
+            </div>
+            <div class="job-preview-stat-item">
+              <span class="job-preview-stat-label">Expiry Date</span>
+              <span class="job-preview-stat-val" id="preview-val-expiry"></span>
+            </div>
+            <div class="job-preview-stat-item">
+              <span class="job-preview-stat-label">Requisition ID</span>
+              <span class="job-preview-stat-val" id="preview-val-id"></span>
+            </div>
+            <div class="job-preview-stat-item">
+              <span class="job-preview-stat-label">Posted Date</span>
+              <span class="job-preview-stat-val" id="preview-val-submitted"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="job-preview-section">
+          <h3 class="job-preview-section-title">Role Overview & Mission</h3>
+          <p class="job-preview-overview-text" id="preview-overview-text"></p>
+        </div>
+
+        <div class="job-preview-section">
+          <h3 class="job-preview-section-title">Key Responsibilities</h3>
+          <ul class="job-preview-list" id="preview-responsibilities-list"></ul>
+        </div>
+
+        <div class="job-preview-section">
+          <h3 class="job-preview-section-title">Required Skills & Capabilities</h3>
+          <div class="job-preview-skills-wrap" id="preview-skills-wrap"></div>
+        </div>
+
+        <div class="job-preview-section" id="preview-pdf-section">
+          <h3 class="job-preview-section-title">Attached Job Description Document</h3>
+          <div class="job-preview-pdf-card">
+            <div class="pdf-icon-wrap" style="width: 38px; height: 38px; background: #EFF6FF; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); flex-shrink: 0;">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="20" height="20"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Z"/></svg>
+            </div>
+            <div class="pdf-meta">
+              <div class="pdf-name" id="preview-pdf-name" style="font-weight: 600; color: var(--ink-primary); font-size: 13.5px;"></div>
+              <div class="pdf-size" id="preview-pdf-size" style="font-size: 12px; color: var(--ink-muted);"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Smart Editable Requisition Form (Single Unified Container) -->

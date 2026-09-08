@@ -264,6 +264,29 @@ function formatNow() {
   return `${datePart} · ${timePart}`;
 }
 
+function formatExpiryDate(dateStr) {
+  if (!dateStr) return '—';
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const date = new Date(year, monthIndex, day);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+      }
+    }
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    }
+  } catch (e) {
+    // fallback
+  }
+  return dateStr;
+}
+
 function renderSkills() {
   const container = document.getElementById('job-skills-tags');
   if (!container) return;
@@ -733,6 +756,111 @@ function setupPendingReviewMode(job) {
 }
 
 // --------------------------------------------------------------------------
+// Setup Read-Only Preview Mode (View JD)
+// --------------------------------------------------------------------------
+function setupPreviewMode(job) {
+  currentJobForShare = job;
+
+  document.getElementById('page-title').textContent = `Job Description: ${job.title} — FWC Super Admin`;
+  document.getElementById('page-heading').textContent = 'Job Description Details';
+
+  const currBreadcrumb = document.getElementById('breadcrumb-current');
+  if (currBreadcrumb) currBreadcrumb.textContent = 'View Job Description';
+
+  // Hide editable form and other header action toolbars
+  document.getElementById('job-creation-canvas')?.classList.add('hidden');
+  document.getElementById('normal-header-actions')?.classList.add('hidden');
+  document.getElementById('review-header-actions')?.classList.add('hidden');
+  document.getElementById('review-back-icon-btn')?.classList.add('hidden');
+
+  // Show read-only preview surface and preview header actions
+  document.getElementById('job-preview-surface')?.classList.remove('hidden');
+  document.getElementById('preview-header-actions')?.classList.remove('hidden');
+
+  // Header Title and Subtext
+  document.getElementById('job-header-heading').textContent = job.title;
+  document.getElementById('job-header-subtext').textContent = `Requisition JOB-${100 + job.id} • ${job.department || 'Technology'} • Posted on ${job.submitted || '—'}`;
+
+  // Fill in Preview Surface Details
+  const titleEl = document.getElementById('preview-job-title');
+  if (titleEl) titleEl.textContent = job.title;
+
+  const deptEl = document.getElementById('preview-badge-dept');
+  if (deptEl) deptEl.textContent = job.department || 'Technology';
+
+  const locEl = document.getElementById('preview-text-location');
+  if (locEl) locEl.textContent = job.location || 'Remote';
+
+  const typeEl = document.getElementById('preview-text-type');
+  if (typeEl) typeEl.textContent = job.type || 'Full-time';
+
+  const expEl = document.getElementById('preview-text-exp');
+  if (expEl) expEl.textContent = job.experience || 'Mid-Level (3–5 Yrs)';
+
+  // Status Pill
+  const statusPillWrap = document.getElementById('preview-status-pill');
+  if (statusPillWrap) {
+    const statusLabels = { published: 'Published', draft: 'Draft', rejected: 'Rejected', pending: 'Pending review' };
+    const status = job.status || 'published';
+    statusPillWrap.innerHTML = `<span class="job-status-pill ${status}">${statusLabels[status] || status}</span>`;
+  }
+
+  // Stats Grid
+  const salEl = document.getElementById('preview-val-salary');
+  if (salEl) salEl.textContent = job.salary || '—';
+
+  const expDateEl = document.getElementById('preview-val-expiry');
+  if (expDateEl) expDateEl.textContent = formatExpiryDate(job.expiryDate);
+
+  const reqIdEl = document.getElementById('preview-val-id');
+  if (reqIdEl) reqIdEl.textContent = `JOB-${100 + job.id}`;
+
+  const postedEl = document.getElementById('preview-val-submitted');
+  if (postedEl) postedEl.textContent = job.submitted || '—';
+
+  // Overview
+  const overviewEl = document.getElementById('preview-overview-text');
+  if (overviewEl) overviewEl.textContent = job.overview || 'No overview provided.';
+
+  // Responsibilities List
+  const respList = document.getElementById('preview-responsibilities-list');
+  if (respList) {
+    let items = [];
+    if (Array.isArray(job.responsibilities) && job.responsibilities.length) {
+      items = job.responsibilities;
+    } else if (job.responsibilities) {
+      items = job.responsibilities.split(/•|\n/).map((s) => s.trim()).filter(Boolean);
+    }
+    if (!items.length) {
+      items = ['Drive technical delivery and collaborate with cross-functional teams.'];
+    }
+    respList.innerHTML = items.map((r) => `<li>${r.replace(/^[•\-]\s*/, '')}</li>`).join('');
+  }
+
+  // Skills Pills
+  const skillsWrap = document.getElementById('preview-skills-wrap');
+  if (skillsWrap) {
+    let skills = Array.isArray(job.skills) && job.skills.length ? job.skills : ['Enterprise Architecture', 'Problem Solving'];
+    skillsWrap.innerHTML = skills.map((s) => `<span class="job-preview-skill-pill">${s}</span>`).join('');
+  }
+
+  // PDF Document Card
+  const pdfNameEl = document.getElementById('preview-pdf-name');
+  if (pdfNameEl) pdfNameEl.textContent = job.pdfName || 'cybersecurity-analyst-jd.pdf';
+
+  const pdfSizeEl = document.getElementById('preview-pdf-size');
+  if (pdfSizeEl) pdfSizeEl.textContent = `${job.pdfSize || '1.4 MB'} · Attached PDF specification`;
+
+  // Edit Button Event Listener
+  const editBtn = document.getElementById('preview-edit-btn');
+  if (editBtn) {
+    editBtn.onclick = () => {
+      window.location.href = `add-job-listing.html?mode=edit&id=${job.id}`;
+    };
+  }
+}
+
+// --------------------------------------------------------------------------
 // Setup Normal Edit Mode (Published / Draft)
 // --------------------------------------------------------------------------
 function setupEditMode(job) {
@@ -812,7 +940,12 @@ document.addEventListener('DOMContentLoaded', () => {
     editingJob = jobListings.find((j) => j.id === targetId);
   }
 
-  if (mode === 'review' || (editingJob && editingJob.status === 'pending')) {
+  if (mode === 'preview') {
+    if (!editingJob) {
+      editingJob = jobListings[0] || jobSeedItems[0];
+    }
+    setupPreviewMode(editingJob);
+  } else if (mode === 'review' || (editingJob && editingJob.status === 'pending' && mode !== 'edit')) {
     if (!editingJob) {
       editingJob = jobListings.find((j) => j.status === 'pending') || jobListings[0] || jobSeedItems[0];
     }
