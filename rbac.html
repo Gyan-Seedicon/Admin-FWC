@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Role Access Document — FWC Admin</title>
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      
+      /* Role Colors */
+      --blue: #2563EB;
+      --blue-bg: #EFF6FF;
+      --purple: #7C3AED;
+      --purple-bg: #F5F3FF;
+      --green: #059669;
+      --green-bg: #ECFDF5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding: 36px 20px 60px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    .divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    .header-title h1 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .header-title p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .btn-print {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      color: #334155;
+      background: #F1F5F9;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-print:hover {
+      background: #E2E8F0;
+    }
+
+    /* Role Cards */
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .role-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .role-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .tag-sa { background: var(--blue-bg); color: var(--blue); }
+    .tag-ca { background: var(--purple-bg); color: var(--purple); }
+    .tag-an { background: var(--green-bg); color: var(--green); }
+
+    .role-card h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .role-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Table */
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      margin-bottom: 24px;
+    }
+
+    .table-title {
+      padding: 14px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      background: #FAFAFA;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    th {
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      background: #FFFFFF;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: #F8FAFC;
+    }
+
+    .col-module {
+      font-weight: 600;
+      color: var(--text-main);
+      width: 28%;
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .badge-full {
+      background: #DCFCE7;
+      color: #15803D;
+    }
+
+    .badge-submit {
+      background: #EFF6FF;
+      color: #1D4ED8;
+    }
+
+    .badge-status {
+      background: #FEF3C7;
+      color: #B45309;
+    }
+
+    .badge-read {
+      background: #F1F5F9;
+      color: #475569;
+    }
+
+    .badge-none {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+
+    /* Key Summary Box */
+    .summary-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 12.5px;
+    }
+
+    .summary-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-main);
+    }
+
+    .summary-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .summary-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #334155;
+      line-height: 1.45;
+    }
+
+    .bullet {
+      color: var(--blue);
+      font-weight: bold;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #FFF;
+      }
+      .btn-print {
+        display: none;
+      }
+      .header, .role-card, .table-card, .summary-card {
+        box-shadow: none;
+        border-color: #CBD5E1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .roles-grid {
+        grid-template-columns: 1fr;
+      }
+      .table-card {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Simple Header -->
+  <header class="header">
+    <div class="header-left">
+      <img src="Admin_FWC/assets/logos/navy-logo.png" alt="FWC" class="logo" onerror="this.style.display='none'">
+      <div class="divider"></div>
+      <div class="header-title">
+        <h1>Role-Based Access Control (RBAC)</h1>
+        <p>Simple permissions guide for FWC Admin Console</p>
+      </div>
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M200,80V48a16,16,0,0,0-16-16H72A16,16,0,0,0,56,48V80H40A24,24,0,0,0,16,104v80a24,24,0,0,0,24,24H56v24a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V208h16a24,24,0,0,0,24-24V104A24,24,0,0,0,216,80ZM72,48H184V80H72ZM184,232H72V176H184Zm32-48H200V160a16,16,0,0,0-16-16H72a16,16,0,0,0-16,16v24H40a8,8,0,0,1-8-8V104a8,8,0,0,1,8-8H216a8,8,0,0,1,8,8v80A8,8,0,0,1,216,184Z"/></svg>
+      Print / PDF
+    </button>
+  </header>
+
+  <!-- 3 Role Summary Cards -->
+  <div class="roles-grid">
+    
+    <div class="role-card">
+      <span class="role-tag tag-sa">Super Admin</span>
+      <h2>Full Platform Access (CRUD)</h2>
+      <p>Has full CRUD control, direct publishing authority, approval/rejection power, sees the dashboard Pending Moderation queue, and manages admin users.</p>
+    </div>
+
+    <div class="role-card">
+      <span class="role-tag tag-ca">Content Admin</span>
+      <h2>Creator & Recruiter</h2>
+      <p>Can view dashboard metrics (will not see Pending Moderation), write/submit blogs & jobs for approval, and update candidate hiring statuses.</p>
+    </div>
+
+    <div class="role-card">
+      <span class="role-tag tag-an">Analyst</span>
+      <h2>Operational Reviewer</h2>
+      <p>Read-only access across dashboard (will not see Pending Moderation), blogs, job listings, candidate lists, and client enquiries.</p>
+    </div>
+
+  </div>
+
+  <!-- Simplified Permissions Matrix Table -->
+  <div class="table-card">
+    <div class="table-title">
+      <span>Feature & Module Permissions</span>
+      <span style="font-size: 11.5px; font-weight: 500; color: var(--text-muted);">3 Active Roles</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 28%;">Module / Feature</th>
+          <th style="width: 24%; color: var(--blue);">Super Admin</th>
+          <th style="width: 24%; color: var(--purple);">Content Admin</th>
+          <th style="width: 24%; color: var(--green);">Analyst</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr>
+          <td class="col-module">
+            Dashboard
+            <span style="font-size: 11px; font-weight: 400; color: var(--text-muted); display: block; margin-top: 2px;">Pending Moderation hidden for Content Admin & Analyst</span>
+          </td>
+          <td><span class="badge badge-full">✓ Full View (With Pending Moderation)</span></td>
+          <td><span class="badge badge-full">✓ View All (No Pending Moderation)</span></td>
+          <td><span class="badge badge-full">✓ View All (No Pending Moderation)</span></td>
+        </tr>
+
+        <tr>
+          <td class="col-module">Approval Requests</td>
+          <td><span class="badge badge-full">✓ Approve & Reject</span></td>
+          <td><span class="badge badge-none">✕ No Access</span></td>
+          <td><span class="badge badge-none">✕ No Access</span></td>
+        </tr>
+
+        <tr>
+          <td class="col-module">Blog Posts</td>
+          <td><span class="badge badge-full">✓ Full Access (CRUD)</span></td>
+          <td><span class="badge badge-submit">✎ View All, Write & Submit</span></td>
+          <td><span class="badge badge-read">👁 View Only</span></td>
+        </tr>
+
+        <tr>
+          <td class="col-module">Job Listings</td>
+          <td><span class="badge badge-full">✓ Full Access (CRUD)</span></td>
+          <td><span class="badge badge-submit">✎ View All, Write & Submit</span></td>
+          <td><span class="badge badge-read">👁 View Only</span></td>
+        </tr>
+
+        <tr>
+          <td class="col-module">Candidate Lists</td>
+          <td><span class="badge badge-full">✓ View & Update Status</span></td>
+          <td><span class="badge badge-status">✓ View & Update Status</span></td>
+          <td><span class="badge badge-read">👁 View Only</span></td>
+        </tr>
+
+        <tr>
+          <td class="col-module">Client Enquiries</td>
+          <td><span class="badge badge-read">👁 View Only</span></td>
+          <td><span class="badge badge-read">👁 View Only</span></td>
+          <td><span class="badge badge-read">👁 View Only</span></td>
+        </tr>
+
+        <tr>
+          <td class="col-module">Admin Management</td>
+          <td><span class="badge badge-full">✓ Manage All Admins</span></td>
+          <td><span class="badge badge-none">✕ No Access</span></td>
+          <td><span class="badge badge-none">✕ No Access</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Key Differences Summary -->
+  <div class="summary-card">
+    <h3>Quick Summary of Rules</h3>
+    <ul class="summary-list">
+      <li>
+        <span class="bullet">•</span>
+        <span><strong>Dashboard & Pending Moderation:</strong> All roles can view dashboard metrics (traffic, visitors, conversions). However, the <strong>Pending Moderation</strong> card and queue is strictly visible only to <strong>Super Admin</strong>. Content Admin and Analyst will not see Pending Moderation on their dashboard.</span>
+      </li>
+      <li>
+        <span class="bullet">•</span>
+        <span><strong>Client Enquiries:</strong> View-only for all roles (Super Admin, Content Admin, and Analyst) as it is strictly an inbound intake channel.</span>
+      </li>
+      <li>
+        <span class="bullet">•</span>
+        <span><strong>Blog Posts & Job Listings:</strong> Super Admin has full CRUD (Create, Read, Update, Delete & Publish). Content Admin can view all, write, and submit for approval. Analyst has view-only access.</span>
+      </li>
+      <li>
+        <span class="bullet">•</span>
+        <span><strong>Candidate Lists:</strong> Super Admin and Content Admin can view applicants and update hiring pipeline statuses. Analyst has view-only access.</span>
+      </li>
+      <li>
+        <span class="bullet">•</span>
+        <span><strong>Approval Requests & Admin Management:</strong> Exclusively available to Super Admin.</span>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

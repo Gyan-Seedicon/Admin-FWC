@@ -168,7 +168,7 @@ const sampleAutoFillPresets = [
     location: 'Remote',
     type: 'Full-time',
     experience: 'Mid-Level (3–5 Yrs)',
-    salary: '$120,000 – $145,000 / yr',
+    salary: '₹18,00,000 – ₹24,00,000 / yr',
     overview: 'We are looking for a Senior Cybersecurity Analyst to safeguard client cloud infrastructure, lead proactive threat hunting, and support SOC2/HIPAA-aligned delivery across our distributed engineering teams.',
     responsibilities: [
       'Lead continuous monitoring, threat intelligence analysis, and proactive vulnerability management across AWS environments.',
@@ -185,7 +185,7 @@ const sampleAutoFillPresets = [
     location: 'Alhambra, CA',
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
-    salary: '$145,000 – $175,000 / yr',
+    salary: '₹25,00,000 – ₹35,00,000 / yr',
     overview: 'Drive enterprise generative AI and Retrieval-Augmented Generation (RAG) system deployments for Fortune 500 manufacturing and financial intelligence pipelines.',
     responsibilities: [
       'Design high-throughput vector database pipelines using pgvector, Pinecone, and LangChain/LlamaIndex.',
@@ -202,7 +202,7 @@ const sampleAutoFillPresets = [
     location: 'Remote',
     type: 'Full-time',
     experience: 'Staff / Lead (8+ Yrs)',
-    salary: '$155,000 – $185,000 / yr',
+    salary: '₹35,00,000 – ₹45,00,000 / yr',
     overview: 'Lead the architecture and design of high-throughput multi-region AWS and Azure cloud environments for enterprise clients undergoing modernization.',
     responsibilities: [
       'Architect enterprise-scale AWS/Azure landing zones utilizing Terraform and Terragrunt.',
@@ -225,7 +225,7 @@ const cursourcePresets = {
     location: 'Alhambra, CA',
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
-    salary: '$130,000 – $160,000 / yr',
+    salary: '₹22,00,000 – ₹30,00,000 / yr',
     overview: 'Drive full-stack microfrontend and backend service development across high-velocity agile pods building real-time client analytics dashboards.',
     responsibilities: [
       'Engineer robust React TypeScript web applications with microfrontend architectures and SSR.',
@@ -242,7 +242,7 @@ const cursourcePresets = {
     location: 'Remote',
     type: 'Full-time',
     experience: 'Senior (5–8 Yrs)',
-    salary: '$140,000 – $170,000 / yr',
+    salary: '₹28,00,000 – ₹38,00,000 / yr',
     overview: 'Direct enterprise data privacy, regulatory compliance (SOC2, HIPAA, GDPR, DORA), and data lineage framework implementations across multi-cloud environments.',
     responsibilities: [
       'Establish enterprise data governance catalogs and classification taxonomy across AWS and Snowflake.',
@@ -374,13 +374,65 @@ function initPdfUploader() {
   });
 }
 
+function getCompensationValue() {
+  const minEl = document.getElementById('field-salary-min');
+  const maxEl = document.getElementById('field-salary-max');
+  const minVal = minEl ? minEl.value.trim() : '';
+  const maxVal = maxEl ? maxEl.value.trim() : '';
+
+  const formatPart = (v) => {
+    if (!v) return '';
+    let clean = v.replace(/[\/yr|per year|yearly|inr]/gi, '').trim();
+    if (!clean.startsWith('₹') && !clean.startsWith('$')) {
+      clean = `₹${clean}`;
+    }
+    return clean;
+  };
+
+  if (minVal && maxVal) {
+    return `${formatPart(minVal)} – ${formatPart(maxVal)} / yr`;
+  }
+  if (minVal) {
+    return `${formatPart(minVal)} / yr`;
+  }
+  const fallback = document.getElementById('field-salary')?.value.trim();
+  return fallback || '₹12,00,000 – ₹18,00,000 / yr';
+}
+
+function populateCompensationFields(salaryStr) {
+  const minEl = document.getElementById('field-salary-min');
+  const maxEl = document.getElementById('field-salary-max');
+  const hiddenSalary = document.getElementById('field-salary');
+  if (!minEl || !maxEl) return;
+
+  if (!salaryStr) {
+    minEl.value = '₹12,00,000';
+    maxEl.value = '₹18,00,000';
+    if (hiddenSalary) hiddenSalary.value = '₹12,00,000 – ₹18,00,000 / yr';
+    return;
+  }
+
+  if (hiddenSalary) hiddenSalary.value = salaryStr;
+
+  const parts = salaryStr.split(/[–\-—]|to/i).map((s) => s.replace(/\/.*$/g, '').trim());
+  if (parts.length >= 2) {
+    minEl.value = parts[0];
+    maxEl.value = parts[1];
+  } else if (parts.length === 1) {
+    minEl.value = parts[0];
+    maxEl.value = '';
+  }
+}
+
 function applyPresetToForm(preset) {
   if (preset.title) document.getElementById('job-title-input').value = preset.title;
   if (preset.department) document.getElementById('field-department').value = preset.department;
   if (preset.location) document.getElementById('field-location').value = preset.location;
   if (preset.type) document.getElementById('field-type').value = preset.type;
   if (preset.experience) document.getElementById('field-experience').value = preset.experience;
-  if (preset.salary) document.getElementById('field-salary').value = preset.salary;
+  if (preset.salary) {
+    populateCompensationFields(preset.salary);
+  }
   if (preset.expiryDate) {
     document.getElementById('field-expiry-date').value = preset.expiryDate;
   } else {
@@ -573,7 +625,7 @@ function saveJobRequisition(status = 'pending') {
   const location = document.getElementById('field-location').value.trim() || 'Remote';
   const type = document.getElementById('field-type').value;
   const experience = document.getElementById('field-experience').value;
-  const salary = document.getElementById('field-salary').value.trim() || '$125,000 – $150,000 / yr';
+  const salary = getCompensationValue();
   const expiryDate = document.getElementById('field-expiry-date').value || '';
 
   const respItems = respVal
@@ -675,7 +727,7 @@ function handleApproveJob() {
   const location = document.getElementById('field-location')?.value.trim() || (job ? job.location : 'Remote');
   const type = document.getElementById('field-type')?.value || (job ? job.type : 'Full-time');
   const experience = document.getElementById('field-experience')?.value || (job ? job.experience : '3–5 Years');
-  const salary = document.getElementById('field-salary')?.value.trim() || (job ? job.salary : '$120,000 – $145,000 / yr');
+  const salary = getCompensationValue() || (job ? job.salary : '₹12,00,000 – ₹18,00,000 / yr');
   const expiryDate = document.getElementById('field-expiry-date')?.value || (job ? job.expiryDate : '');
   const overview = document.getElementById('field-overview')?.value.trim() || (job ? job.overview : '');
   const respVal = document.getElementById('field-responsibilities')?.value.trim() || '';
@@ -973,7 +1025,7 @@ function populateFormFields(job) {
   document.getElementById('field-location').value = job.location || 'Remote';
   document.getElementById('field-type').value = job.type || 'Full-time';
   document.getElementById('field-experience').value = job.experience || 'Mid-Level (3–5 Yrs)';
-  document.getElementById('field-salary').value = job.salary || '$125,000 – $150,000 / yr';
+  populateCompensationFields(job.salary || '₹12,00,000 – ₹18,00,000 / yr');
   document.getElementById('field-expiry-date').value = job.expiryDate || '';
   document.getElementById('field-overview').value = job.overview || job.excerpt || '';
 
@@ -1029,6 +1081,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setupEditMode(editingJob);
   }
+
+  // Sync dual compensation range inputs
+  const minSalEl = document.getElementById('field-salary-min');
+  const maxSalEl = document.getElementById('field-salary-max');
+  const syncCompensation = () => {
+    const val = getCompensationValue();
+    const hiddenSal = document.getElementById('field-salary');
+    if (hiddenSal) hiddenSal.value = val;
+    const prevSal = document.getElementById('preview-val-salary');
+    if (prevSal) prevSal.textContent = val;
+  };
+  minSalEl?.addEventListener('input', syncCompensation);
+  maxSalEl?.addEventListener('input', syncCompensation);
+  minSalEl?.addEventListener('change', syncCompensation);
+  maxSalEl?.addEventListener('change', syncCompensation);
 
   // Save Draft (Creation / Draft Mode)
   document.getElementById('save-draft-btn')?.addEventListener('click', () => {

@@ -667,6 +667,38 @@ table {
   color: #475569;
 }
 
+.global-search-item-icon.icon-recent {
+  background: #F1F5F9;
+  color: #64748B;
+}
+
+.global-search-recent-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.global-search-remove-recent-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+.global-search-remove-recent-btn:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
 .global-search-item-details {
   display: flex;
   flex-direction: column;

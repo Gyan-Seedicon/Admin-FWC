@@ -377,8 +377,43 @@
               </select>
             </div>
             <div class="form-group" style="margin-bottom: 0;">
-              <label class="form-label" for="field-salary">Compensation range</label>
-              <input class="form-input" type="text" id="field-salary" placeholder="e.g. $125,000 – $150,000 / yr" value="$125,000 – $150,000 / yr">
+              <label class="form-label" for="field-salary-min">Compensation range (INR / Yearly)</label>
+              <div class="salary-range-inputs" style="display: flex; align-items: center; gap: 6px;">
+                <div style="flex: 1; min-width: 0;">
+                  <input class="form-input" type="text" id="field-salary-min" list="salary-min-list" placeholder="Min (e.g. ₹12,00,000)" value="₹12,00,000" aria-label="Minimum yearly compensation in INR">
+                  <datalist id="salary-min-list">
+                    <option value="₹6,00,000"></option>
+                    <option value="₹8,00,000"></option>
+                    <option value="₹10,00,000"></option>
+                    <option value="₹12,00,000"></option>
+                    <option value="₹15,00,000"></option>
+                    <option value="₹18,00,000"></option>
+                    <option value="₹20,00,000"></option>
+                    <option value="₹25,00,000"></option>
+                    <option value="₹30,00,000"></option>
+                    <option value="₹40,00,000"></option>
+                    <option value="₹50,00,000"></option>
+                  </datalist>
+                </div>
+                <span style="color: var(--ink-muted); font-size: 13px; font-weight: 500; flex-shrink: 0;">to</span>
+                <div style="flex: 1; min-width: 0;">
+                  <input class="form-input" type="text" id="field-salary-max" list="salary-max-list" placeholder="Max (e.g. ₹18,00,000)" value="₹18,00,000" aria-label="Maximum yearly compensation in INR">
+                  <datalist id="salary-max-list">
+                    <option value="₹10,00,000"></option>
+                    <option value="₹12,00,000"></option>
+                    <option value="₹15,00,000"></option>
+                    <option value="₹18,00,000"></option>
+                    <option value="₹20,00,000"></option>
+                    <option value="₹25,00,000"></option>
+                    <option value="₹30,00,000"></option>
+                    <option value="₹35,00,000"></option>
+                    <option value="₹40,00,000"></option>
+                    <option value="₹50,00,000"></option>
+                    <option value="₹60,00,000"></option>
+                  </datalist>
+                </div>
+              </div>
+              <input type="hidden" id="field-salary" value="₹12,00,000 – ₹18,00,000 / yr">
             </div>
 
             <div class="form-group" style="margin-bottom: 0;">

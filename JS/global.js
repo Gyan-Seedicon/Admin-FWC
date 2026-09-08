@@ -781,9 +781,9 @@ const DEFAULT_RECENT_SEARCHES = [
 function getRecentSearches() {
   try {
     const raw = localStorage.getItem(RECENT_SEARCHES_KEY);
-    if (raw) {
+    if (raw !== null) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch (e) {
     console.warn('Could not parse recent searches:', e);
@@ -805,6 +805,13 @@ function addRecentSearch(term) {
   let list = getRecentSearches().filter((t) => t.toLowerCase() !== trimmed.toLowerCase());
   list.unshift(trimmed);
   if (list.length > 8) list = list.slice(0, 8);
+  saveRecentSearches(list);
+}
+
+function removeRecentSearch(term) {
+  const trimmed = (term || '').trim().toLowerCase();
+  if (!trimmed) return;
+  const list = getRecentSearches().filter((t) => t.toLowerCase() !== trimmed);
   saveRecentSearches(list);
 }
 
@@ -841,6 +848,8 @@ function highlightMatch(text, query) {
 
 function getGlobalSearchSvg(iconClass) {
   switch (iconClass) {
+    case 'icon-recent':
+      return '<svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M136,80v48a8,8,0,0,1-2.34,5.66l-32,32a8,8,0,0,1-11.32-11.32L120,124.69V80a8,8,0,0,1,16,0Zm96,48A104,104,0,1,1,128,24a103.44,103.44,0,0,1,73.54,30.46l9.8-9.8A8,8,0,0,1,225,50.34l-16,32a8,8,0,0,1-10.66,4.32l-32-16a8,8,0,1,1,7.16-14.32L187.67,63A88,88,0,1,0,216,128a8,8,0,0,1,16,0Z"/></svg>';
     case 'icon-job':
       return '<svg viewBox="0 0 256 256" fill="currentColor" width="15" height="15"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v32H40V72ZM40,120H216v80H40Z"/></svg>';
     case 'icon-blog':
@@ -1196,83 +1205,49 @@ function renderGlobalSearchResults(query, container) {
   if (!container) return;
   const q = (query || '').trim();
 
-  // If query is empty -> render Recent Searches, Suggested Searches & Quick Navigation
+  // If query is empty -> render Recent Searches on the surface
   if (!q) {
     const recents = getRecentSearches();
-    const allItems = getGlobalSearchDataset();
-    const suggestedItems = allItems.filter((i) => i.category !== 'Quick Navigation').slice(0, 4);
-    const navItems = allItems.filter((i) => i.category === 'Quick Navigation').slice(0, 4);
 
-    let html = '';
-
-    if (recents.length > 0) {
-      html += `
-        <div class="global-search-section">
-          <div class="global-search-section-header">
-            <span>Recent Searches</span>
-            <button type="button" class="global-search-clear-all-btn" id="global-search-clear-recents">Clear all</button>
-          </div>
-          <div class="global-search-chips-wrap">
-            ${recents.map((term) => `
-              <button type="button" class="global-search-chip" data-recent-term="${escapeHtml(term)}">
-                <svg viewBox="0 0 256 256" fill="currentColor" width="12" height="12"><path d="M136,80v48a8,8,0,0,1-2.34,5.66l-32,32a8,8,0,0,1-11.32-11.32L120,124.69V80a8,8,0,0,1,16,0Zm96,48A104,104,0,1,1,128,24a103.44,103.44,0,0,1,73.54,30.46l9.8-9.8A8,8,0,0,1,225,50.34l-16,32a8,8,0,0,1-10.66,4.32l-32-16a8,8,0,1,1,7.16-14.32L187.67,63A88,88,0,1,0,216,128a8,8,0,0,1,16,0Z"/></svg>
-                <span>${escapeHtml(term)}</span>
-              </button>
-            `).join('')}
-          </div>
+    if (recents.length === 0) {
+      container.innerHTML = `
+        <div class="global-search-empty">
+          <svg class="global-search-empty-icon" viewBox="0 0 256 256" fill="currentColor" width="32" height="32"><path d="M136,80v48a8,8,0,0,1-2.34,5.66l-32,32a8,8,0,0,1-11.32-11.32L120,124.69V80a8,8,0,0,1,16,0Zm96,48A104,104,0,1,1,128,24a103.44,103.44,0,0,1,73.54,30.46l9.8-9.8A8,8,0,0,1,225,50.34l-16,32a8,8,0,0,1-10.66,4.32l-32-16a8,8,0,1,1,7.16-14.32L187.67,63A88,88,0,1,0,216,128a8,8,0,0,1,16,0Z"/></svg>
+          <div class="global-search-empty-title">No recent searches</div>
+          <div class="global-search-empty-subtext">Search across jobs, blog posts, candidates, and client inquiries.</div>
         </div>
       `;
+      return;
     }
 
-    if (suggestedItems.length > 0) {
-      html += `
-        <div class="global-search-section">
-          <div class="global-search-section-header">
-            <span>Suggested & Trending</span>
-          </div>
-          ${suggestedItems.map((item) => `
-            <a href="${item.url}" class="global-search-item" data-search-title="${escapeHtml(item.title)}">
+    container.innerHTML = `
+      <div class="global-search-section">
+        <div class="global-search-section-header">
+          <span>Recent Searches</span>
+          <button type="button" class="global-search-clear-all-btn" id="global-search-clear-recents">Clear all</button>
+        </div>
+        <div class="global-search-recents-list">
+          ${recents.map((term) => `
+            <div class="global-search-item global-search-recent-item" data-recent-term="${escapeHtml(term)}" role="button" tabindex="0">
               <div class="global-search-item-left">
-                <div class="global-search-item-icon ${item.iconClass}">
-                  ${getGlobalSearchSvg(item.iconClass)}
+                <div class="global-search-item-icon icon-recent">
+                  ${getGlobalSearchSvg('icon-recent')}
                 </div>
                 <div class="global-search-item-details">
-                  <span class="global-search-item-title">${escapeHtml(item.title)}</span>
-                  <span class="global-search-item-meta">${escapeHtml(item.meta)}</span>
+                  <span class="global-search-item-title">${escapeHtml(term)}</span>
                 </div>
               </div>
-              <span class="global-search-item-badge">${escapeHtml(item.type)}</span>
-            </a>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    if (navItems.length > 0) {
-      html += `
-        <div class="global-search-section">
-          <div class="global-search-section-header">
-            <span>Quick Navigation</span>
-          </div>
-          ${navItems.map((item) => `
-            <a href="${item.url}" class="global-search-item" data-search-title="${escapeHtml(item.title)}">
-              <div class="global-search-item-left">
-                <div class="global-search-item-icon ${item.iconClass}">
-                  ${getGlobalSearchSvg(item.iconClass)}
-                </div>
-                <div class="global-search-item-details">
-                  <span class="global-search-item-title">${escapeHtml(item.title)}</span>
-                  <span class="global-search-item-meta">${escapeHtml(item.meta)}</span>
-                </div>
+              <div class="global-search-recent-right">
+                <span class="global-search-item-badge">Recent</span>
+                <button type="button" class="global-search-remove-recent-btn" data-remove-recent="${escapeHtml(term)}" title="Remove from recent searches" aria-label="Remove ${escapeHtml(term)}">
+                  <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+                </button>
               </div>
-              <span class="global-search-item-badge">${escapeHtml(item.type)}</span>
-            </a>
+            </div>
           `).join('')}
         </div>
-      `;
-    }
-
-    container.innerHTML = html;
+      </div>
+    `;
     return;
   }
 
@@ -1515,23 +1490,36 @@ function initGlobalHeaderSearch() {
     renderGlobalSearchResults('', searchResultsWrap);
   });
 
-  // Delegate click for recent search chips and search items
+  // Delegate click for recent search items, remove buttons, and search results
   searchResultsWrap.addEventListener('click', (e) => {
-    // 1. Clear all recents
+    // 1. Remove individual recent search item
+    const removeBtn = e.target.closest('[data-remove-recent]');
+    if (removeBtn) {
+      e.stopPropagation();
+      e.preventDefault();
+      const term = removeBtn.dataset.removeRecent;
+      removeRecentSearch(term);
+      activeIndex = -1;
+      renderGlobalSearchResults(searchInput.value, searchResultsWrap);
+      return;
+    }
+
+    // 2. Clear all recents
     const clearRecentsBtn = e.target.closest('#global-search-clear-recents');
     if (clearRecentsBtn) {
       e.stopPropagation();
+      e.preventDefault();
       clearAllRecentSearches();
       activeIndex = -1;
       renderGlobalSearchResults('', searchResultsWrap);
       return;
     }
 
-    // 2. Click recent search chip
-    const chip = e.target.closest('[data-recent-term]');
-    if (chip) {
+    // 3. Click recent search item on the surface
+    const recentItem = e.target.closest('.global-search-recent-item');
+    if (recentItem) {
       e.stopPropagation();
-      const term = chip.dataset.recentTerm;
+      const term = recentItem.dataset.recentTerm;
       searchInput.value = term;
       if (searchClearBtn) searchClearBtn.classList.remove('hidden');
       searchInput.focus();
@@ -1540,11 +1528,11 @@ function initGlobalHeaderSearch() {
       return;
     }
 
-    // 3. Click search result item
+    // 4. Click search result item
     const item = e.target.closest('.global-search-item');
     if (item) {
       const searchTitle = item.dataset.searchTitle || searchInput.value;
-      addRecentSearch(searchTitle);
+      if (searchTitle) addRecentSearch(searchTitle);
       closeSearchPopover();
     }
   });
