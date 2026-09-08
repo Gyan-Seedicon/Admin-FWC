@@ -24,6 +24,44 @@
       <h1 class="header-title" id="page-heading">Add Blog Post</h1>
     </div>
     <div class="header-actions">
+      <!-- Global Subtle Header Search Bar -->
+      <div class="popover-anchor global-search-anchor" id="global-search-anchor">
+        <div class="global-search-bar" id="global-search-bar">
+          <svg class="global-search-icon" viewBox="0 0 256 256" fill="currentColor" width="15" height="15" aria-hidden="true">
+            <path d="M229.66,218.34,187.32,176a92.14,92.14,0,1,0-11.31,11.31l42.34,42.35a8,8,0,0,0,11.31-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>
+          </svg>
+          <input 
+            type="search" 
+            class="global-search-input" 
+            id="global-search-input" 
+            placeholder="Search platform..." 
+            autocomplete="off" 
+            spellcheck="false"
+            aria-label="Global search across platform"
+            aria-expanded="false"
+            aria-controls="global-search-popover"
+          >
+          <div class="global-search-shortcuts">
+            <button type="button" class="global-search-clear-btn hidden" id="global-search-clear" aria-label="Clear search">
+              <svg viewBox="0 0 256 256" fill="currentColor" width="11" height="11"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+            </button>
+            <kbd class="global-search-kbd" id="global-search-kbd">⌘K</kbd>
+          </div>
+        </div>
+
+        <div class="header-popover global-search-popover" id="global-search-popover" aria-hidden="true">
+          <div class="global-search-results-wrap" id="global-search-results-wrap"></div>
+          <div class="global-search-footer">
+            <div class="flex items-center gap-3">
+              <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+              <span><kbd>↵</kbd> select</span>
+              <span><kbd>esc</kbd> close</span>
+            </div>
+            <span class="search-meta-hint">Instant platform search</span>
+          </div>
+        </div>
+      </div>
+
       <div class="popover-anchor">
         <button class="header-icon-btn" id="notifications-trigger" type="button" aria-expanded="false" aria-controls="notifications-panel" aria-label="Notifications">
           <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" width="16" height="16"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
