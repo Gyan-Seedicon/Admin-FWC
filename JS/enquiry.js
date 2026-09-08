@@ -8,7 +8,7 @@
 const ENQUIRY_KEY = 'fwc-enquiries';
 const PARTNERSHIP_KEY = 'fwc-partnerships';
 
-const enquirySeedData = [
+const enquirySeedData = typeof GLOBAL_DEFAULT_ENQUIRIES !== 'undefined' ? GLOBAL_DEFAULT_ENQUIRIES : [
   {
     id: 1,
     name: 'Amara Chen',
@@ -66,7 +66,7 @@ const enquirySeedData = [
   }
 ];
 
-const partnershipSeedData = [
+const partnershipSeedData = typeof GLOBAL_DEFAULT_PARTNERSHIPS !== 'undefined' ? GLOBAL_DEFAULT_PARTNERSHIPS : [
   {
     id: 101,
     name: 'Elena Rostova',

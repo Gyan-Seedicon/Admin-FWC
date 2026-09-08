@@ -5,7 +5,7 @@
 
 const JOBS_KEY = 'fwc-job-listings';
 
-const jobListingsSeed = [
+const jobListingsSeed = typeof GLOBAL_DEFAULT_JOBS !== 'undefined' ? GLOBAL_DEFAULT_JOBS : [
   {
     id: 1,
     title: 'Cybersecurity Analyst',
@@ -150,8 +150,8 @@ const jobListingsSeed = [
     experience: 'Senior (5–8 Yrs)',
     salary: '$140,000 – $170,000 / yr',
     expiryDate: '2026-11-30',
-    pocName: 'Priya Nair',
-    pocEmail: 'p.nair@fwc.com',
+    pocName: 'Alex Rivera',
+    pocEmail: 'a.rivera@fwc.com',
     applicantsCount: 4,
     submitted: 'Aug 27, 2026 · 09:15 AM',
     submittedISO: '2026-08-27T09:15:00',
@@ -167,46 +167,111 @@ const jobListingsSeed = [
       'Conduct blameless post-mortems and automate infrastructure self-healing runbooks.'
     ],
     skills: ['Kubernetes & Helm', 'OpenTelemetry', 'AWS / GCP', 'Terraform', 'Chaos Engineering']
+  },
+  {
+    id: 7,
+    title: 'Staff Full Stack Engineer',
+    department: 'Software Engineering',
+    location: 'Alhambra, CA',
+    type: 'Full-time',
+    experience: 'Senior (5–8 Yrs)',
+    salary: '$145,000 – $175,000 / yr',
+    expiryDate: '2026-11-20',
+    pocName: 'Priya Nair',
+    pocEmail: 'p.nair@fwc.com',
+    applicantsCount: 19,
+    submitted: 'Aug 04, 2026 · 01:10 PM',
+    submittedISO: '2026-08-04T13:10:00',
+    status: 'published',
+    actionTakenOn: 'Aug 05, 2026 · 10:15 AM',
+    feedback: null,
+    pdfName: 'staff-fullstack-engineer-jd.pdf',
+    pdfSize: '1.5 MB',
+    overview: 'Architect modern micro-frontend portals and resilient Node.js / TypeScript microservices for tier-1 enterprise clients.',
+    responsibilities: [
+      'Lead full-stack feature delivery with React, Next.js, and GraphQL.',
+      'Maintain 99.9% uptime across production Kubernetes clusters and PostgreSQL databases.'
+    ],
+    skills: ['React / Next.js', 'Node.js & TypeScript', 'PostgreSQL', 'GraphQL', 'AWS ECS']
+  },
+  {
+    id: 8,
+    title: 'Lead Data & Analytics Architect',
+    department: 'Data & Analytics',
+    location: 'Remote',
+    type: 'Full-time',
+    experience: 'Staff / Lead (8+ Yrs)',
+    salary: '$155,000 – $185,000 / yr',
+    expiryDate: '2026-12-05',
+    pocName: 'Marcus Vance',
+    pocEmail: 'm.vance@fwc.com',
+    applicantsCount: 11,
+    submitted: 'Aug 01, 2026 · 11:30 AM',
+    submittedISO: '2026-08-01T11:30:00',
+    status: 'published',
+    actionTakenOn: 'Aug 02, 2026 · 04:00 PM',
+    feedback: null,
+    pdfName: 'lead-data-architect-jd.pdf',
+    pdfSize: '1.8 MB',
+    overview: 'Spearhead enterprise data lakehouse architectures, Snowflake ETL pipelines, and real-time streaming infrastructure.',
+    responsibilities: [
+      'Design modern Medallion data architectures across AWS S3, dbt, and Snowflake.',
+      'Implement data quality contracts, lineage governance, and Apache Kafka event streaming.'
+    ],
+    skills: ['Snowflake & dbt', 'Apache Kafka', 'PySpark', 'AWS Lake Formation', 'Data Mesh']
+  },
+  {
+    id: 9,
+    title: 'Principal DevSecOps Specialist',
+    department: 'Cybersecurity',
+    location: 'San Francisco, CA',
+    type: 'Full-time',
+    experience: 'Senior (5–8 Yrs)',
+    salary: '$160,000 – $190,000 / yr',
+    expiryDate: '2026-10-25',
+    pocName: 'Sarah Jenkins',
+    pocEmail: 's.jenkins@fwc.com',
+    applicantsCount: 15,
+    submitted: 'Jul 28, 2026 · 02:45 PM',
+    submittedISO: '2026-07-28T14:45:00',
+    status: 'published',
+    actionTakenOn: 'Jul 29, 2026 · 11:10 AM',
+    feedback: null,
+    pdfName: 'principal-devsecops-jd.pdf',
+    pdfSize: '1.6 MB',
+    overview: 'Build automated policy-as-code guardrails and supply chain security frameworks for enterprise hybrid cloud pods.',
+    responsibilities: [
+      'Integrate automated SAST/DAST, SBOM verification, and secret scanning into GitHub Actions CI/CD.',
+      'Author OPA Gatekeeper and Kyverno policies for Kubernetes admission control.'
+    ],
+    skills: ['DevSecOps', 'OPA / Gatekeeper', 'Terraform', 'Vault / KMS', 'Kubernetes Security']
+  },
+  {
+    id: 10,
+    title: 'Enterprise Systems Integration Consultant',
+    department: 'Technology Consulting',
+    location: 'Remote',
+    type: 'Contract',
+    experience: 'Mid-Level (3–5 Yrs)',
+    salary: '$130,000 – $150,000 / yr',
+    expiryDate: '2026-11-30',
+    pocName: 'Michael Chen',
+    pocEmail: 'm.chen@fwc.com',
+    applicantsCount: 0,
+    submitted: 'Aug 28, 2026 · 04:30 PM',
+    submittedISO: '2026-08-28T16:30:00',
+    status: 'draft',
+    actionTakenOn: null,
+    feedback: null,
+    pdfName: 'systems-integration-jd.pdf',
+    pdfSize: '1.0 MB',
+    overview: 'Draft requisition for ERP and CRM enterprise integration consulting across manufacturing supply chains.',
+    responsibilities: [
+      'Design REST / SOAP enterprise service bus integration connectors.'
+    ],
+    skills: ['MuleSoft', 'Enterprise Integration', 'REST APIs', 'Java / Spring', 'ERP Systems']
   }
 ];
-
-const DEFAULT_JOB_EXPIRIES = {
-  1: '2026-10-31',
-  2: '2026-11-15',
-  3: '2026-09-30',
-  4: '2026-10-15',
-  5: '2026-08-31',
-  6: '2026-11-30'
-};
-
-const DEFAULT_JOB_POCS = {
-  1: { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' },
-  2: { name: 'Michael Chen', email: 'm.chen@fwc.com' },
-  3: { name: 'Aarav Sharma', email: 'a.sharma@fwc.com' },
-  4: { name: 'Elena Rostova', email: 'e.rostova@fwc.com' },
-  5: { name: 'David Vance', email: 'd.vance@fwc.com' },
-  6: { name: 'Priya Nair', email: 'p.nair@fwc.com' }
-};
-
-function ensureJobExpiries(jobs) {
-  let modified = false;
-  jobs.forEach((job) => {
-    if (!job.expiryDate) {
-      job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
-      modified = true;
-    }
-    if (!job.pocName || !job.pocEmail) {
-      const def = DEFAULT_JOB_POCS[job.id] || { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' };
-      if (!job.pocName) job.pocName = def.name;
-      if (!job.pocEmail) job.pocEmail = def.email;
-      modified = true;
-    }
-  });
-  if (modified) {
-    saveCollection(JOBS_KEY, jobs);
-  }
-  return jobs;
-}
 
 function formatExpiryDate(dateStr) {
   if (!dateStr) return '—';
@@ -235,27 +300,15 @@ function ensureJobSeeds(jobs) {
     if (!existing) {
       jobs.push({ ...seed });
       modified = true;
+    } else {
+      Object.keys(seed).forEach((k) => {
+        if (existing[k] === undefined || existing[k] === null || existing[k] === '') {
+          existing[k] = seed[k];
+          modified = true;
+        }
+      });
     }
   });
-
-  const hasPending = jobs.some((j) => j.status === 'pending');
-  if (!hasPending) {
-    const j1 = jobs.find((j) => j.id === 1);
-    if (j1) { j1.status = 'pending'; j1.actionTakenOn = null; j1.feedback = null; modified = true; }
-    const j2 = jobs.find((j) => j.id === 2);
-    if (j2) { j2.status = 'pending'; j2.actionTakenOn = null; j2.feedback = null; modified = true; }
-  }
-
-  const hasRejected = jobs.some((j) => j.status === 'rejected');
-  if (!hasRejected) {
-    const j5 = jobs.find((j) => j.id === 5);
-    if (j5) {
-      j5.status = 'rejected';
-      j5.actionTakenOn = 'Aug 03, 2026 · 01:30 PM';
-      j5.feedback = 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.';
-      modified = true;
-    }
-  }
 
   if (modified) {
     saveCollection(JOBS_KEY, jobs);
@@ -263,7 +316,7 @@ function ensureJobSeeds(jobs) {
   return jobs;
 }
 
-let jobListings = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobListingsSeed)));
+let jobListings = ensureJobSeeds(loadCollection(JOBS_KEY, jobListingsSeed));
 
 const STATUS_BADGE_CLASS = {
   published: 'status-approved',

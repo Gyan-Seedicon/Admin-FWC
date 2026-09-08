@@ -721,9 +721,6 @@ function renderPage() {
     stageSelect.value = cand.status || 'Under Review';
   }
 
-  setElText('app-added-on', cand.addedOn || 'Oct 10, 2025');
-  setElText('app-last-updated', cand.lastUpdated || 'Oct 14, 2025');
-
   // 6. Right Column: History Timeline
   renderCandidateHistory(cand);
 

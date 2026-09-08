@@ -7,7 +7,7 @@
 const BLOG_KEY = 'fwc-blog-posts';
 const JOBS_KEY = 'fwc-job-listings';
 
-const blogSeedItems = [
+const blogSeedItems = typeof GLOBAL_DEFAULT_BLOGS !== 'undefined' ? GLOBAL_DEFAULT_BLOGS : [
   {
     id: 1,
     title: 'The Future of AI in Manufacturing Supply Chains',
@@ -88,7 +88,7 @@ const blogSeedItems = [
   }
 ];
 
-const jobSeedItems = [
+const jobSeedItems = typeof GLOBAL_DEFAULT_JOBS !== 'undefined' ? GLOBAL_DEFAULT_JOBS : [
   {
     id: 1,
     title: 'Cybersecurity Analyst',
@@ -228,8 +228,8 @@ const jobSeedItems = [
     experience: '5–8 Years',
     salary: '$140,000 – $170,000 / yr',
     expiryDate: '2026-11-30',
-    pocName: 'Priya Nair',
-    pocEmail: 'p.nair@fwc.com',
+    pocName: 'Alex Rivera',
+    pocEmail: 'a.rivera@fwc.com',
     submitted: 'Aug 27, 2026 · 09:15 AM',
     submittedISO: '2026-08-27T09:15:00',
     status: 'pending',
@@ -263,59 +263,20 @@ function ensureBlogSeeds(blogs) {
     if (!existing) {
       blogs.push({ ...seed });
       modified = true;
+    } else {
+      Object.keys(seed).forEach((k) => {
+        if (existing[k] === undefined || existing[k] === null || existing[k] === '') {
+          existing[k] = seed[k];
+          modified = true;
+        }
+      });
     }
   });
-
-  const hasPending = blogs.some((b) => b.status === 'pending');
-  if (!hasPending) {
-    const b1 = blogs.find((b) => b.id === 1);
-    if (b1) { b1.status = 'pending'; b1.actionTakenOn = null; b1.feedback = null; modified = true; }
-    const b2 = blogs.find((b) => b.id === 2);
-    if (b2) { b2.status = 'pending'; b2.actionTakenOn = null; b2.feedback = null; modified = true; }
-  }
 
   if (modified) {
     saveCollection(BLOG_KEY, blogs);
   }
   return blogs;
-}
-
-const DEFAULT_JOB_EXPIRIES = {
-  1: '2026-10-31',
-  2: '2026-11-15',
-  3: '2026-09-30',
-  4: '2026-10-15',
-  5: '2026-08-31',
-  6: '2026-11-30'
-};
-
-const DEFAULT_JOB_POCS = {
-  1: { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' },
-  2: { name: 'Michael Chen', email: 'm.chen@fwc.com' },
-  3: { name: 'Aarav Sharma', email: 'a.sharma@fwc.com' },
-  4: { name: 'Elena Rostova', email: 'e.rostova@fwc.com' },
-  5: { name: 'David Vance', email: 'd.vance@fwc.com' },
-  6: { name: 'Priya Nair', email: 'p.nair@fwc.com' }
-};
-
-function ensureJobExpiries(jobs) {
-  let modified = false;
-  jobs.forEach((job) => {
-    if (!job.expiryDate) {
-      job.expiryDate = DEFAULT_JOB_EXPIRIES[job.id] || '2026-10-31';
-      modified = true;
-    }
-    if (!job.pocName || !job.pocEmail) {
-      const def = DEFAULT_JOB_POCS[job.id] || { name: 'Sarah Jenkins', email: 's.jenkins@fwc.com' };
-      if (!job.pocName) job.pocName = def.name;
-      if (!job.pocEmail) job.pocEmail = def.email;
-      modified = true;
-    }
-  });
-  if (modified) {
-    saveCollection(JOBS_KEY, jobs);
-  }
-  return jobs;
 }
 
 function formatExpiryDate(dateStr) {
@@ -345,28 +306,15 @@ function ensureJobSeeds(jobs) {
     if (!existing) {
       jobs.push({ ...seed });
       modified = true;
+    } else {
+      Object.keys(seed).forEach((k) => {
+        if (existing[k] === undefined || existing[k] === null || existing[k] === '') {
+          existing[k] = seed[k];
+          modified = true;
+        }
+      });
     }
   });
-
-  // Ensure pending review jobs exist in moderation queue
-  const hasPending = jobs.some((j) => j.status === 'pending');
-  if (!hasPending) {
-    const j1 = jobs.find((j) => j.id === 1);
-    if (j1) { j1.status = 'pending'; j1.actionTakenOn = null; j1.feedback = null; modified = true; }
-    const j2 = jobs.find((j) => j.id === 2);
-    if (j2) { j2.status = 'pending'; j2.actionTakenOn = null; j2.feedback = null; modified = true; }
-  }
-
-  const hasRejected = jobs.some((j) => j.status === 'rejected');
-  if (!hasRejected) {
-    const j5 = jobs.find((j) => j.id === 5);
-    if (j5) {
-      j5.status = 'rejected';
-      j5.actionTakenOn = 'Aug 03, 2026 · 01:30 PM';
-      j5.feedback = 'Please specify the exact required smart-contract auditing experience and updated compensation grade band.';
-      modified = true;
-    }
-  }
 
   if (modified) {
     saveCollection(JOBS_KEY, jobs);
@@ -375,7 +323,7 @@ function ensureJobSeeds(jobs) {
 }
 
 let blogItems = ensureBlogSeeds(loadCollection(BLOG_KEY, blogSeedItems));
-let jobItems = ensureJobSeeds(ensureJobExpiries(loadCollection(JOBS_KEY, jobSeedItems)));
+let jobItems = ensureJobSeeds(loadCollection(JOBS_KEY, jobSeedItems));
 let activePendingItem = null; // for quick approve / reject dialogs
 
 const AVATAR_COLORS = ['avatar-color-1', 'avatar-color-2', 'avatar-color-3', 'avatar-color-4', 'avatar-color-5'];

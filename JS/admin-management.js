@@ -4,7 +4,7 @@
 
 const ADMIN_KEY = 'fwc-admins';
 
-const adminSeedData = [
+const adminSeedData = typeof GLOBAL_DEFAULT_ADMINS !== 'undefined' ? GLOBAL_DEFAULT_ADMINS : [
   {
     id: 1,
     name: 'Taylor Brooks',

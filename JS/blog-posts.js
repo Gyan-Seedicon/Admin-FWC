@@ -5,7 +5,7 @@
 
 const BLOG_KEY = 'fwc-blog-posts';
 
-const blogPostsSeed = [
+const blogPostsSeed = typeof GLOBAL_DEFAULT_BLOGS !== 'undefined' ? GLOBAL_DEFAULT_BLOGS : [
   {
     id: 1,
     title: 'The Future of AI in Manufacturing Supply Chains',
@@ -83,15 +83,75 @@ const blogPostsSeed = [
     feedback: null,
     coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&auto=format&fit=crop&q=80',
     excerpt: 'Best practices for managing multi-tenant Kubernetes clusters, automated service mesh deployments, and observability across hybrid cloud environments.'
+  },
+  {
+    id: 7,
+    title: 'Optimizing CI/CD Delivery Pipelines for High-Frequency Cloud Releases',
+    author: 'Alex Kim',
+    category: 'Cloud & Infrastructure',
+    submitted: 'Aug 15, 2026 · 03:10 PM',
+    submittedISO: '2026-08-15T15:10:00',
+    status: 'published',
+    actionTakenOn: 'Aug 16, 2026 · 11:30 AM',
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'How progressive canary deployments and ephemeral environments reduce change failure rate by 80%.'
+  },
+  {
+    id: 8,
+    title: 'Enterprise Guide to Fine-Tuning Domain-Specific LLMs',
+    author: 'Jordan Lee',
+    category: 'AI & Advanced Tech',
+    submitted: 'Aug 10, 2026 · 01:40 PM',
+    submittedISO: '2026-08-10T13:40:00',
+    status: 'published',
+    actionTakenOn: 'Aug 11, 2026 · 09:20 AM',
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Practical strategies for LoRA and QLoRA adapter fine-tuning on proprietary manufacturing telemetry.'
+  },
+  {
+    id: 9,
+    title: 'Securing Multi-Tenant Microservices in Modern Kubernetes Pods',
+    author: 'Marcus Vance',
+    category: 'Cybersecurity',
+    submitted: 'Aug 05, 2026 · 10:15 AM',
+    submittedISO: '2026-08-05T10:15:00',
+    status: 'published',
+    actionTakenOn: 'Aug 06, 2026 · 02:45 PM',
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Network policy segmentation and eBPF observability paradigms for strict zero-trust runtime environments.'
+  },
+  {
+    id: 10,
+    title: 'Next-Gen Edge Computing in Smart Factory Architectures',
+    author: 'Sam Patel',
+    category: 'Manufacturing',
+    submitted: 'Aug 28, 2026 · 05:00 PM',
+    submittedISO: '2026-08-28T17:00:00',
+    status: 'draft',
+    actionTakenOn: null,
+    feedback: null,
+    coverImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&auto=format&fit=crop&q=80',
+    excerpt: 'Draft proposal on deploying lightweight inference models directly to industrial PLC edge controllers.'
   }
 ];
 
 function ensureBlogSeeds(blogs) {
   let modified = false;
   blogPostsSeed.forEach((seed) => {
-    if (!blogs.some((b) => b.id === seed.id)) {
+    const existing = blogs.find((b) => b.id === seed.id);
+    if (!existing) {
       blogs.push({ ...seed });
       modified = true;
+    } else {
+      Object.keys(seed).forEach((k) => {
+        if (existing[k] === undefined || existing[k] === null || existing[k] === '') {
+          existing[k] = seed[k];
+          modified = true;
+        }
+      });
     }
   });
   if (modified) {
