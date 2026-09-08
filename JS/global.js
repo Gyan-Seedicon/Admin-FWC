@@ -385,6 +385,49 @@ function initSidebarCollapse() {
   });
 }
 
+function updateSidebarCounts() {
+  try {
+    const rawBlogs = localStorage.getItem('fwc-blog-posts');
+    const rawJobs = localStorage.getItem('fwc-job-listings');
+    let pendingBlogs = 0;
+    let pendingJobs = 0;
+    let totalBlogs = 0;
+    let totalJobs = 0;
+
+    if (rawBlogs) {
+      const blogs = JSON.parse(rawBlogs);
+      if (Array.isArray(blogs)) {
+        totalBlogs = blogs.length;
+        pendingBlogs = blogs.filter(b => b && (b.status === 'pending' || b.status === 'pending review' || b.status === 'pending_review')).length;
+      }
+    }
+    if (rawJobs) {
+      const jobs = JSON.parse(rawJobs);
+      if (Array.isArray(jobs)) {
+        totalJobs = jobs.length;
+        pendingJobs = jobs.filter(j => j && (j.status === 'pending' || j.status === 'pending review' || j.status === 'pending_review')).length;
+      }
+    }
+
+    const totalPending = pendingBlogs + pendingJobs;
+    document.querySelectorAll('.sidebar-nav-link').forEach((link) => {
+      const href = (link.getAttribute('href') || '').split('/').pop();
+      const label = link.querySelector('.sidebar-nav-label');
+      if (!label) return;
+
+      if (href === 'approval-requests.html' && totalPending > 0) {
+        label.textContent = `Approval requests (${totalPending})`;
+      } else if (href === 'blog-posts.html' && totalBlogs > 0) {
+        label.textContent = `Blog posts (${totalBlogs})`;
+      } else if (href === 'job-listings.html' && totalJobs > 0) {
+        label.textContent = `Job listings (${totalJobs})`;
+      }
+    });
+  } catch (e) {
+    console.warn('updateSidebarCounts error:', e);
+  }
+}
+
 function initPopover(triggerId, panelId) {
   const trigger = document.getElementById(triggerId);
   const panel = document.getElementById(panelId);
@@ -396,6 +439,19 @@ function initPopover(triggerId, panelId) {
     trigger.setAttribute('aria-expanded', 'false');
   };
   const openMenu = () => {
+    // Close any other open popovers first
+    document.querySelectorAll('.header-popover.is-open').forEach((p) => {
+      if (p !== panel) {
+        p.classList.remove('is-open');
+        p.setAttribute('aria-hidden', 'true');
+      }
+    });
+    document.querySelectorAll('[aria-expanded="true"]').forEach((t) => {
+      if (t !== trigger && (t.id === 'user-menu-trigger' || t.id === 'notifications-trigger')) {
+        t.setAttribute('aria-expanded', 'false');
+      }
+    });
+
     panel.classList.add('is-open');
     panel.setAttribute('aria-hidden', 'false');
     trigger.setAttribute('aria-expanded', 'true');
@@ -407,7 +463,9 @@ function initPopover(triggerId, panelId) {
   });
 
   document.addEventListener('click', (e) => {
-    if (!panel.contains(e.target) && e.target !== trigger) closeMenu();
+    if (!panel.contains(e.target) && e.target !== trigger && !trigger.contains(e.target)) {
+      closeMenu();
+    }
   });
 
   document.addEventListener('keydown', (e) => {
@@ -465,30 +523,124 @@ function initRichTextToolbar(toolbarEl) {
 // --------------------------------------------------------------------------
 
 const NOTIFICATIONS = [
-  { text: 'New enquiry received from Amara Chen (BFSI)', time: '2 hours ago' },
-  { text: 'Sam Patel submitted blog post for approval', time: '5 hours ago' },
-  { text: 'Jordan Lee submitted job posting for approval', time: '1 day ago' },
-  { text: 'Rajesh Nair’s enquiry marked In Progress', time: '1 day ago' }
+  {
+    id: 1,
+    type: 'blog',
+    title: 'Blog Post Submitted',
+    text: 'David Chen submitted "Scaling Distributed Kubernetes" for approval.',
+    time: '2 hours ago',
+    unread: true,
+    url: 'approval-requests.html'
+  },
+  {
+    id: 2,
+    type: 'job',
+    title: 'Job Requisition Submitted',
+    text: 'Site Reliability & Platform Engineer submitted for approval.',
+    time: '5 hours ago',
+    unread: true,
+    url: 'approval-requests.html'
+  },
+  {
+    id: 3,
+    type: 'candidate',
+    title: 'New Candidate Application',
+    text: 'Elena Rostova applied for Senior AI Architect.',
+    time: '1 day ago',
+    unread: true,
+    url: 'job-applicants.html?jobId=3'
+  },
+  {
+    id: 4,
+    type: 'enquiry',
+    title: 'Enterprise Client Enquiry',
+    text: 'Amara Chen (BFSI practice) requested a consultation.',
+    time: '2 days ago',
+    unread: false,
+    url: 'enquiry.html'
+  }
 ];
+
+function getNotificationIcon(type) {
+  if (type === 'blog') {
+    return `<svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,128Zm0,32a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,160Z"/></svg>`;
+  }
+  if (type === 'job') {
+    return `<svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,200H40V72H216V200Z"/></svg>`;
+  }
+  if (type === 'candidate') {
+    return `<svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M117.25,157.92a60,60,0,1,0-66.5,0A95.83,95.83,0,0,0,3.53,195.63a8,8,0,1,0,13.4,8.74,80,80,0,0,1,134.14,0,8,8,0,0,0,13.4-8.74A95.83,95.83,0,0,0,117.25,157.92ZM40,108a44,44,0,1,1,44,44A44.05,44.05,0,0,1,40,108Z"/></svg>`;
+  }
+  return `<svg viewBox="0 0 256 256" fill="currentColor" width="16" height="16"><path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80Z"/></svg>`;
+}
 
 function renderNotifications() {
   const list = document.getElementById('notification-list');
   const dot = document.getElementById('notification-dot');
+  const unreadCountEl = document.getElementById('notification-unread-count');
   if (!list) return;
+
+  const unreadCount = NOTIFICATIONS.filter((n) => n.unread).length;
+
+  if (dot) {
+    if (unreadCount > 0) {
+      dot.classList.remove('hidden');
+    } else {
+      dot.classList.add('hidden');
+    }
+  }
+
+  if (unreadCountEl) {
+    unreadCountEl.textContent = unreadCount > 0 ? `${unreadCount} new` : '0 new';
+  }
 
   if (NOTIFICATIONS.length === 0) {
     list.innerHTML = '<p class="notification-empty">You\'re all caught up.</p>';
-    if (dot) dot.classList.add('hidden');
     return;
   }
 
   list.innerHTML = NOTIFICATIONS.map((n) => `
-    <div class="notification-item">
-      <p class="notification-item-text">${n.text}</p>
-      <p class="notification-item-time">${n.time}</p>
-    </div>
+    <a href="${n.url || '#'}" class="notification-card ${n.unread ? 'unread' : ''}" data-id="${n.id}">
+      <div class="notification-icon-wrap type-${n.type || 'blog'}">
+        ${getNotificationIcon(n.type)}
+      </div>
+      <div class="notification-body">
+        <div class="notification-title-row">
+          <span class="notification-title">${n.title}</span>
+          ${n.unread ? '<span class="notification-unread-dot"></span>' : ''}
+        </div>
+        <p class="notification-text">${n.text}</p>
+        <span class="notification-time">${n.time}</span>
+      </div>
+    </a>
   `).join('');
-  if (dot) dot.classList.remove('hidden');
+}
+
+function initNotificationActions() {
+  const markAllBtn = document.getElementById('mark-all-read-btn');
+  if (markAllBtn) {
+    markAllBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      NOTIFICATIONS.forEach((n) => { n.unread = false; });
+      renderNotifications();
+      showToast('All notifications marked as read', 'success');
+    });
+  }
+
+  const list = document.getElementById('notification-list');
+  if (list) {
+    list.addEventListener('click', (e) => {
+      const card = e.target.closest('.notification-card');
+      if (card) {
+        const id = Number(card.dataset.id);
+        const item = NOTIFICATIONS.find((n) => n.id === id);
+        if (item) {
+          item.unread = false;
+          renderNotifications();
+        }
+      }
+    });
+  }
 }
 
 // --------------------------------------------------------------------------
@@ -1428,22 +1580,29 @@ function initGlobalHeaderSearch() {
 // 09. Auto Initialization
 // --------------------------------------------------------------------------
 
-document.addEventListener('DOMContentLoaded', () => {
-  checkFlashToast();
-  initSidebarActiveLink();
-  initSidebarCollapse();
-  updateSidebarCounts();
-  initGlobalHeaderSearch();
-  initPopover('user-menu-trigger', 'user-menu-panel');
-  initPopover('notifications-trigger', 'notifications-panel');
-  initModalTriggers();
-  initDrawerTriggers();
-  initToggleSwitches();
-  initSelectAllCheckboxes();
-  renderNotifications();
+function initGlobalApp() {
+  try { checkFlashToast(); } catch (e) { console.warn('checkFlashToast:', e); }
+  try { initSidebarActiveLink(); } catch (e) { console.warn('initSidebarActiveLink:', e); }
+  try { initSidebarCollapse(); } catch (e) { console.warn('initSidebarCollapse:', e); }
+  try { updateSidebarCounts(); } catch (e) { console.warn('updateSidebarCounts:', e); }
+  try { initGlobalHeaderSearch(); } catch (e) { console.warn('initGlobalHeaderSearch:', e); }
+  try { initPopover('user-menu-trigger', 'user-menu-panel'); } catch (e) { console.warn('initPopover user-menu:', e); }
+  try { initPopover('notifications-trigger', 'notifications-panel'); } catch (e) { console.warn('initPopover notifications:', e); }
+  try { initModalTriggers(); } catch (e) { console.warn('initModalTriggers:', e); }
+  try { initDrawerTriggers(); } catch (e) { console.warn('initDrawerTriggers:', e); }
+  try { initToggleSwitches(); } catch (e) { console.warn('initToggleSwitches:', e); }
+  try { initSelectAllCheckboxes(); } catch (e) { console.warn('initSelectAllCheckboxes:', e); }
+  try { renderNotifications(); } catch (e) { console.warn('renderNotifications:', e); }
+  try { initNotificationActions(); } catch (e) { console.warn('initNotificationActions:', e); }
 
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => showToast('You have been logged out.', 'info'));
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGlobalApp);
+} else {
+  initGlobalApp();
+}
