@@ -124,10 +124,9 @@ const blogSeedItems = [
   }
 ];
 
-const DEFAULT_PRESET_COVER = 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80';
 let currentPost = null;
 let isReviewMode = false;
-let coverImageUrl = DEFAULT_PRESET_COVER;
+let coverImageUrl = null;
 
 function formatNow() {
   const now = new Date();
@@ -422,7 +421,7 @@ function initSlashCommands() {
 }
 
 // --------------------------------------------------------------------------
-// Title Auto-Grow
+// Title Auto-Grow & Category Creatable Input
 // --------------------------------------------------------------------------
 function initTitleAutogrow() {
   const titleInput = document.getElementById('story-title-input');
@@ -436,6 +435,195 @@ function initTitleAutogrow() {
     updateWordStats();
   });
   adjustHeight();
+}
+
+const DEFAULT_CATEGORIES = [
+  'AI',
+  'Manufacturing',
+  'AI & Tech Staffing',
+  'Engineering & Technology',
+  'Governance & Compliance',
+  'Cloud & Infrastructure',
+  'Cybersecurity',
+  'FinTech',
+  'Healthcare Tech',
+  'Leadership & Strategy'
+];
+
+function initCategoryInput() {
+  const wrap = document.getElementById('story-category-wrap');
+  const input = document.getElementById('story-category-select');
+  const toggleBtn = document.getElementById('story-category-toggle-btn');
+  const dropdown = document.getElementById('story-category-dropdown');
+  const optionsContainer = document.getElementById('story-category-options');
+
+  if (!wrap || !input || !dropdown || !optionsContainer) return;
+
+  let categories = [...DEFAULT_CATEGORIES];
+  let focusedIndex = -1;
+
+  function renderOptions(filterText = '') {
+    optionsContainer.innerHTML = '';
+    const query = filterText.trim().toLowerCase();
+    const currentValue = input.value.trim();
+
+    const filtered = categories.filter((cat) => cat.toLowerCase().includes(query));
+
+    if (filtered.length === 0 && !query) {
+      optionsContainer.innerHTML = '<div class="story-category-empty-msg">No categories available</div>';
+      return;
+    }
+
+    filtered.forEach((cat, idx) => {
+      const isSelected = cat.toLowerCase() === currentValue.toLowerCase();
+      const item = document.createElement('div');
+      item.className = `story-category-option${isSelected ? ' is-selected' : ''}`;
+      item.setAttribute('role', 'option');
+      item.setAttribute('data-value', cat);
+      item.innerHTML = `
+        <span>${cat}</span>
+        <svg class="option-check" viewBox="0 0 256 256" fill="currentColor" width="14" height="14">
+          <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/>
+        </svg>
+      `;
+
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        selectCategory(cat);
+      });
+
+      optionsContainer.appendChild(item);
+    });
+
+    // If typed text doesn't exactly match any existing category, offer to create it
+    const exactMatch = categories.some((cat) => cat.toLowerCase() === query);
+    if (query && !exactMatch) {
+      const createItem = document.createElement('div');
+      createItem.className = 'story-category-create-option';
+      createItem.setAttribute('role', 'option');
+      createItem.innerHTML = `
+        <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></svg>
+        <span>Add "<strong>${filterText.trim()}</strong>"</span>
+      `;
+      createItem.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        const newCat = filterText.trim();
+        if (!categories.includes(newCat)) {
+          categories.push(newCat);
+        }
+        selectCategory(newCat);
+      });
+      optionsContainer.appendChild(createItem);
+    }
+
+    focusedIndex = -1;
+  }
+
+  function openDropdown(showAll = false) {
+    renderOptions(showAll ? '' : input.value);
+    dropdown.classList.add('is-open');
+    wrap.classList.add('is-open', 'is-active');
+    input.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDropdown() {
+    dropdown.classList.remove('is-open');
+    wrap.classList.remove('is-open', 'is-active');
+    input.setAttribute('aria-expanded', 'false');
+    focusedIndex = -1;
+  }
+
+  function selectCategory(cat) {
+    input.value = cat;
+    closeDropdown();
+    input.focus();
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Open on input click & focus
+  input.addEventListener('focus', () => {
+    openDropdown(true);
+    input.select();
+  });
+
+  input.addEventListener('click', () => {
+    if (!dropdown.classList.contains('is-open')) {
+      openDropdown(true);
+    }
+  });
+
+  // Filter on typing
+  input.addEventListener('input', () => {
+    openDropdown(false);
+  });
+
+  // Toggle button click
+  toggleBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (dropdown.classList.contains('is-open')) {
+      closeDropdown();
+    } else {
+      openDropdown(true);
+      input.focus();
+    }
+  });
+
+  // Keyboard navigation
+  input.addEventListener('keydown', (e) => {
+    const items = optionsContainer.querySelectorAll('.story-category-option, .story-category-create-option');
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!dropdown.classList.contains('is-open')) {
+        openDropdown(true);
+        return;
+      }
+      if (items.length === 0) return;
+      focusedIndex = (focusedIndex + 1) % items.length;
+      updateFocusedOption(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!dropdown.classList.contains('is-open')) {
+        openDropdown(true);
+        return;
+      }
+      if (items.length === 0) return;
+      focusedIndex = (focusedIndex - 1 + items.length) % items.length;
+      updateFocusedOption(items);
+    } else if (e.key === 'Enter') {
+      if (dropdown.classList.contains('is-open') && focusedIndex >= 0 && items[focusedIndex]) {
+        e.preventDefault();
+        items[focusedIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      } else if (dropdown.classList.contains('is-open')) {
+        // Close on enter if no specific item highlighted
+        closeDropdown();
+      }
+    } else if (e.key === 'Escape') {
+      if (dropdown.classList.contains('is-open')) {
+        e.preventDefault();
+        closeDropdown();
+      }
+    }
+  });
+
+  function updateFocusedOption(items) {
+    items.forEach((item, idx) => {
+      if (idx === focusedIndex) {
+        item.classList.add('is-focused');
+        item.scrollIntoView({ block: 'nearest' });
+      } else {
+        item.classList.remove('is-focused');
+      }
+    });
+  }
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!wrap.contains(e.target)) {
+      closeDropdown();
+    }
+  });
 }
 
 // --------------------------------------------------------------------------
@@ -629,7 +817,7 @@ function setupReviewMode(post) {
   if (post.coverImage) {
     setCoverImage(post.coverImage);
   } else {
-    setCoverImage('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80');
+    removeCoverImage();
   }
 
   if (post.content && post.content.length > 80) {
@@ -758,6 +946,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSelectionBubble();
   initSlashCommands();
   initTitleAutogrow();
+  initCategoryInput();
 
   const editor = document.getElementById('story-editor-body');
   editor.addEventListener('input', updateWordStats);
@@ -797,11 +986,10 @@ document.addEventListener('DOMContentLoaded', () => {
       catSelect.value = currentPost.category;
     }
 
-    if (currentPost.coverImage !== undefined) {
-      if (currentPost.coverImage) setCoverImage(currentPost.coverImage);
-      else removeCoverImage();
+    if (currentPost.coverImage) {
+      setCoverImage(currentPost.coverImage);
     } else {
-      setCoverImage(DEFAULT_PRESET_COVER);
+      removeCoverImage();
     }
 
     if (currentPost.content) editor.innerHTML = currentPost.content;
@@ -811,8 +999,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateWordStats();
   } else {
-    // New blog post creation mode: initialize with preset cover banner
-    setCoverImage(DEFAULT_PRESET_COVER);
+    // New blog post creation mode: initialize with empty upload banner
+    removeCoverImage();
   }
 
   // Set default starting paragraph if empty

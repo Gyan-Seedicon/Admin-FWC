@@ -11,16 +11,9 @@
 <a href="#main-content" class="skip-link">Skip to editor</a>
 
 <div class="dashboard-shell">
-  <!-- Top Dashboard Header with Breadcrumbs -->
+  <!-- Top Dashboard Header -->
   <header class="dashboard-header">
     <div class="header-title-wrap">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="index.html">Dashboard</a>
-        <span class="breadcrumbs-separator">/</span>
-        <a href="blog-posts.html" id="breadcrumb-parent">Blog Posts</a>
-        <span class="breadcrumbs-separator">/</span>
-        <span class="breadcrumbs-current" id="breadcrumb-current">Add Blog Post</span>
-      </nav>
       <h1 class="header-title" id="page-heading">Add Blog Post</h1>
     </div>
     <div class="header-actions">
@@ -170,6 +163,15 @@
   <!-- Main Content: Centered Story Canvas -->
   <main class="dashboard-main" id="main-content">
     <div class="story-wrapper" id="editor-canvas">
+      <!-- Story Breadcrumb Navigation (placed just above Draft in Taylor Brooks) -->
+      <nav class="breadcrumbs story-breadcrumbs" aria-label="Breadcrumb" style="margin-bottom: 14px;">
+        <a href="index.html">Dashboard</a>
+        <span class="breadcrumbs-separator">/</span>
+        <a href="blog-posts.html" id="breadcrumb-parent">Blog Posts</a>
+        <span class="breadcrumbs-separator">/</span>
+        <span class="breadcrumbs-current" id="breadcrumb-current">Add Blog Post</span>
+      </nav>
+
       <!-- Story Header Action Bar -->
       <div class="story-header-bar">
         <div class="story-status-tag" id="normal-status-bar">
@@ -228,9 +230,9 @@
       <section class="story-cover-section" id="story-cover-section">
         <input type="file" id="cover-file-input" accept="image/*" style="display: none;">
 
-        <!-- Active Cover Banner Preview Box (Preset Image Visible By Default) -->
-        <div class="story-cover-preview" id="cover-preview-box">
-          <img id="cover-preview-img" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&auto=format&fit=crop&q=80" alt="Blog Post Cover Banner">
+        <!-- Active Cover Banner Preview Box (Shown when an image is uploaded) -->
+        <div class="story-cover-preview hidden" id="cover-preview-box">
+          <img id="cover-preview-img" src="" alt="Blog Post Cover Banner">
           <div class="story-cover-actions">
             <button type="button" class="story-cover-action-btn" id="change-cover-btn" title="Change cover image">
               <svg viewBox="0 0 256 256" fill="currentColor" width="13" height="13"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
@@ -243,15 +245,16 @@
           </div>
         </div>
 
-        <!-- Empty State / Placeholder Banner Dropzone (Shown if removed) -->
-        <div class="story-cover-empty hidden" id="cover-empty-prompt" role="button" tabindex="0">
+        <!-- Empty State / Placeholder Banner Dropzone (Default View with 16:9 Specifications) -->
+        <div class="story-cover-empty" id="cover-empty-prompt" role="button" tabindex="0">
           <div class="story-cover-empty-content">
             <div class="story-cover-empty-icon">
-              <svg viewBox="0 0 256 256" fill="currentColor" width="20" height="20"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
+              <svg viewBox="0 0 256 256" fill="currentColor" width="22" height="22"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM184,96a8,8,0,0,1-8,8H80a8,8,0,0,1,0-16h96A8,8,0,0,1,184,96Z"/></svg>
             </div>
             <div class="story-cover-empty-text">
-              <span class="story-cover-empty-title">Add a cover banner image</span>
-              <span class="story-cover-empty-subtext">Click to upload a banner image for this story (16:9 recommended)</span>
+              <span class="story-cover-empty-title">Upload Cover Banner Image</span>
+              <span class="story-cover-empty-subtext">Click to browse or drag & drop (<strong>16:9 ratio</strong> · 1200 × 675 px recommended)</span>
+              <span class="story-cover-empty-meta">Supports JPG, PNG, WebP up to 5MB</span>
             </div>
           </div>
         </div>
@@ -260,16 +263,27 @@
       <!-- Story Title -->
       <textarea class="story-title-input" id="story-title-input" placeholder="Title" rows="1" spellcheck="true" autofocus></textarea>
 
-      <!-- Category Selection Dropdown (Square Rounded) -->
-      <div class="story-category-select-wrap">
-        <select class="form-select story-category-select" id="story-category-select" aria-label="Select category">
-          <option value="AI" selected>AI</option>
-          <option value="Manufacturing">Manufacturing</option>
-          <option value="AI & Tech Staffing">AI & Tech Staffing</option>
-          <option value="Engineering & Technology">Engineering & Technology</option>
-          <option value="Governance & Compliance">Governance & Compliance</option>
-          <option value="Cloud & Infrastructure">Cloud & Infrastructure</option>
-        </select>
+      <!-- Category Selection & Creatable Tag Input (Square Rounded) -->
+      <div class="story-category-select-wrap" id="story-category-wrap">
+        <div class="story-category-input-box" id="story-category-input-box">
+          <input 
+            type="text" 
+            class="story-category-select" 
+            id="story-category-select" 
+            placeholder="Select or type category..." 
+            value="AI" 
+            autocomplete="off"
+            aria-label="Story category tag"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+          >
+          <button type="button" class="story-category-toggle-btn" id="story-category-toggle-btn" aria-label="Toggle category list" tabindex="-1">
+            <svg class="story-category-chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="story-category-dropdown" id="story-category-dropdown" role="listbox">
+          <div class="story-category-list" id="story-category-options"></div>
+        </div>
       </div>
 
       <!-- Content Editable Body with Medium-style Floating Inserter -->
