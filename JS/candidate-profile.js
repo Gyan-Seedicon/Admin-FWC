@@ -7,7 +7,7 @@
 const CANDIDATES_KEY = 'fwc-job-candidates';
 const JOBS_KEY = 'fwc-job-listings';
 
-const ONBOARDING_CANDIDATE_DATA = [
+const ONBOARDING_CANDIDATE_DATA = typeof GLOBAL_DEFAULT_CANDIDATES !== 'undefined' ? GLOBAL_DEFAULT_CANDIDATES : [
   // 1. Siddharth Rao (Job 2)
   {
     id: 201,

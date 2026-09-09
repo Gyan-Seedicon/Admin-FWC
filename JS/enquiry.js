@@ -1,12 +1,15 @@
 /* ==========================================================================
-   Enquiry / Service & Partnership Management
-   Underlined Tabs: Service Requests & Partnership Requests
-   Columns: S.No., Name, Email, Organisation, Region, Industry, Enquiry/Message, Submitted on
-   Structured minimal Enquiry/Partnership Details Drawer.
+   Enquiry / Service, Partnership & AI Agent Request Management
+   Underlined Tabs: Service Requests, Partnership Requests & Agent Request Service
+   Columns:
+     - Service / Partnership: S.No., Name, Email, Organisation, Region, Industry, Enquiry/Message, Submitted on
+     - Agent Request Service: S.No., Name, Organisation, Email, Industry, Type of AI agent, Message, Submitted on
+   Structured minimal Enquiry/Partnership/Agent Details Drawer.
    ========================================================================== */
 
 const ENQUIRY_KEY = 'fwc-enquiries';
 const PARTNERSHIP_KEY = 'fwc-partnerships';
+const AGENT_REQUEST_KEY = 'fwc-agent-requests';
 
 const enquirySeedData = typeof GLOBAL_DEFAULT_ENQUIRIES !== 'undefined' ? GLOBAL_DEFAULT_ENQUIRIES : [
   {
@@ -113,8 +116,67 @@ const partnershipSeedData = typeof GLOBAL_DEFAULT_PARTNERSHIPS !== 'undefined' ?
   }
 ];
 
+const agentRequestSeedData = typeof GLOBAL_DEFAULT_AGENT_REQUESTS !== 'undefined' ? GLOBAL_DEFAULT_AGENT_REQUESTS : [
+  {
+    id: 201,
+    name: 'Vikram Malhotra',
+    email: 'v.malhotra@synthetix.ai',
+    organisation: 'Synthetix AI Labs',
+    industry: 'Financial Services & Banking',
+    agentType: 'Autonomous Risk & Underwriting Agent',
+    message: 'We require an autonomous AI agent capable of ingesting financial statements, bank feeds, and credit bureau data to generate automated risk scores and preliminary underwriting memos for SME loan requests.',
+    submitted: 'Aug 28, 2026 · 11:30 AM',
+    submittedISO: '2026-08-28T11:30:00'
+  },
+  {
+    id: 202,
+    name: 'Rachel Adams',
+    email: 'rachel.adams@biogenix.com',
+    organisation: 'BioGenix Therapeutics',
+    industry: 'Healthcare & Life Sciences',
+    agentType: 'Clinical Trial Protocol & Triage Agent',
+    message: 'Seeking a HIPAA/GDPR-compliant multi-modal AI agent to assist researchers with screening clinical trial candidate profiles, matching genetic biomarkers, and summarising trial inclusion criteria.',
+    submitted: 'Aug 26, 2026 · 03:15 PM',
+    submittedISO: '2026-08-26T15:15:00'
+  },
+  {
+    id: 203,
+    name: 'Karthik Subramanian',
+    email: 'karthik.s@kredencelogix.in',
+    organisation: 'Kredence Logistics Corp',
+    industry: 'Supply Chain & Logistics',
+    agentType: 'Supply Chain Dispatch & Route Optimization Agent',
+    message: 'Need an agentic workflow that continuously monitors port congestion, weather APIs, and fleet telemetry to autonomously re-route cross-dock container freight and notify dispatch managers.',
+    submitted: 'Aug 24, 2026 · 09:45 AM',
+    submittedISO: '2026-08-24T09:45:00'
+  },
+  {
+    id: 204,
+    name: 'Elena Vasquez',
+    email: 'elena.v@novaretail.com',
+    organisation: 'NovaRetail Omnichannel',
+    industry: 'E-Commerce & Retail',
+    agentType: 'Multilingual Customer Support & Sales Agent',
+    message: 'Looking to deploy a 24/7 conversational commerce agent on WhatsApp and Web that handles product recommendations, return logistics, and inventory queries in English, Spanish, and French.',
+    submitted: 'Aug 20, 2026 · 05:20 PM',
+    submittedISO: '2026-08-20T17:20:00'
+  },
+  {
+    id: 205,
+    name: 'Tariq Mansoor',
+    email: 'tariq@aerologix.ae',
+    organisation: 'AeroDynamics Defense Systems',
+    industry: 'Aerospace & Defense',
+    agentType: 'Automated Code Review & Security Compliance Agent',
+    message: 'Seeking an air-gapped on-premises LLM agent to perform static AST code analysis, SBOM verification, and ISO 27001 / DO-178C avionics software safety compliance checks.',
+    submitted: 'Aug 15, 2026 · 01:10 PM',
+    submittedISO: '2026-08-15T13:10:00'
+  }
+];
+
 let enquiries = loadCollection(ENQUIRY_KEY, enquirySeedData);
 let partnerships = loadCollection(PARTNERSHIP_KEY, partnershipSeedData);
+let agentRequests = loadCollection(AGENT_REQUEST_KEY, agentRequestSeedData);
 
 // Migrate older stored data if keys differ
 if (enquiries.length && !enquiries[0].organisation) {
@@ -125,8 +187,12 @@ if (partnerships.length && !partnerships[0].organisation) {
   partnerships = partnershipSeedData;
   saveCollection(PARTNERSHIP_KEY, partnerships);
 }
+if (agentRequests.length && !agentRequests[0].agentType) {
+  agentRequests = agentRequestSeedData;
+  saveCollection(AGENT_REQUEST_KEY, agentRequests);
+}
 
-let activeTab = 'service'; // 'service' | 'partnership'
+let activeTab = 'service'; // 'service' | 'partnership' | 'agent'
 let activeItem = null;
 
 const CONTACT_AVATARS = {
@@ -138,7 +204,12 @@ const CONTACT_AVATARS = {
   'Elena Rostova': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
   'Marcus Vance': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
   'Dr. Hiroshi Tanaka': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
-  'Claire Dupont': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80'
+  'Claire Dupont': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80',
+  'Vikram Malhotra': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+  'Rachel Adams': 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=150&auto=format&fit=crop&q=80',
+  'Karthik Subramanian': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
+  'Elena Vasquez': 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=150&auto=format&fit=crop&q=80',
+  'Tariq Mansoor': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
 };
 
 function getAvatarUrl(name, idx = 0) {
@@ -159,23 +230,63 @@ function updateBadges() {
 
   const partnershipBadge = document.getElementById('partnership-requests-badge');
   if (partnershipBadge) partnershipBadge.textContent = partnerships.length;
+
+  const agentBadge = document.getElementById('agent-requests-badge');
+  if (agentBadge) agentBadge.textContent = agentRequests.length;
 }
 
 function getActiveDataset() {
-  return activeTab === 'service' ? enquiries : partnerships;
+  if (activeTab === 'service') return enquiries;
+  if (activeTab === 'partnership') return partnerships;
+  if (activeTab === 'agent') return agentRequests;
+  return enquiries;
+}
+
+function renderTableHeader() {
+  const thead = document.querySelector('#enquiries-table thead');
+  if (!thead) return;
+
+  if (activeTab === 'agent') {
+    thead.innerHTML = `
+      <tr id="enquiries-table-head-row">
+        <th style="width: 50px;">S.No.</th>
+        <th>Name <span class="sort-icon"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,181.66l-56,56a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L144,212.69V40a8,8,0,0,1,16,0V212.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM101.66,74.34,68,40.69V212a8,8,0,0,1-16,0V40.69L18.34,74.34A8,8,0,0,1,7,63,8,8,0,0,1,7,52.34l40-40a8,8,0,0,1,11.32,0l40,40A8,8,0,0,1,101.66,74.34Z"/></svg></span></th>
+        <th>Organisation</th>
+        <th>Email</th>
+        <th>Industry</th>
+        <th>Type of AI agent</th>
+        <th id="enquiry-col-message">Message</th>
+        <th>Submitted on</th>
+      </tr>
+    `;
+  } else {
+    const msgColTitle = activeTab === 'service' ? 'Enquiry' : 'Message';
+    thead.innerHTML = `
+      <tr id="enquiries-table-head-row">
+        <th style="width: 50px;">S.No.</th>
+        <th>Name <span class="sort-icon"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,181.66l-56,56a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L144,212.69V40a8,8,0,0,1,16,0V212.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM101.66,74.34,68,40.69V212a8,8,0,0,1-16,0V40.69L18.34,74.34A8,8,0,0,1,7,63,8,8,0,0,1,7,52.34l40-40a8,8,0,0,1,11.32,0l40,40A8,8,0,0,1,101.66,74.34Z"/></svg></span></th>
+        <th>Email</th>
+        <th>Organisation</th>
+        <th>Region</th>
+        <th>Industry</th>
+        <th id="enquiry-col-message">${msgColTitle}</th>
+        <th>Submitted on</th>
+      </tr>
+    `;
+  }
 }
 
 function renderTable(items) {
   const tbody = document.getElementById('enquiries-table-body');
   if (!tbody) return;
 
-  const colHeader = document.getElementById('enquiry-col-message');
-  if (colHeader) {
-    colHeader.textContent = activeTab === 'service' ? 'Enquiry' : 'Message';
-  }
+  renderTableHeader();
 
   if (!items.length) {
-    const emptyLabel = activeTab === 'service' ? 'service requests' : 'partnership requests';
+    let emptyLabel = 'service requests';
+    if (activeTab === 'partnership') emptyLabel = 'partnership requests';
+    if (activeTab === 'agent') emptyLabel = 'agent request services';
+
     tbody.innerHTML = `
       <tr class="request-list-empty-row">
         <td colspan="8" style="text-align: center; padding: var(--space-8); color: var(--ink-muted);">
@@ -186,27 +297,50 @@ function renderTable(items) {
     return;
   }
 
-  tbody.innerHTML = items.map((item, idx) => {
-    const submittedTime = item.submitted || 'Aug 26, 2026 · 02:40 PM';
-    const message = item.enquiry || item.message || '';
-    const org = item.organisation || item.companyType || 'Enterprise Client';
-    const reg = item.region || item.country || 'Global';
-    const ind = item.industry || item.companyType || 'Technology';
-    const itemType = activeTab === 'service' ? 'enquiry' : 'partnership request';
+  if (activeTab === 'agent') {
+    tbody.innerHTML = items.map((item, idx) => {
+      const submittedTime = item.submitted || 'Aug 28, 2026 · 11:30 AM';
+      const message = item.message || item.enquiry || '';
+      const org = item.organisation || 'Enterprise Client';
+      const ind = item.industry || 'Technology';
+      const agentType = item.agentType || 'Autonomous AI Agent';
 
-    return `
-      <tr data-id="${item.id}" style="cursor: pointer;" title="Click to view full ${itemType} details">
-        <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
-        <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${item.name}</td>
-        <td style="white-space: nowrap;"><a href="mailto:${item.email}" class="table-link" onclick="event.stopPropagation()">${item.email}</a></td>
-        <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${org}</td>
-        <td style="color: var(--ink-secondary); font-size: var(--text-2xs); white-space: nowrap;">${reg}</td>
-        <td style="white-space: nowrap;"><span class="status-badge status-draft">${ind}</span></td>
-        <td style="max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-secondary);" title="${message}">${message}</td>
-        <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${submittedTime}</td>
-      </tr>
-    `;
-  }).join('');
+      return `
+        <tr data-id="${item.id}" style="cursor: pointer;" title="Click to view full agent request service details">
+          <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+          <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${item.name}</td>
+          <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${org}</td>
+          <td style="white-space: nowrap;"><a href="https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(item.email)}&su=${encodeURIComponent('FWC AI Agent Request: ' + agentType)}" target="_blank" rel="noopener noreferrer" class="table-link" onclick="event.stopPropagation()">${item.email}</a></td>
+          <td style="white-space: nowrap;"><span class="status-badge status-draft">${ind}</span></td>
+          <td style="white-space: nowrap;"><span class="status-badge status-agent">${agentType}</span></td>
+          <td style="max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-secondary);" title="${message}">${message}</td>
+          <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${submittedTime}</td>
+        </tr>
+      `;
+    }).join('');
+  } else {
+    tbody.innerHTML = items.map((item, idx) => {
+      const submittedTime = item.submitted || 'Aug 26, 2026 · 02:40 PM';
+      const message = item.enquiry || item.message || '';
+      const org = item.organisation || item.companyType || 'Enterprise Client';
+      const reg = item.region || item.country || 'Global';
+      const ind = item.industry || item.companyType || 'Technology';
+      const itemType = activeTab === 'service' ? 'enquiry' : 'partnership request';
+
+      return `
+        <tr data-id="${item.id}" style="cursor: pointer;" title="Click to view full ${itemType} details">
+          <td style="color: var(--ink-muted); font-size: var(--text-2xs);">${idx + 1}</td>
+          <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${item.name}</td>
+          <td style="white-space: nowrap;"><a href="https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(item.email)}&su=${encodeURIComponent('FWC Follow-up: ' + org)}" target="_blank" rel="noopener noreferrer" class="table-link" onclick="event.stopPropagation()">${item.email}</a></td>
+          <td style="font-weight: 600; color: var(--ink-primary); white-space: nowrap;">${org}</td>
+          <td style="color: var(--ink-secondary); font-size: var(--text-2xs); white-space: nowrap;">${reg}</td>
+          <td style="white-space: nowrap;"><span class="status-badge status-draft">${ind}</span></td>
+          <td style="max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-secondary);" title="${message}">${message}</td>
+          <td style="color: var(--ink-primary); font-size: var(--text-2xs); font-weight: 500; white-space: nowrap;">${submittedTime}</td>
+        </tr>
+      `;
+    }).join('');
+  }
 }
 
 function openEnquiryDrawer(id) {
@@ -216,11 +350,13 @@ function openEnquiryDrawer(id) {
   activeItem = item;
 
   const isService = activeTab === 'service';
+  const isAgent = activeTab === 'agent';
   const submittedTime = item.submitted || 'Aug 26, 2026 · 02:40 PM';
   const message = item.enquiry || item.message || '';
   const org = item.organisation || item.companyType || 'Enterprise Client';
   const reg = item.region || item.country || 'Global';
   const ind = item.industry || item.companyType || 'Technology';
+  const agentType = item.agentType || 'Autonomous AI Agent';
 
   const avatarImg = document.getElementById('drawer-avatar-img');
   if (avatarImg) {
@@ -230,12 +366,24 @@ function openEnquiryDrawer(id) {
 
   const drawerTitle = document.getElementById('drawer-title');
   if (drawerTitle) {
-    drawerTitle.textContent = isService ? 'Service Request Details' : 'Partnership Request Details';
+    if (isAgent) {
+      drawerTitle.textContent = 'Agent Request Service Details';
+    } else if (isService) {
+      drawerTitle.textContent = 'Service Request Details';
+    } else {
+      drawerTitle.textContent = 'Partnership Request Details';
+    }
   }
 
   const scopeTitle = document.getElementById('drawer-scope-title');
   if (scopeTitle) {
-    scopeTitle.textContent = isService ? 'Project Scope & Enquiry' : 'Partnership Scope & Message';
+    if (isAgent) {
+      scopeTitle.textContent = 'Agent Scope & Message';
+    } else if (isService) {
+      scopeTitle.textContent = 'Project Scope & Enquiry';
+    } else {
+      scopeTitle.textContent = 'Partnership Scope & Message';
+    }
   }
 
   document.getElementById('drawer-name').textContent = item.name;
@@ -249,12 +397,37 @@ function openEnquiryDrawer(id) {
 
   const emailBtn = document.getElementById('drawer-email-btn');
   if (emailBtn) {
-    const subject = isService ? `FWC Follow-up: ${org}` : `FWC Partnership Inquiry: ${org}`;
-    emailBtn.href = `mailto:${item.email}?subject=${encodeURIComponent(subject)}`;
+    let subject = `FWC Follow-up: ${org}`;
+    if (isAgent) {
+      subject = `FWC AI Agent Request: ${agentType} — ${org}`;
+    } else if (!isService) {
+      subject = `FWC Partnership Inquiry: ${org}`;
+    }
+    emailBtn.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(item.email)}&su=${encodeURIComponent(subject)}`;
+    emailBtn.target = '_blank';
+    emailBtn.rel = 'noopener noreferrer';
   }
 
   document.getElementById('drawer-org').textContent = org;
-  document.getElementById('drawer-region').textContent = reg;
+  
+  const regionContainer = document.getElementById('drawer-region-container');
+  const agentTypeContainer = document.getElementById('drawer-agent-type-container');
+
+  if (isAgent) {
+    if (regionContainer) regionContainer.style.display = 'none';
+    if (agentTypeContainer) {
+      agentTypeContainer.style.display = 'flex';
+      const agentBadge = document.getElementById('drawer-agent-type');
+      if (agentBadge) agentBadge.textContent = agentType;
+    }
+  } else {
+    if (regionContainer) {
+      regionContainer.style.display = 'flex';
+      document.getElementById('drawer-region').textContent = reg;
+    }
+    if (agentTypeContainer) agentTypeContainer.style.display = 'none';
+  }
+
   document.getElementById('drawer-industry').textContent = ind;
   document.getElementById('drawer-message').textContent = message;
 
@@ -273,6 +446,7 @@ function applyActiveFilters() {
     const org = (item.organisation || item.companyType || '').toLowerCase();
     const reg = (item.region || item.country || '').toLowerCase();
     const ind = (item.industry || '').toLowerCase();
+    const agentType = (item.agentType || '').toLowerCase();
     const text = (item.enquiry || item.message || '').toLowerCase();
 
     const matchSearch = !q ||
@@ -281,6 +455,7 @@ function applyActiveFilters() {
       org.includes(q) ||
       reg.includes(q) ||
       ind.includes(q) ||
+      agentType.includes(q) ||
       text.includes(q);
 
     if (!matchSearch) return false;
@@ -299,22 +474,27 @@ function applyActiveFilters() {
 }
 
 function switchTab(tab) {
-  if (tab !== 'service' && tab !== 'partnership') return;
+  if (tab !== 'service' && tab !== 'partnership' && tab !== 'agent') return;
   activeTab = tab;
 
   const serviceTabBtn = document.getElementById('tab-service-requests');
   const partnershipTabBtn = document.getElementById('tab-partnership-requests');
+  const agentTabBtn = document.getElementById('tab-agent-requests');
+
+  [serviceTabBtn, partnershipTabBtn, agentTabBtn].forEach((btn) => {
+    btn?.classList.remove('active');
+    btn?.setAttribute('aria-selected', 'false');
+  });
 
   if (activeTab === 'service') {
     serviceTabBtn?.classList.add('active');
     serviceTabBtn?.setAttribute('aria-selected', 'true');
-    partnershipTabBtn?.classList.remove('active');
-    partnershipTabBtn?.setAttribute('aria-selected', 'false');
-  } else {
+  } else if (activeTab === 'partnership') {
     partnershipTabBtn?.classList.add('active');
     partnershipTabBtn?.setAttribute('aria-selected', 'true');
-    serviceTabBtn?.classList.remove('active');
-    serviceTabBtn?.setAttribute('aria-selected', 'false');
+  } else if (activeTab === 'agent') {
+    agentTabBtn?.classList.add('active');
+    agentTabBtn?.setAttribute('aria-selected', 'true');
   }
 
   applyActiveFilters();
@@ -323,6 +503,7 @@ function switchTab(tab) {
 function refreshAll() {
   enquiries = loadCollection(ENQUIRY_KEY, enquirySeedData);
   partnerships = loadCollection(PARTNERSHIP_KEY, partnershipSeedData);
+  agentRequests = loadCollection(AGENT_REQUEST_KEY, agentRequestSeedData);
   updateBadges();
   applyActiveFilters();
 }
@@ -339,6 +520,10 @@ document.addEventListener('DOMContentLoaded', () => {
     switchTab('partnership');
   });
 
+  document.getElementById('tab-agent-requests')?.addEventListener('click', () => {
+    switchTab('agent');
+  });
+
   // Search & Date Filters
   const searchInput = document.getElementById('enquiry-search');
   const dateFilter = document.getElementById('enquiry-date-filter');
@@ -348,7 +533,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // CSV Export
   document.getElementById('export-csv-btn')?.addEventListener('click', () => {
-    const filename = activeTab === 'service' ? 'fwc-service-requests.csv' : 'fwc-partnership-requests.csv';
+    let filename = 'fwc-service-requests.csv';
+    if (activeTab === 'partnership') filename = 'fwc-partnership-requests.csv';
+    if (activeTab === 'agent') filename = 'fwc-agent-requests.csv';
     exportTableToCSV('enquiries-table', filename);
   });
 
@@ -360,3 +547,4 @@ document.addEventListener('DOMContentLoaded', () => {
     openEnquiryDrawer(id);
   });
 });
+

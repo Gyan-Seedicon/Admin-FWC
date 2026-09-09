@@ -625,558 +625,817 @@ const GLOBAL_DEFAULT_JOBS = [
 
 const GLOBAL_DEFAULT_CANDIDATES = [
   {
-    id: 201,
-    jobId: 2,
-    fullName: 'Siddharth Rao',
-    name: 'Siddharth Rao',
-    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80',
-    gender: 'Male',
-    dob: '18 Nov 1991',
-    age: '34 Yrs',
-    countryCode: '+1',
-    phone: '+1 (626) 714-8830',
-    currentLocation: 'Pasadena, CA',
-    email: 'siddharth.rao@advisorycloud.com',
-    linkedinUrl: 'https://linkedin.com/in/siddharth-rao-cloud',
-    portfolioUrl: 'https://siddharthrao.dev',
-    resumeFileName: 'siddharth-rao-tech-consultant.pdf',
-    resumeFileSize: '1.5 MB',
-    totalExp: '7.5 Years',
-    designation: 'Lead Cloud Strategy Consultant',
-    highestDegree: 'M.S. Industrial Systems – UCLA',
-    prefLocationsSummary: 'Pasadena / Remote',
-    isCurrentlyWorking: 'Yes',
-    currentCompanyName: 'Deloitte Consulting LLP',
-    fieldIndustry: 'Enterprise Technology & Advisory',
-    noticePeriod: '30 Days',
-    currentCtc: '$140,000 / yr',
-    expectedCtc: '$165,000 / yr',
-    preferredEmploymentTypes: ['Full-time', 'Remote'],
-    preferredLocations: ['Pasadena, CA', 'Remote / Hybrid'],
-    appliedOn: 'Aug 25, 2026',
-    status: 'Screening',
-    workExperience: [
+    "id": 301,
+    "jobId": 3,
+    "fullName": "Dr. Vikram Malhotra",
+    "name": "Dr. Vikram Malhotra",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "email": "vikram.malhotra@neuralscale.ai",
+    "phone": "+91 98450 12890",
+    "currentLocation": "Bangalore, India",
+    "location": "Bangalore, India",
+    "appliedOn": "Aug 22, 2026",
+    "appliedISO": "2026-08-22T11:30:00",
+    "status": "Interviewing",
+    "totalExp": "9.5 Yrs",
+    "workExpYears": 9.5,
+    "currentCtc": "24 LPA",
+    "currentCtcNum": 24,
+    "expectedCtc": "28 LPA",
+    "expectedCtcNum": 28,
+    "noticePeriod": "30 Days",
+    "employmentType": "Full-time",
+    "designation": "Principal AI Architect",
+    "currentCompanyName": "Cognitive Intelligence Labs",
+    "previousDesignation": "Lead Machine Learning Engineer",
+    "previousCompanyName": "Wipro AI Research",
+    "highestDegree": "Ph.D. in Computer Science — IISc Bangalore",
+    "rating": 4.9,
+    "resumeFileName": "dr-vikram-malhotra-ai-architect.pdf",
+    "resumeFileSize": "1.8 MB",
+    "summary": "Ph.D. in Machine Learning with 9+ years architecting enterprise RAG systems, LLM orchestration frameworks, and vector index clusters on Kubernetes.",
+    "skills": [
+      "LLM Orchestration",
+      "RAG Architectures",
+      "PyTorch",
+      "LangChain",
+      "Vector DBs (Milvus)",
+      "MLOps on Kubernetes",
+      "AWS Bedrock"
+    ],
+    "comments": [
       {
-        jobTitle: 'Lead Cloud Strategy Consultant',
-        companyName: 'Deloitte Consulting LLP',
-        employmentType: 'Full-time',
-        location: 'Los Angeles, CA',
-        startDate: 'Mar 2022',
-        endDate: 'Present',
-        currentlyWorkingHere: true,
-        period: '2022 – Present',
-        description: [
-          'Advised C-suite leadership on a $15M multi-year digital transformation and legacy migration roadmap for Fortune 500 manufacturing clients.',
-          'Structured agile pod delivery governance improving sprint velocity by 35% across 4 cross-functional engineering teams.',
-          'Conducted comprehensive TCO and cloud ROI financial models reducing infrastructure expenditures by 22%.'
-        ]
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 23, 2026 · 10:15 AM",
+        "text": "Exceptional background in enterprise GenAI architectures and distributed vector indexing. Cleared technical screening with top marks."
       },
       {
-        jobTitle: 'Senior Systems Integration Engineer',
-        companyName: 'Accenture Technology Solutions',
-        employmentType: 'Full-time',
-        location: 'San Jose, CA',
-        startDate: 'Jan 2019',
-        endDate: 'Feb 2022',
-        currentlyWorkingHere: false,
-        period: '2019 – 2022',
-        description: [
-          'Designed hybrid cloud migration strategies integrating monolithic SAP ERP platforms with AWS serverless microservices.',
-          'Authored reusable infrastructure-as-code deployment blueprints using Terraform and Docker.'
-        ]
+        "author": "Taylor Brooks",
+        "role": "Super Admin",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 24, 2026 · 02:40 PM",
+        "text": "Scheduled for round 2 architecture discussion with the engineering leadership."
       }
     ],
-    education: [
+    "history": [
       {
-        university: 'University of California, Los Angeles (UCLA)',
-        degree: 'M.S.',
-        courseMajor: 'Industrial Systems Engineering',
-        startDate: 'Aug 2016',
-        endDate: 'May 2018',
-        gradeCgpa: '3.92 GPA'
+        "text": "Candidate moved to Interviewing stage",
+        "time": "Aug 24, 2026 · 02:40 PM",
+        "active": true
       },
       {
-        university: 'University of California, Berkeley',
-        degree: 'B.S.',
-        courseMajor: 'Computer Science',
-        startDate: 'Aug 2012',
-        endDate: 'May 2016',
-        gradeCgpa: '3.85 GPA'
-      }
-    ],
-    skills: ['Enterprise Architecture', 'Cloud Migration Strategy', 'AWS Solutions Architect', 'Agile Pod Leadership', 'Financial ROI Modeling', 'Terraform', 'Kubernetes'],
-    history: [
-      { text: 'Technical screening round scheduled with Hiring Manager', time: 'Aug 26, 2026 • 11:30 AM', active: true },
-      { text: 'Candidate profile shortlisted by Lead Recruiter', time: 'Aug 25, 2026 • 03:45 PM', active: false },
-      { text: 'Application received via FWC Career Portal', time: 'Aug 25, 2026 • 01:20 PM', active: false }
-    ],
-    comments: [
+        "text": "Shortlisted for technical evaluation round",
+        "time": "Aug 23, 2026 · 10:15 AM",
+        "active": false
+      },
       {
-        author: 'Lead Recruiter',
-        role: 'Talent Acquisition',
-        date: 'Aug 25',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        text: 'Strong enterprise consulting background with Fortune 500 migration case studies. Recommended for Screening round.'
+        "text": "Application submitted for Senior AI Architect",
+        "time": "Aug 22, 2026 · 11:30 AM",
+        "active": false
       }
     ]
   },
   {
-    id: 100,
-    jobId: 2,
-    fullName: 'John Doe',
-    name: 'John Doe',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    gender: 'Male',
-    dob: '15 Mar 1993',
-    age: '33 Yrs',
-    countryCode: '+1',
-    phone: '+1 (234) 567-890',
-    currentLocation: 'San Francisco, CA',
-    email: 'john.doe@example.com',
-    linkedinUrl: 'https://linkedin.com/in/johndoe-developer',
-    portfolioUrl: 'https://johndoe.dev',
-    resumeFileName: 'john-doe-senior-developer.pdf',
-    resumeFileSize: '1.4 MB',
-    totalExp: '5.2 Years',
-    designation: 'Senior Frontend Developer',
-    highestDegree: 'B.Tech Computer Science – MIT',
-    prefLocationsSummary: 'Remote / SF Bay Area',
-    isCurrentlyWorking: 'Yes',
-    currentCompanyName: 'Infosys Pvt. Ltd.',
-    fieldIndustry: 'Information Technology',
-    noticePeriod: '30 Days',
-    currentCtc: '$120,000 / yr',
-    expectedCtc: '$150,000 / yr',
-    preferredEmploymentTypes: ['Full-time', 'Remote'],
-    preferredLocations: ['San Francisco, CA', 'Remote'],
-    appliedOn: 'Oct 01, 2025',
-    status: 'Rejected',
-    workExperience: [
+    "id": 302,
+    "jobId": 3,
+    "fullName": "Ananya Deshmukh",
+    "name": "Ananya Deshmukh",
+    "gender": "Female",
+    "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+    "email": "ananya.deshmukh@genai-systems.io",
+    "phone": "+91 99801 44520",
+    "currentLocation": "Bangalore, India",
+    "location": "Bangalore, India",
+    "appliedOn": "Aug 20, 2026",
+    "appliedISO": "2026-08-20T15:15:00",
+    "status": "Shortlisted",
+    "totalExp": "6.5 Yrs",
+    "workExpYears": 6.5,
+    "currentCtc": "18 LPA",
+    "currentCtcNum": 18,
+    "expectedCtc": "22 LPA",
+    "expectedCtcNum": 22,
+    "noticePeriod": "Immediate",
+    "employmentType": "Full-time",
+    "designation": "Staff Machine Learning Engineer",
+    "currentCompanyName": "HyperScale AI Labs",
+    "previousDesignation": "Senior AI Engineer",
+    "previousCompanyName": "TCS Innovation Hub",
+    "highestDegree": "M.Tech in Artificial Intelligence — IIT Bombay",
+    "rating": 4.8,
+    "resumeFileName": "ananya-deshmukh-staff-ai-engineer.pdf",
+    "resumeFileSize": "1.4 MB",
+    "summary": "Staff AI Engineer with expertise in model fine-tuning (LoRA), latency optimization on NVIDIA H100 clusters, and agentic workflows with LangGraph.",
+    "skills": [
+      "LangGraph",
+      "PyTorch & vLLM",
+      "Model Fine-tuning (LoRA)",
+      "Triton Inference Server",
+      "AWS Bedrock",
+      "Python",
+      "FastAPI"
+    ],
+    "comments": [
       {
-        jobTitle: 'Senior Frontend Developer',
-        companyName: 'Infosys Pvt. Ltd.',
-        employmentType: 'Full-time',
-        location: 'San Francisco, CA',
-        startDate: 'Mar 2022',
-        endDate: 'Present',
-        currentlyWorkingHere: true,
-        period: '2022 – Present',
-        description: [
-          'Led modern React micro-frontend architecture modernization for Fortune 500 retail portal.',
-          'Reduced core web vitals LCP from 3.2s to 1.1s across 1.4M monthly active sessions.',
-          'Mentored 6 junior engineers and authored reusable TypeScript component library.'
-        ]
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 21, 2026 · 11:00 AM",
+        "text": "Available immediately. Demonstrates deep proficiency in multi-agent orchestration."
+      }
+    ],
+    "history": [
+      {
+        "text": "Candidate shortlisted for technical interview",
+        "time": "Aug 21, 2026 · 11:00 AM",
+        "active": true
       },
       {
-        jobTitle: 'Frontend UI Engineer',
-        companyName: 'Apex Digital Labs',
-        employmentType: 'Full-time',
-        location: 'Chicago, IL',
-        startDate: 'Jan 2020',
-        endDate: 'Feb 2022',
-        currentlyWorkingHere: false,
-        period: '2020 – 2022',
-        description: [
-          'Built responsive design system using Tailwind CSS and Figma tokens.',
-          'Integrated GraphQL APIs with Apollo client caching for sub-100ms UI rendering.'
-        ]
-      }
-    ],
-    education: [
-      {
-        university: 'Massachusetts Institute of Technology (MIT)',
-        degree: 'B.Tech',
-        courseMajor: 'Computer Science',
-        startDate: 'Aug 2016',
-        endDate: 'May 2020',
-        gradeCgpa: '3.88 GPA'
-      }
-    ],
-    skills: ['React & Next.js', 'TypeScript', 'GraphQL', 'Tailwind CSS', 'Redux Toolkit', 'Jest & Cypress', 'UI/UX Design', 'Performance Optimization'],
-    history: [
-      { text: 'Hiring Manager rejected this candidate', time: 'Oct 15, 2025 • 09:45 AM', active: true },
-      { text: 'The profile was updated by System', time: 'Oct 14, 2025 • 02:15 PM', active: false },
-      { text: 'Candidate applied for this position', time: 'Oct 01, 2025 • 11:00 AM', active: false }
-    ],
-    comments: [
-      {
-        author: 'Hiring Manager',
-        role: 'Engineering Lead',
-        date: 'Oct 15',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        text: 'Candidate was good technically but didn\'t fit the team culture.'
+        "text": "Application submitted for Senior AI Architect",
+        "time": "Aug 20, 2026 · 03:15 PM",
+        "active": false
       }
     ]
   },
   {
-    id: 301,
-    jobId: 3,
-    fullName: 'Dr. Vikram Malhotra',
-    name: 'Dr. Vikram Malhotra',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    gender: 'Male',
-    dob: '22 Apr 1989',
-    age: '37 Yrs',
-    countryCode: '+91',
-    phone: '+91 98450 12890',
-    currentLocation: 'Bangalore, India',
-    email: 'vikram.malhotra@neuralscale.ai',
-    linkedinUrl: 'https://linkedin.com/in/dr-vikram-malhotra-ai',
-    portfolioUrl: 'https://neuralscale.ai/research/v-malhotra',
-    resumeFileName: 'dr-vikram-malhotra-ai-architect.pdf',
-    resumeFileSize: '1.8 MB',
-    totalExp: '9.5 Years',
-    designation: 'Principal AI Architect',
-    highestDegree: 'Ph.D. Computer Science (NLP) – IISc Bangalore',
-    prefLocationsSummary: 'Bangalore / Remote',
-    isCurrentlyWorking: 'Yes',
-    currentCompanyName: 'Cognitive Intelligence Labs',
-    fieldIndustry: 'Artificial Intelligence & Deep Tech',
-    noticePeriod: '15 Days',
-    currentCtc: '₹42,00,000 / yr',
-    expectedCtc: '₹55,00,000 / yr',
-    preferredEmploymentTypes: ['Full-time', 'Hybrid'],
-    preferredLocations: ['Bangalore, India', 'Remote'],
-    appliedOn: 'Aug 22, 2026',
-    status: 'Interviewing',
-    workExperience: [
+    "id": 303,
+    "jobId": 3,
+    "fullName": "Robert Vance",
+    "name": "Robert Vance",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "email": "robert.vance@ai-foundry.com",
+    "phone": "+91 98112 33490",
+    "currentLocation": "Hyderabad, India",
+    "location": "Hyderabad, India",
+    "appliedOn": "Aug 19, 2026",
+    "appliedISO": "2026-08-19T09:20:00",
+    "status": "Under Review",
+    "totalExp": "8.0 Yrs",
+    "workExpYears": 8,
+    "currentCtc": "21 LPA",
+    "currentCtcNum": 21,
+    "expectedCtc": "25 LPA",
+    "expectedCtcNum": 25,
+    "noticePeriod": "60 Days",
+    "employmentType": "Remote",
+    "designation": "Lead ML Infrastructure Engineer",
+    "currentCompanyName": "Apex Vision AI",
+    "previousDesignation": "Senior Deep Learning Engineer",
+    "previousCompanyName": "NVIDIA Partner Lab",
+    "highestDegree": "M.S. in Computer Science — Stanford University",
+    "rating": 4.6,
+    "resumeFileName": "robert-vance-ai-lead.pdf",
+    "resumeFileSize": "1.6 MB",
+    "summary": "AI Systems Architect with 8+ years building high-throughput inference engines and deep learning deployment frameworks.",
+    "skills": [
+      "PyTorch",
+      "Distributed Training",
+      "Kubernetes",
+      "Triton Inference",
+      "RAG Pipelines",
+      "C++",
+      "CUDA"
+    ],
+    "comments": [
       {
-        jobTitle: 'Principal AI & LLM Systems Architect',
-        companyName: 'Cognitive Intelligence Labs',
-        employmentType: 'Full-time',
-        location: 'Bangalore, India',
-        startDate: 'Jun 2021',
-        endDate: 'Present',
-        currentlyWorkingHere: true,
-        period: '2021 – Present',
-        description: [
-          'Architected high-throughput RAG pipelines and domain-adapted LLM serving clusters using vLLM and TensorRT-LLM.',
-          'Reduced model inference latency by 55% while serving 12M daily enterprise token requests.',
-          'Authored 4 patents in multi-agent orchestration and automated synthetic data generation.'
-        ]
-      },
-      {
-        jobTitle: 'Lead Machine Learning Research Scientist',
-        companyName: 'Samsung AI Research',
-        employmentType: 'Full-time',
-        location: 'Bangalore, India',
-        startDate: 'Jul 2017',
-        endDate: 'May 2021',
-        currentlyWorkingHere: false,
-        period: '2017 – 2021',
-        description: [
-          'Led core NLP research group developing on-device translation and intent extraction models.',
-          'Published 6 peer-reviewed papers at ACL, EMNLP, and NeurIPS conferences.'
-        ]
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 20, 2026 · 09:30 AM",
+        "text": "Resume under initial evaluation by engineering hiring manager."
       }
     ],
-    education: [
+    "history": [
       {
-        university: 'Indian Institute of Science (IISc), Bangalore',
-        degree: 'Ph.D.',
-        courseMajor: 'Computer Science (Natural Language Processing)',
-        startDate: 'Aug 2013',
-        endDate: 'May 2017',
-        gradeCgpa: '4.00 GPA'
-      },
-      {
-        university: 'Indian Institute of Technology (IIT), Madras',
-        degree: 'B.Tech',
-        courseMajor: 'Computer Science & Engineering',
-        startDate: 'Aug 2009',
-        endDate: 'May 2013',
-        gradeCgpa: '9.4 / 10 CGPA'
-      }
-    ],
-    skills: ['Large Language Models (LLM)', 'RAG Frameworks', 'PyTorch', 'vLLM & TensorRT', 'LangChain / LlamaIndex', 'Vector Databases (Pinecone / Milvus)', 'Kubernetes MLOps'],
-    history: [
-      { text: 'Final Round Partner Interview scheduled', time: 'Aug 28, 2026 • 02:00 PM', active: true },
-      { text: 'Candidate passed Technical Architecture Assessment (Score: 98%)', time: 'Aug 26, 2026 • 05:30 PM', active: false },
-      { text: 'Application submitted for Senior AI Architect', time: 'Aug 22, 2026 • 09:15 AM', active: false }
-    ],
-    comments: [
-      {
-        author: 'Chief Technology Officer',
-        role: 'Executive Review',
-        date: 'Aug 28',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        text: 'Exceptional deep tech and LLM systems background. Prime candidate for our AI Delivery Practice leadership.'
+        "text": "Application received and placed Under Review",
+        "time": "Aug 19, 2026 · 09:20 AM",
+        "active": true
       }
     ]
   },
   {
-    id: 101,
-    jobId: 1,
-    fullName: 'Elena Rostova',
-    name: 'Elena Rostova',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    gender: 'Female',
-    dob: '12 Sep 1994',
-    age: '32 Yrs',
-    countryCode: '+1',
-    phone: '+1 (415) 892-3401',
-    currentLocation: 'San Francisco, CA',
-    email: 'elena.rostova@techdefense.io',
-    linkedinUrl: 'https://linkedin.com/in/elena-rostova-sec',
-    portfolioUrl: 'https://elenarostova.security',
-    resumeFileName: 'elena-rostova-cybersecurity-resume.pdf',
-    resumeFileSize: '1.2 MB',
-    totalExp: '5.8 Years',
-    designation: 'Threat Intelligence Lead',
-    highestDegree: 'B.S. Computer Science – UC Berkeley',
-    prefLocationsSummary: 'San Francisco, CA / Remote',
-    isCurrentlyWorking: 'Yes',
-    currentCompanyName: 'Vanguard Cyber Systems',
-    fieldIndustry: 'Information Security & Cloud Defense',
-    noticePeriod: '15 Days',
-    currentCtc: '$130,000 / yr',
-    expectedCtc: '$150,000 / yr',
-    preferredEmploymentTypes: ['Full-time', 'Hybrid'],
-    preferredLocations: ['San Francisco, CA', 'Remote'],
-    appliedOn: 'Aug 28, 2026',
-    status: 'Under Review',
-    workExperience: [
+    "id": 304,
+    "jobId": 3,
+    "fullName": "Maya Lin",
+    "name": "Maya Lin",
+    "gender": "Female",
+    "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    "email": "maya.lin@intelligence-cloud.net",
+    "phone": "+91 97120 44810",
+    "currentLocation": "Pune, India",
+    "location": "Pune, India",
+    "appliedOn": "Aug 18, 2026",
+    "appliedISO": "2026-08-18T16:30:00",
+    "status": "Hired",
+    "totalExp": "5.5 Yrs",
+    "workExpYears": 5.5,
+    "currentCtc": "16 LPA",
+    "currentCtcNum": 16,
+    "expectedCtc": "19 LPA",
+    "expectedCtcNum": 19,
+    "noticePeriod": "30 Days",
+    "employmentType": "Hybrid",
+    "designation": "Senior NLP Architect",
+    "currentCompanyName": "CloudMatrix Global",
+    "previousDesignation": "NLP Research Engineer",
+    "previousCompanyName": "Amazon Web Services",
+    "highestDegree": "B.S. in Artificial Intelligence — University of Washington",
+    "rating": 4.9,
+    "resumeFileName": "maya-lin-ai-architect.pdf",
+    "resumeFileSize": "1.3 MB",
+    "summary": "Senior Machine Learning Architect with specialized background in NLP, prompt engineering safety firewalls, and responsible AI guardrails.",
+    "skills": [
+      "GenAI Governance",
+      "LangChain",
+      "Python",
+      "Azure OpenAI",
+      "Semantic Kernel",
+      "Docker",
+      "Kubernetes"
+    ],
+    "comments": [
       {
-        jobTitle: 'Threat Intelligence Lead',
-        companyName: 'Vanguard Cyber Systems',
-        employmentType: 'Full-time',
-        location: 'San Francisco, CA',
-        startDate: 'Mar 2023',
-        endDate: 'Present',
-        currentlyWorkingHere: true,
-        period: '2023 – Present',
-        description: [
-          'Led continuous 24/7 security event telemetry triage across 4,000+ cloud instances reducing MTTD by 40%.',
-          'Architected automated Splunk Phantom SOAR playbooks for rapid zero-day isolation and quarantine.',
-          'Spearheaded annual SOC2 Type II and ISO 27001 external audit defense with zero critical findings.'
-        ]
+        "author": "Taylor Brooks",
+        "role": "Super Admin",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 25, 2026 · 04:00 PM",
+        "text": "Candidate offer accepted. Joining date scheduled for next month."
       },
       {
-        jobTitle: 'SOC Security Analyst',
-        companyName: 'Apex Cloud Defense',
-        employmentType: 'Full-time',
-        location: 'San Jose, CA',
-        startDate: 'Feb 2021',
-        endDate: 'Feb 2023',
-        currentlyWorkingHere: false,
-        period: '2021 – 2023',
-        description: [
-          'Monitored AWS GuardDuty and Security Hub alerts; triaged over 200 suspicious telemetry vectors monthly.',
-          'Conducted threat simulation drills and authoring post-incident forensic root cause analyses.'
-        ]
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 22, 2026 · 03:15 PM",
+        "text": "Candidate performed exceptionally in culture and team fit rounds."
       }
     ],
-    education: [
+    "history": [
       {
-        university: 'University of California, Berkeley (UC Berkeley)',
-        degree: 'B.S.',
-        courseMajor: 'Computer Science & Information Assurance',
-        startDate: 'Aug 2017',
-        endDate: 'May 2021',
-        gradeCgpa: '3.84 GPA'
-      }
-    ],
-    skills: ['SIEM & Splunk (Expert)', 'AWS Security Hub', 'SOC2 / HIPAA Audit Readiness', 'Threat Hunting', 'Zero-Trust IAM', 'Python & Bash Automation'],
-    history: [
-      { text: 'Profile assigned to Cybersecurity Lead for initial review', time: 'Aug 29, 2026 • 10:30 AM', active: true },
-      { text: 'Application submitted via FWC website', time: 'Aug 28, 2026 • 10:15 AM', active: false }
-    ],
-    comments: [
+        "text": "Candidate marked as Hired",
+        "time": "Aug 25, 2026 · 04:00 PM",
+        "active": true
+      },
       {
-        author: 'Lead Recruiter',
-        role: 'Talent Acquisition',
-        date: 'Aug 28',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        text: 'Strong hands-on Splunk and SOC2 audit track record. Fits the Cybersecurity Analyst requisition well.'
+        "text": "Final executive offer extended and accepted",
+        "time": "Aug 24, 2026 · 02:00 PM",
+        "active": false
+      },
+      {
+        "text": "Completed final technical and cultural interview",
+        "time": "Aug 22, 2026 · 03:15 PM",
+        "active": false
+      },
+      {
+        "text": "Application submitted for Senior AI Architect",
+        "time": "Aug 18, 2026 · 04:30 PM",
+        "active": false
       }
     ]
   },
   {
-    id: 202,
-    jobId: 2,
-    fullName: 'Claire Dupont',
-    name: 'Claire Dupont',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    gender: 'Female',
-    dob: '05 Jun 1992',
-    age: '34 Yrs',
-    countryCode: '+1',
-    phone: '+1 (415) 390-2184',
-    currentLocation: 'San Francisco, CA',
-    email: 'claire.dupont@modernscale.com',
-    linkedinUrl: 'https://linkedin.com/in/claire-dupont-arch',
-    portfolioUrl: 'https://clairedupont.tech',
-    resumeFileName: 'claire-dupont-solutions-architect.pdf',
-    resumeFileSize: '1.6 MB',
-    totalExp: '8.0 Years',
-    designation: 'Principal Solutions Architect',
-    highestDegree: 'M.S. Software Engineering – Stanford',
-    prefLocationsSummary: 'San Francisco / Remote',
-    isCurrentlyWorking: 'Yes',
-    currentCompanyName: 'CloudScale Technologies',
-    fieldIndustry: 'Enterprise Software & Cloud Platforms',
-    noticePeriod: '30 Days',
-    currentCtc: '$155,000 / yr',
-    expectedCtc: '$175,000 / yr',
-    preferredEmploymentTypes: ['Full-time'],
-    preferredLocations: ['San Francisco, CA', 'Remote'],
-    appliedOn: 'Aug 24, 2026',
-    status: 'Shortlisted',
-    workExperience: [
+    "id": 100,
+    "jobId": 3,
+    "fullName": "John Doe",
+    "name": "John Doe",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "email": "john.doe@example.com",
+    "phone": "+91 91234 56789",
+    "currentLocation": "Bangalore, India",
+    "location": "Bangalore, India",
+    "appliedOn": "Aug 17, 2026",
+    "appliedISO": "2026-08-17T14:10:00",
+    "status": "Screening",
+    "totalExp": "5.0 Yrs",
+    "workExpYears": 5,
+    "currentCtc": "14 LPA",
+    "currentCtcNum": 14,
+    "expectedCtc": "17 LPA",
+    "expectedCtcNum": 17,
+    "noticePeriod": "30 Days",
+    "employmentType": "Full-time",
+    "designation": "Senior Frontend Developer",
+    "currentCompanyName": "Infosys Pvt. Ltd.",
+    "previousDesignation": "Frontend Engineer",
+    "previousCompanyName": "Wipro Technologies",
+    "highestDegree": "B.Tech in Computer Science — MIT",
+    "rating": 4.7,
+    "resumeFileName": "resume.png",
+    "resumeFileSize": "1.2 MB",
+    "summary": "5 years of frontend development experience building high-scale responsive web applications and AI dashboard interfaces with modern JavaScript & React.",
+    "skills": [
+      "JavaScript (ES6+)",
+      "React / Next.js",
+      "TypeScript",
+      "CSS3 & Tailwind",
+      "State Management",
+      "REST APIs"
+    ],
+    "comments": [
       {
-        jobTitle: 'Principal Solutions Architect',
-        companyName: 'CloudScale Technologies',
-        employmentType: 'Full-time',
-        location: 'San Francisco, CA',
-        startDate: 'Apr 2021',
-        endDate: 'Present',
-        currentlyWorkingHere: true,
-        period: '2021 – Present',
-        description: [
-          'Authored modernization architecture blueprints for 8 enterprise manufacturing clients converting legacy monolithic apps to Kubernetes microservices.',
-          'Led architecture review boards ensuring compliance with SOC2 Type II, ISO 27001, and HIPAA.'
-        ]
-      },
-      {
-        jobTitle: 'Senior Cloud Consultant',
-        companyName: 'PwC Technology Advisory',
-        employmentType: 'Full-time',
-        location: 'San Francisco, CA',
-        startDate: 'Aug 2018',
-        endDate: 'Mar 2021',
-        currentlyWorkingHere: false,
-        period: '2018 – 2021',
-        description: [
-          'Led multi-cloud AWS and Azure migration strategies for Fortune 500 manufacturing supply chain clients.',
-          'Automated CI/CD delivery pipelines saving client engineering teams 40+ hours per release cycle.'
-        ]
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 18, 2026 · 10:45 AM",
+        "text": "Phone screen scheduled for upcoming Wednesday."
       }
     ],
-    education: [
+    "history": [
       {
-        university: 'Stanford University',
-        degree: 'M.S.',
-        courseMajor: 'Software Engineering',
-        startDate: 'Sep 2016',
-        endDate: 'Jun 2018',
-        gradeCgpa: '3.90 GPA'
+        "text": "Candidate scheduled for initial screening",
+        "time": "Aug 18, 2026 · 10:45 AM",
+        "active": true
       },
       {
-        university: 'UC Berkeley',
-        degree: 'B.S.',
-        courseMajor: 'Computer Science',
-        startDate: 'Sep 2012',
-        endDate: 'Jun 2016',
-        gradeCgpa: '3.82 GPA'
-      }
-    ],
-    skills: ['Enterprise Architecture', 'Cloud Modernization', 'Kubernetes / EKS', 'AWS Solutions Architect Professional', 'Terraform', 'Agile Pod Leadership'],
-    history: [
-      { text: 'Candidate shortlisted for Round 1 Interview', time: 'Aug 25, 2026 • 04:30 PM', active: true },
-      { text: 'Application submitted via Referral link', time: 'Aug 24, 2026 • 09:45 AM', active: false }
-    ],
-    comments: [
-      {
-        author: 'Recruiting Lead',
-        role: 'Talent Acquisition',
-        date: 'Aug 25',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        text: 'Top tier architecture candidate with Stanford Master’s and excellent client delivery record. Shortlisted.'
+        "text": "Application submitted for Senior AI Architect",
+        "time": "Aug 17, 2026 · 02:10 PM",
+        "active": false
       }
     ]
   },
   {
-    id: 302,
-    jobId: 3,
-    fullName: 'Ananya Deshmukh',
-    name: 'Ananya Deshmukh',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    gender: 'Female',
-    dob: '14 Feb 1993',
-    age: '33 Yrs',
-    countryCode: '+91',
-    phone: '+91 97110 44521',
-    currentLocation: 'Bangalore, India',
-    email: 'ananya.deshmukh@genai-labs.co',
-    linkedinUrl: 'https://linkedin.com/in/ananya-deshmukh-ml',
-    portfolioUrl: 'https://ananyadeshmukh.ai',
-    resumeFileName: 'ananya-deshmukh-ai-engineer.pdf',
-    resumeFileSize: '1.4 MB',
-    totalExp: '6.5 Years',
-    designation: 'Lead Generative AI Research Engineer',
-    highestDegree: 'M.Tech AI & Data Science – IIT Bombay',
-    prefLocationsSummary: 'Bangalore / Remote',
-    isCurrentlyWorking: 'Yes',
-    currentCompanyName: 'DeepTensor Analytics',
-    fieldIndustry: 'Artificial Intelligence & Large Language Models',
-    noticePeriod: '30 Days',
-    currentCtc: '₹34,00,000 / yr',
-    expectedCtc: '₹45,00,000 / yr',
-    preferredEmploymentTypes: ['Full-time', 'Hybrid'],
-    preferredLocations: ['Bangalore, India', 'Remote'],
-    appliedOn: 'Aug 20, 2026',
-    status: 'Shortlisted',
-    workExperience: [
+    "id": 201,
+    "jobId": 2,
+    "fullName": "Siddharth Rao",
+    "name": "Siddharth Rao",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "email": "siddharth.rao@advisorycloud.com",
+    "phone": "+91 98201 55670",
+    "currentLocation": "Mumbai, India",
+    "location": "Mumbai, India",
+    "appliedOn": "Aug 25, 2026",
+    "appliedISO": "2026-08-25T13:20:00",
+    "status": "Screening",
+    "totalExp": "7.5 Yrs",
+    "workExpYears": 7.5,
+    "currentCtc": "19 LPA",
+    "currentCtcNum": 19,
+    "expectedCtc": "23 LPA",
+    "expectedCtcNum": 23,
+    "noticePeriod": "30 Days",
+    "employmentType": "Full-time",
+    "designation": "Lead Cloud Strategy Consultant",
+    "currentCompanyName": "Deloitte Consulting LLP",
+    "previousDesignation": "Senior Technology Consultant",
+    "previousCompanyName": "PwC Advisory Services",
+    "highestDegree": "MBA — UCLA Anderson School of Management",
+    "rating": 4.8,
+    "resumeFileName": "siddharth-rao-tech-consultant.pdf",
+    "resumeFileSize": "1.5 MB",
+    "summary": "7+ years leading enterprise cloud migrations, modernizing legacy monolithic architectures, and structuring digital transformation roadmaps for Fortune 500 manufacturing clients.",
+    "skills": [
+      "Enterprise Architecture",
+      "Cloud Migration Strategy",
+      "Agile Pod Leadership",
+      "Financial ROI Modeling",
+      "AWS & Azure",
+      "Microservices"
+    ],
+    "comments": [
       {
-        jobTitle: 'Lead Generative AI Research Engineer',
-        companyName: 'DeepTensor Analytics',
-        employmentType: 'Full-time',
-        location: 'Bangalore, India',
-        startDate: 'Jan 2022',
-        endDate: 'Present',
-        currentlyWorkingHere: true,
-        period: '2022 – Present',
-        description: [
-          'Built custom LoRA and QLoRA fine-tuning pipelines for Llama-3 and Mistral open-source models.',
-          'Deployed scalable LangChain and Pinecone vector search for automated technical contract analysis.',
-          'Reduced model hallucinations by 42% through strict automated guardrails and RLHF alignment.'
-        ]
-      },
-      {
-        jobTitle: 'Senior Machine Learning Engineer',
-        companyName: 'Infosys Center of Excellence',
-        employmentType: 'Full-time',
-        location: 'Bangalore, India',
-        startDate: 'Aug 2019',
-        endDate: 'Dec 2021',
-        currentlyWorkingHere: false,
-        period: '2019 – 2021',
-        description: [
-          'Designed deep learning computer vision and OCR models for automated manufacturing defect triage.',
-          'Created automated end-to-end MLOps pipelines on AWS SageMaker and Kubeflow.'
-        ]
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 26, 2026 · 11:15 AM",
+        "text": "Strong enterprise consulting background from Deloitte and PwC with clear cloud architecture expertise."
       }
     ],
-    education: [
+    "history": [
       {
-        university: 'Indian Institute of Technology (IIT), Bombay',
-        degree: 'M.Tech',
-        courseMajor: 'Artificial Intelligence & Machine Learning',
-        startDate: 'Jul 2017',
-        endDate: 'May 2019',
-        gradeCgpa: '9.6 / 10 CGPA'
+        "text": "Candidate scheduled for initial screening",
+        "time": "Aug 26, 2026 · 11:15 AM",
+        "active": true
       },
       {
-        university: 'National Institute of Technology (NIT), Surathkal',
-        degree: 'B.Tech',
-        courseMajor: 'Computer Engineering',
-        startDate: 'Jul 2013',
-        endDate: 'May 2017',
-        gradeCgpa: '9.1 / 10 CGPA'
+        "text": "Application submitted for Senior Technology Consultant",
+        "time": "Aug 25, 2026 · 01:20 PM",
+        "active": false
+      }
+    ]
+  },
+  {
+    "id": 202,
+    "jobId": 2,
+    "fullName": "Claire Dupont",
+    "name": "Claire Dupont",
+    "gender": "Female",
+    "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
+    "email": "claire.dupont@consulting-tech.fr",
+    "phone": "+91 99340 77120",
+    "currentLocation": "Bangalore, India",
+    "location": "Bangalore, India",
+    "appliedOn": "Aug 24, 2026",
+    "appliedISO": "2026-08-24T09:45:00",
+    "status": "Shortlisted",
+    "totalExp": "6.0 Yrs",
+    "workExpYears": 6,
+    "currentCtc": "16 LPA",
+    "currentCtcNum": 16,
+    "expectedCtc": "19 LPA",
+    "expectedCtcNum": 19,
+    "noticePeriod": "Immediate",
+    "employmentType": "Hybrid",
+    "designation": "Senior Digital Consultant",
+    "currentCompanyName": "Accenture Technology",
+    "previousDesignation": "Cloud Strategy Analyst",
+    "previousCompanyName": "Capgemini Invent",
+    "highestDegree": "M.S. in Management Information Systems — NYU Stern",
+    "rating": 4.7,
+    "resumeFileName": "claire-dupont-senior-consultant.pdf",
+    "resumeFileSize": "1.3 MB",
+    "summary": "Technology Consultant with deep specialization in legacy system modernization, microservices migration, and client stakeholder management.",
+    "skills": [
+      "Cloud Transformation",
+      "Client Advisory",
+      "Enterprise Architecture",
+      "Microservices",
+      "Scrum / Agile",
+      "AWS Solutions"
+    ],
+    "comments": [
+      {
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 24, 2026 · 02:00 PM",
+        "text": "Good communication and client presentation skills."
       }
     ],
-    skills: ['PyTorch', 'Large Language Models (LLMs)', 'LoRA / QLoRA', 'LangChain & LlamaIndex', 'Pinecone', 'SageMaker', 'MLOps'],
-    history: [
-      { text: 'Candidate shortlisted for Round 1 Interview', time: 'Aug 22, 2026 • 03:15 PM', active: true },
-      { text: 'Application submitted for Senior AI Architect', time: 'Aug 20, 2026 • 11:00 AM', active: false }
-    ],
-    comments: [
+    "history": [
       {
-        author: 'Hiring Lead',
-        role: 'AI Practice Director',
-        date: 'Aug 22',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        text: 'Strong open-source LLM fine-tuning experience with published benchmark projects. Shortlisted.'
+        "text": "Shortlisted for consulting round",
+        "time": "Aug 24, 2026 · 02:00 PM",
+        "active": true
+      },
+      {
+        "text": "Application submitted for Senior Technology Consultant",
+        "time": "Aug 24, 2026 · 09:45 AM",
+        "active": false
+      }
+    ]
+  },
+  {
+    "id": 101,
+    "jobId": 1,
+    "fullName": "Elena Rostova",
+    "name": "Elena Rostova",
+    "gender": "Female",
+    "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+    "email": "elena.rostova@techdefense.io",
+    "phone": "+91 98400 33110",
+    "currentLocation": "Bangalore, India",
+    "location": "Bangalore, India",
+    "appliedOn": "Aug 28, 2026",
+    "appliedISO": "2026-08-28T10:15:00",
+    "status": "Under Review",
+    "totalExp": "5.5 Yrs",
+    "workExpYears": 5.5,
+    "currentCtc": "15 LPA",
+    "currentCtcNum": 15,
+    "expectedCtc": "18 LPA",
+    "expectedCtcNum": 18,
+    "noticePeriod": "30 Days",
+    "employmentType": "Full-time",
+    "designation": "Threat Intelligence Lead",
+    "currentCompanyName": "Vanguard Cyber Systems",
+    "previousDesignation": "SOC Security Analyst",
+    "previousCompanyName": "Apex Cloud Defense",
+    "highestDegree": "B.S. in Computer Science & Info Assurance — UC Berkeley",
+    "rating": 4.8,
+    "resumeFileName": "elena-rostova-cybersecurity-resume.pdf",
+    "resumeFileSize": "1.2 MB",
+    "summary": "Senior Cybersecurity Engineer with 5+ years of experience in enterprise SIEM threat hunting, Splunk query optimization, SOC2 compliance governance, and automated incident triage.",
+    "skills": [
+      "SIEM & Splunk (Expert)",
+      "AWS Security Hub",
+      "SOC2 / HIPAA Audit",
+      "Threat Hunting",
+      "Zero-Trust IAM",
+      "Python & Bash"
+    ],
+    "comments": [
+      {
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 28, 2026 · 11:30 AM",
+        "text": "Initial resume screening completed. Experience directly matches job description."
+      }
+    ],
+    "history": [
+      {
+        "text": "Application received and placed Under Review",
+        "time": "Aug 28, 2026 · 10:15 AM",
+        "active": true
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "jobId": 1,
+    "fullName": "David Chen",
+    "name": "David Chen",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    "email": "david.chen@cybermesh.org",
+    "phone": "+91 97180 22990",
+    "currentLocation": "Pune, India",
+    "location": "Pune, India",
+    "appliedOn": "Aug 27, 2026",
+    "appliedISO": "2026-08-27T14:40:00",
+    "status": "Shortlisted",
+    "totalExp": "4.0 Yrs",
+    "workExpYears": 4,
+    "currentCtc": "11 LPA",
+    "currentCtcNum": 11,
+    "expectedCtc": "14 LPA",
+    "expectedCtcNum": 14,
+    "noticePeriod": "Immediate",
+    "employmentType": "Full-time",
+    "designation": "Cybersecurity Analyst",
+    "currentCompanyName": "Nexus Tech Partners",
+    "previousDesignation": "Junior Security Engineer",
+    "previousCompanyName": "CyberGuard Corp",
+    "highestDegree": "B.S. in Cybersecurity — USC Viterbi",
+    "rating": 4.6,
+    "resumeFileName": "david-chen-security-analyst.pdf",
+    "resumeFileSize": "980 KB",
+    "summary": "Cybersecurity Analyst specializing in vulnerability management, automated SAST/DAST pipeline integration, and DevSecOps compliance automation.",
+    "skills": [
+      "AWS Security",
+      "Splunk",
+      "Tenable / Nessus",
+      "SOC2 Compliance",
+      "Docker Security",
+      "Terraform"
+    ],
+    "comments": [
+      {
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 27, 2026 · 04:15 PM",
+        "text": "Shortlisted for preliminary screening round."
+      }
+    ],
+    "history": [
+      {
+        "text": "Shortlisted for preliminary screening",
+        "time": "Aug 27, 2026 · 04:15 PM",
+        "active": true
+      },
+      {
+        "text": "Application submitted",
+        "time": "Aug 27, 2026 · 02:40 PM",
+        "active": false
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "jobId": 1,
+    "fullName": "Marcus Holloway",
+    "name": "Marcus Holloway",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "email": "m.holloway@defenselogic.com",
+    "phone": "+91 96540 88120",
+    "currentLocation": "Hyderabad, India",
+    "location": "Hyderabad, India",
+    "appliedOn": "Aug 26, 2026",
+    "appliedISO": "2026-08-26T11:20:00",
+    "status": "Screening",
+    "totalExp": "6.5 Yrs",
+    "workExpYears": 6.5,
+    "currentCtc": "17 LPA",
+    "currentCtcNum": 17,
+    "expectedCtc": "20 LPA",
+    "expectedCtcNum": 20,
+    "noticePeriod": "60 Days",
+    "employmentType": "Remote",
+    "designation": "Senior Information Security Analyst",
+    "currentCompanyName": "Horizon Health Systems",
+    "previousDesignation": "IAM Specialist",
+    "previousCompanyName": "Chicago Tech Solutions",
+    "highestDegree": "M.S. in Information Systems — Northwestern University",
+    "rating": 4.7,
+    "resumeFileName": "marcus-holloway-lead-analyst.pdf",
+    "resumeFileSize": "1.4 MB",
+    "summary": "6+ years in zero-trust architecture, cloud telemetry analysis, and enterprise identity security.",
+    "skills": [
+      "Zero-Trust",
+      "Splunk Enterprise",
+      "Okta / Azure AD IAM",
+      "Incident Response",
+      "HIPAA Compliance",
+      "Python"
+    ],
+    "comments": [
+      {
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 26, 2026 · 02:00 PM",
+        "text": "Screening call scheduled."
+      }
+    ],
+    "history": [
+      {
+        "text": "Candidate scheduled for initial screening",
+        "time": "Aug 26, 2026 · 02:00 PM",
+        "active": true
+      },
+      {
+        "text": "Application submitted",
+        "time": "Aug 26, 2026 · 11:20 AM",
+        "active": false
+      }
+    ]
+  },
+  {
+    "id": 401,
+    "jobId": 4,
+    "fullName": "Liam O’Connor",
+    "name": "Liam O’Connor",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    "email": "liam.oconnor@cloudinfra.io",
+    "phone": "+91 98190 33450",
+    "currentLocation": "Mumbai, India",
+    "location": "Mumbai, India",
+    "appliedOn": "Aug 18, 2026",
+    "appliedISO": "2026-08-18T14:00:00",
+    "status": "Screening",
+    "totalExp": "4.5 Yrs",
+    "workExpYears": 4.5,
+    "currentCtc": "13 LPA",
+    "currentCtcNum": 13,
+    "expectedCtc": "16 LPA",
+    "expectedCtcNum": 16,
+    "noticePeriod": "30 Days",
+    "employmentType": "Full-time",
+    "designation": "Cloud Infrastructure Engineer",
+    "currentCompanyName": "Skyward Systems",
+    "previousDesignation": "DevOps Engineer",
+    "previousCompanyName": "Pasadena Cloud Co.",
+    "highestDegree": "B.S. in Computer Science — Cal Poly Pomona",
+    "rating": 4.7,
+    "resumeFileName": "liam-oconnor-cloud-infra.pdf",
+    "resumeFileSize": "1.2 MB",
+    "summary": "DevOps & Cloud Engineer with 4+ years authoring reusable Terraform modules, managing Kubernetes clusters on AWS EKS, and building Datadog observability dashboards.",
+    "skills": [
+      "Terraform & Terragrunt",
+      "Kubernetes / EKS",
+      "AWS Multi-Account",
+      "Prometheus & Grafana",
+      "GitHub Actions CI/CD"
+    ],
+    "comments": [
+      {
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 19, 2026 · 10:00 AM",
+        "text": "Strong Terraform and Kubernetes experience verified."
+      }
+    ],
+    "history": [
+      {
+        "text": "Candidate scheduled for initial screening",
+        "time": "Aug 19, 2026 · 10:00 AM",
+        "active": true
+      },
+      {
+        "text": "Application submitted for Cloud Infrastructure Engineer",
+        "time": "Aug 18, 2026 · 02:00 PM",
+        "active": false
+      }
+    ]
+  },
+  {
+    "id": 402,
+    "jobId": 4,
+    "fullName": "Sofia Ramirez",
+    "name": "Sofia Ramirez",
+    "gender": "Female",
+    "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
+    "email": "sofia.ramirez@devops-scale.com",
+    "phone": "+91 97450 66120",
+    "currentLocation": "Bangalore, India",
+    "location": "Bangalore, India",
+    "appliedOn": "Aug 16, 2026",
+    "appliedISO": "2026-08-16T11:15:00",
+    "status": "Rejected",
+    "totalExp": "3.5 Yrs",
+    "workExpYears": 3.5,
+    "currentCtc": "9 LPA",
+    "currentCtcNum": 9,
+    "expectedCtc": "12 LPA",
+    "expectedCtcNum": 12,
+    "noticePeriod": "Immediate",
+    "employmentType": "Hybrid",
+    "designation": "DevOps Engineer",
+    "currentCompanyName": "Nexus Platforms",
+    "previousDesignation": "Junior Systems Admin",
+    "previousCompanyName": "DataStream Inc.",
+    "highestDegree": "B.S. in Software Engineering — UC Riverside",
+    "rating": 4.2,
+    "resumeFileName": "sofia-ramirez-devops.pdf",
+    "resumeFileSize": "1.1 MB",
+    "summary": "Infrastructure Automation Engineer focused on zero-downtime CI/CD and multi-cloud Kubernetes deployment.",
+    "skills": [
+      "Terraform",
+      "AWS ECS / EKS",
+      "Datadog",
+      "ArgoCD",
+      "Python",
+      "Docker"
+    ],
+    "comments": [
+      {
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 17, 2026 · 11:30 AM",
+        "text": "Candidate experience fell below staff requirements for this senior posting."
+      }
+    ],
+    "history": [
+      {
+        "text": "Application archived / Rejected",
+        "time": "Aug 17, 2026 · 11:30 AM",
+        "active": true
+      },
+      {
+        "text": "Application submitted",
+        "time": "Aug 16, 2026 · 11:15 AM",
+        "active": false
+      }
+    ]
+  },
+  {
+    "id": 501,
+    "jobId": 5,
+    "fullName": "Mateo Morales",
+    "name": "Mateo Morales",
+    "gender": "Male",
+    "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+    "email": "mateo.morales@web3foundry.dev",
+    "phone": "+91 96110 88230",
+    "currentLocation": "Bangalore, India",
+    "location": "Bangalore, India",
+    "appliedOn": "Aug 14, 2026",
+    "appliedISO": "2026-08-14T10:45:00",
+    "status": "Interviewing",
+    "totalExp": "4.5 Yrs",
+    "workExpYears": 4.5,
+    "currentCtc": "16 LPA",
+    "currentCtcNum": 16,
+    "expectedCtc": "20 LPA",
+    "expectedCtcNum": 20,
+    "noticePeriod": "30 Days",
+    "employmentType": "Remote",
+    "designation": "Smart Contract Developer",
+    "currentCompanyName": "EtherFlow Protocol",
+    "previousDesignation": "Solidity Engineer",
+    "previousCompanyName": "BlockChain Labs Austin",
+    "highestDegree": "B.S. in Software Engineering — UT Austin",
+    "rating": 4.8,
+    "resumeFileName": "mateo-morales-solidity-developer.pdf",
+    "resumeFileSize": "1.0 MB",
+    "summary": "Smart Contract Engineer with extensive experience in Solidity, Foundry test suites, and gas optimization for EVM Layer 2 protocols.",
+    "skills": [
+      "Solidity",
+      "Foundry & Hardhat",
+      "EVM Chains",
+      "Smart Contract Auditing",
+      "OpenZeppelin",
+      "TypeScript"
+    ],
+    "comments": [
+      {
+        "author": "Sarah Smith",
+        "role": "Senior Recruiter",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "date": "Aug 15, 2026 · 03:00 PM",
+        "text": "Interview ongoing with Web3 team lead."
+      }
+    ],
+    "history": [
+      {
+        "text": "Candidate actively interviewing with Web3 team",
+        "time": "Aug 15, 2026 · 03:00 PM",
+        "active": true
+      },
+      {
+        "text": "Application submitted for Blockchain Developer",
+        "time": "Aug 14, 2026 · 10:45 AM",
+        "active": false
       }
     ]
   }
@@ -1273,6 +1532,75 @@ const GLOBAL_DEFAULT_PARTNERSHIPS = [
     message: 'Interest in establishing an APAC cross-border joint venture for autonomous threat intelligence and regulatory compliance auditing.',
     submitted: 'Aug 22, 2026 · 10:10 AM',
     submittedISO: '2026-08-22T10:10:00'
+  },
+  {
+    id: 104,
+    name: 'Claire Dupont',
+    email: 'c.dupont@alliance-digital.fr',
+    organisation: 'Alliance Digital Systems',
+    region: 'EMEA (France)',
+    industry: 'System Integration',
+    message: 'Exploring an official channel partnership to deliver FWC engineering pods across French and Benelux enterprise accounts.',
+    submitted: 'Aug 18, 2026 · 03:20 PM',
+    submittedISO: '2026-08-18T15:20:00'
+  }
+];
+
+const GLOBAL_DEFAULT_AGENT_REQUESTS = [
+  {
+    id: 201,
+    name: 'Vikram Malhotra',
+    email: 'v.malhotra@synthetix.ai',
+    organisation: 'Synthetix AI Labs',
+    industry: 'Financial Services & Banking',
+    agentType: 'Autonomous Risk & Underwriting Agent',
+    message: 'We require an autonomous AI agent capable of ingesting financial statements, bank feeds, and credit bureau data to generate automated risk scores and preliminary underwriting memos for SME loan requests.',
+    submitted: 'Aug 28, 2026 · 11:30 AM',
+    submittedISO: '2026-08-28T11:30:00'
+  },
+  {
+    id: 202,
+    name: 'Rachel Adams',
+    email: 'rachel.adams@biogenix.com',
+    organisation: 'BioGenix Therapeutics',
+    industry: 'Healthcare & Life Sciences',
+    agentType: 'Clinical Trial Protocol & Triage Agent',
+    message: 'Seeking a HIPAA/GDPR-compliant multi-modal AI agent to assist researchers with screening clinical trial candidate profiles, matching genetic biomarkers, and summarising trial inclusion criteria.',
+    submitted: 'Aug 26, 2026 · 03:15 PM',
+    submittedISO: '2026-08-26T15:15:00'
+  },
+  {
+    id: 203,
+    name: 'Karthik Subramanian',
+    email: 'karthik.s@kredencelogix.in',
+    organisation: 'Kredence Logistics Corp',
+    industry: 'Supply Chain & Logistics',
+    agentType: 'Supply Chain Dispatch & Route Optimization Agent',
+    message: 'Need an agentic workflow that continuously monitors port congestion, weather APIs, and fleet telemetry to autonomously re-route cross-dock container freight and notify dispatch managers.',
+    submitted: 'Aug 24, 2026 · 09:45 AM',
+    submittedISO: '2026-08-24T09:45:00'
+  },
+  {
+    id: 204,
+    name: 'Elena Vasquez',
+    email: 'elena.v@novaretail.com',
+    organisation: 'NovaRetail Omnichannel',
+    industry: 'E-Commerce & Retail',
+    agentType: 'Multilingual Customer Support & Sales Agent',
+    message: 'Looking to deploy a 24/7 conversational commerce agent on WhatsApp and Web that handles product recommendations, return logistics, and inventory queries in English, Spanish, and French.',
+    submitted: 'Aug 20, 2026 · 05:20 PM',
+    submittedISO: '2026-08-20T17:20:00'
+  },
+  {
+    id: 205,
+    name: 'Tariq Mansoor',
+    email: 'tariq@aerologix.ae',
+    organisation: 'AeroDynamics Defense Systems',
+    industry: 'Aerospace & Defense',
+    agentType: 'Automated Code Review & Security Compliance Agent',
+    message: 'Seeking an air-gapped on-premises LLM agent to perform static AST code analysis, SBOM verification, and ISO 27001 / DO-178C avionics software safety compliance checks.',
+    submitted: 'Aug 15, 2026 · 01:10 PM',
+    submittedISO: '2026-08-15T13:10:00'
   }
 ];
 
@@ -1323,6 +1651,7 @@ function loadCollection(key, seedData) {
     else if (key === 'fwc-job-candidates') masterSeed = GLOBAL_DEFAULT_CANDIDATES;
     else if (key === 'fwc-enquiries') masterSeed = GLOBAL_DEFAULT_ENQUIRIES;
     else if (key === 'fwc-partnerships') masterSeed = GLOBAL_DEFAULT_PARTNERSHIPS;
+    else if (key === 'fwc-agent-requests') masterSeed = GLOBAL_DEFAULT_AGENT_REQUESTS;
     else if (key === 'fwc-admins') masterSeed = GLOBAL_DEFAULT_ADMINS;
   }
 
@@ -1377,6 +1706,7 @@ function initGlobalCollections() {
     loadCollection('fwc-job-candidates', GLOBAL_DEFAULT_CANDIDATES);
     loadCollection('fwc-enquiries', GLOBAL_DEFAULT_ENQUIRIES);
     loadCollection('fwc-partnerships', GLOBAL_DEFAULT_PARTNERSHIPS);
+    loadCollection('fwc-agent-requests', GLOBAL_DEFAULT_AGENT_REQUESTS);
     loadCollection('fwc-admins', GLOBAL_DEFAULT_ADMINS);
   } catch (e) {
     console.warn('initGlobalCollections error:', e);
@@ -1389,6 +1719,7 @@ window.GLOBAL_DEFAULT_JOBS = GLOBAL_DEFAULT_JOBS;
 window.GLOBAL_DEFAULT_CANDIDATES = GLOBAL_DEFAULT_CANDIDATES;
 window.GLOBAL_DEFAULT_ENQUIRIES = GLOBAL_DEFAULT_ENQUIRIES;
 window.GLOBAL_DEFAULT_PARTNERSHIPS = GLOBAL_DEFAULT_PARTNERSHIPS;
+window.GLOBAL_DEFAULT_AGENT_REQUESTS = GLOBAL_DEFAULT_AGENT_REQUESTS;
 window.GLOBAL_DEFAULT_ADMINS = GLOBAL_DEFAULT_ADMINS;
 window.loadCollection = loadCollection;
 window.saveCollection = saveCollection;
@@ -1572,6 +1903,8 @@ function updateSidebarCounts() {
     const blogs = loadCollection('fwc-blog-posts', GLOBAL_DEFAULT_BLOGS);
     const jobs = loadCollection('fwc-job-listings', GLOBAL_DEFAULT_JOBS);
     const enquiries = loadCollection('fwc-enquiries', GLOBAL_DEFAULT_ENQUIRIES);
+    const partnerships = loadCollection('fwc-partnerships', GLOBAL_DEFAULT_PARTNERSHIPS);
+    const agentRequests = loadCollection('fwc-agent-requests', GLOBAL_DEFAULT_AGENT_REQUESTS);
 
     const pendingBlogs = blogs.filter(b => b && (b.status === 'pending' || b.status === 'pending review' || b.status === 'pending_review')).length;
     const pendingJobs = jobs.filter(j => j && (j.status === 'pending' || j.status === 'pending review' || j.status === 'pending_review')).length;
@@ -1579,7 +1912,7 @@ function updateSidebarCounts() {
 
     const liveBlogs = blogs.filter(b => b && (b.status === 'published' || b.status === 'draft')).length;
     const liveJobs = jobs.filter(j => j && (j.status === 'published' || j.status === 'draft')).length;
-    const totalEnquiries = enquiries.length;
+    const totalEnquiries = enquiries.length + partnerships.length + agentRequests.length;
 
     document.querySelectorAll('.sidebar-nav-link').forEach((link) => {
       const href = (link.getAttribute('href') || '').split('/').pop();
@@ -1593,7 +1926,7 @@ function updateSidebarCounts() {
       } else if (href === 'job-listings.html') {
         label.textContent = `Job listings (${liveJobs > 0 ? liveJobs : 6})`;
       } else if (href === 'enquiry.html') {
-        label.textContent = `Enquiry (${totalEnquiries > 0 ? totalEnquiries : 5})`;
+        label.textContent = `Enquiry (${totalEnquiries > 0 ? totalEnquiries : 14})`;
       }
     });
   } catch (e) {

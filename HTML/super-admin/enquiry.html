@@ -143,7 +143,7 @@
         </a>
         <a href="enquiry.html" class="sidebar-nav-link active">
           <svg class="sidebar-nav-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,80H184V48a16,16,0,0,0-16-16H40A16,16,0,0,0,24,48V176a8,8,0,0,0,13,6.22L72,154V184a16,16,0,0,0,16,16h93.59L219,230.22a8,8,0,0,0,5,1.78,8,8,0,0,0,8-8V96A16,16,0,0,0,216,80ZM66.55,137.78,40,159.25V48H168v88H71.58A8,8,0,0,0,66.55,137.78ZM216,207.25l-26.55-21.47a8,8,0,0,0-5-1.78H88V152h80a16,16,0,0,0,16-16V96h32Z"/></svg>
-          <span class="sidebar-nav-label">Enquiry (5)</span>
+          <span class="sidebar-nav-label">Enquiry (14)</span>
         </a>
       </nav>
       <nav class="sidebar-nav sidebar-nav-secondary" aria-label="Administration">
@@ -161,7 +161,7 @@
 
   <main class="dashboard-main" id="main-content">
 
-    <!-- Underlined Tabs: Service Request & Partnership Request -->
+    <!-- Underlined Tabs: Service Requests, Partnership Requests & Agent Request Service -->
     <div class="tab-underlined-nav" role="tablist" aria-label="Request types">
       <button class="tab-underlined-btn active" id="tab-service-requests" role="tab" aria-selected="true" type="button">
         <span>Service requests</span>
@@ -171,12 +171,16 @@
         <span>Partnership requests</span>
         <span class="tab-underlined-badge" id="partnership-requests-badge">4</span>
       </button>
+      <button class="tab-underlined-btn" id="tab-agent-requests" role="tab" aria-selected="false" type="button">
+        <span>Agent request service</span>
+        <span class="tab-underlined-badge" id="agent-requests-badge">5</span>
+      </button>
     </div>
 
     <div class="inline-filter-bar">
       <div class="search-bar">
         <svg class="search-bar-icon" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,218.34,187.32,176a92.14,92.14,0,1,0-11.31,11.31l42.34,42.35a8,8,0,0,0,11.31-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>
-        <input class="form-input" type="search" id="enquiry-search" placeholder="Search by name, email, organisation, region, industry..." data-role="search-input">
+        <input class="form-input" type="search" id="enquiry-search" placeholder="Search by name, email, organisation, industry, agent type..." data-role="search-input">
       </div>
       <select class="form-select" id="enquiry-date-filter" data-role="date-filter">
         <option value="all">All time</option>
@@ -195,7 +199,7 @@
     <div class="table-wrapper">
       <table class="table" id="enquiries-table">
         <thead>
-          <tr>
+          <tr id="enquiries-table-head-row">
             <th style="width: 50px;">S.No.</th>
             <th>Name <span class="sort-icon"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M213.66,181.66l-56,56a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L144,212.69V40a8,8,0,0,1,16,0V212.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM101.66,74.34,68,40.69V212a8,8,0,0,1-16,0V40.69L18.34,74.34A8,8,0,0,1,7,63,8,8,0,0,1,7,52.34l40-40a8,8,0,0,1,11.32,0l40,40A8,8,0,0,1,101.66,74.34Z"/></svg></span></th>
             <th>Email</th>
@@ -250,9 +254,15 @@
             <span class="enquiry-field-label">Organisation</span>
             <span class="enquiry-field-value org-value" id="drawer-org">Apex Financial Technologies</span>
           </div>
-          <div class="enquiry-surface-field">
+          <div class="enquiry-surface-field" id="drawer-region-container">
             <span class="enquiry-field-label">Region</span>
             <span class="enquiry-field-value" id="drawer-region">North America (US)</span>
+          </div>
+          <div class="enquiry-surface-field full-width" id="drawer-agent-type-container" style="display: none;">
+            <span class="enquiry-field-label">Type of AI Agent</span>
+            <div>
+              <span class="status-badge status-agent" id="drawer-agent-type" style="font-size: var(--text-xs); padding: 3px 9px;">Autonomous Risk & Underwriting Agent</span>
+            </div>
           </div>
           <div class="enquiry-surface-field full-width">
             <span class="enquiry-field-label">Industry Sector</span>
